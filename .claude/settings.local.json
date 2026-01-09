@@ -23,7 +23,8 @@
       "Bash(powershell -ExecutionPolicy Bypass -Command \"cd $env:LOCALAPPDATA\\\\nvim; .\\\\install.ps1\")",
       "Bash(powershell -ExecutionPolicy Bypass -File \"$LOCALAPPDATA/nvim/install.ps1\")",
       "Bash(curl:*)",
-      "Bash(\"$LOCALAPPDATA/Programs/oh-my-posh/bin/oh-my-posh.exe\" --version)"
+      "Bash(\"$LOCALAPPDATA/Programs/oh-my-posh/bin/oh-my-posh.exe\" --version)",
+      "Bash(del \"\\\\?\\\\D:\\\\jcode-materia\\(27\\)\\\\jcode-material\\\\nul\")"
     ]
   }
 }
