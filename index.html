@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.codE M - 건축 탄소배출량 평가 시스템</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    body { 
+      display: flex; 
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      padding: 40px;
+    }
+
+    .main-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .main-header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -2px;
+    }
+
+    .main-header h1 span {
+      color: var(--primary-color);
+    }
+
+    .subtitle {
+      color: #b2bec3;
+      font-size: 16px;
+      font-weight: 300;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    .feature-tags {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .feature-tag {
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--dark);
+      box-shadow: var(--shadow);
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      max-width: 1200px;
+    }
+
+    .button-box {
+      width: 260px;
+      height: 340px;
+      background: #ffffff;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .button-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .button-box:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .button-box:hover::before {
+      transform: scaleX(1);
+    }
+
+    .canvas-container {
+      width: 240px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .label-wrap {
+      width: 100%;
+      padding: 15px 20px;
+      background: #fafafa;
+      text-align: center;
+      border-top: 1px solid #f1f1f1;
+    }
+
+    .label {
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transition: color 0.3s ease;
+    }
+
+    .button-box:hover .label {
+      color: var(--primary-color);
+    }
+
+    .label-sub {
+      color: #b2bec3;
+      font-size: 11px;
+      font-weight: 300;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .quick-actions {
+      margin-top: 50px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .quick-action-btn {
+      padding: 15px 30px;
+      background: white;
+      border: 2px solid var(--light-gray);
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .quick-action-btn:hover {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 1200px) {
+      .button-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-header h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-header">
+    <h1>J.codE <span>M</span></h1>
+    <p class="subtitle">JUNGLIM Carbon-oriented design Evaluation - Material</p>
+    <div class="feature-tags">
+      <span class="feature-tag">국내 EPD 기반</span>
+      <span class="feature-tag">실시간 탄소 계산</span>
+      <span class="feature-tag">어셈블리 비교</span>
+      <span class="feature-tag">시각화 분석</span>
+    </div>
+  </div>
+  
+  <div class="button-grid">
+    <a href="material-selector.html?type=floor" class="button-box" data-type="floor">
+      <div class="canvas-container" id="floor-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Floor</div>
+        <div class="label-sub">바닥 구성</div>
+      </div>
+    </a>
+    
+    <a href="material-selector.html?type=external" class="button-box" data-type="external">
+      <div class="canvas-container" id="external-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">External Wall</div>
+        <div class="label-sub">외벽 구성</div>
+      </div>
+    </a>
+    
+    <a href="material-selector.html?type=internal" class="button-box" data-type="internal">
+      <div class="canvas-container" id="internal-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Internal Wall</div>
+        <div class="label-sub">내벽 구성</div>
+      </div>
+    </a>
+    
+    <a href="material-selector.html?type=roof" class="button-box" data-type="roof">
+      <div class="canvas-container" id="roof-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Roof</div>
+        <div class="label-sub">지붕 구성</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="quick-actions">
+    <a href="assembly-comparison.html" class="quick-action-btn">
+      어셈블리 탄소배출량 비교하기
+    </a>
+    <button class="quick-action-btn" onclick="showAbout()">
+      ℹ️ Information
+    </button>
+  </div>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // 각 구조별 레이어 정의
+    const structures = {
+      floor: [
+        { name: '콘크리트', color: 0x636e72, height: 0.4 },
+        { name: '단열재', color: 0x55efc4, height: 0.25 },
+        { name: '몰탈', color: 0xdfe6e9, height: 0.15 },
+        { name: '강마루', color: 0xb2bec3, height: 0.1 }
+      ],
+      external: [
+        { name: '외장재', color: 0x2d3436, height: 0.1 },
+        { name: '단열재', color: 0x55efc4, height: 0.35 },
+        { name: '콘크리트', color: 0x636e72, height: 0.3 },
+        { name: '석고보드', color: 0xdfe6e9, height: 0.1 },
+        { name: '마감재', color: 0xffffff, height: 0.05 }
+      ],
+      internal: [
+        { name: '석고보드', color: 0xdfe6e9, height: 0.1 },
+        { name: '스터드', color: 0x00b894, height: 0.3 },
+        { name: '석고보드', color: 0xdfe6e9, height: 0.1 }
+      ],
+      roof: [
+        { name: '지붕재', color: 0x2d3436, height: 0.1 },
+        { name: '방수층', color: 0x00cec9, height: 0.08 },
+        { name: '단열재', color: 0x55efc4, height: 0.4 },
+        { name: '콘크리트', color: 0x636e72, height: 0.3 },
+        { name: '천장재', color: 0xffffff, height: 0.05 }
+      ]
+    };
+
+    // 3D 버튼 생성 함수
+    function create3DButton(containerId, type) {
+      const container = document.getElementById(containerId);
+      const width = 240, height = 260;
+      const isWall = (type === 'external' || type === 'internal');
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+
+      // 조명
+      const light = new THREE.DirectionalLight(0xffffff, 0.8);
+      light.position.set(5, 10, 7);
+      scene.add(light);
+      
+      const light2 = new THREE.DirectionalLight(0x00b894, 0.3);
+      light2.position.set(-5, 5, -5);
+      scene.add(light2);
+      
+      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+      // 레이어 생성
+      const layers = structures[type];
+      const meshes = [];
+      let pos = 0;
+
+      layers.forEach((layer, i) => {
+        let geometry, mesh;
+
+        if (isWall) {
+          geometry = new THREE.BoxGeometry(layer.height, 2, 1.3);
+          mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ 
+            color: layer.color,
+            shininess: 30
+          }));
+          
+          mesh.position.x = pos + layer.height / 2;
+          mesh.userData.originalX = mesh.position.x;
+          mesh.userData.expandedX = mesh.position.x + i * 0.15;
+        } else {
+          geometry = new THREE.BoxGeometry(2, layer.height, 1.3);
+          mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ 
+            color: layer.color,
+            shininess: 30
+          }));
+          
+          mesh.position.y = pos + layer.height / 2;
+          mesh.userData.originalY = mesh.position.y;
+          mesh.userData.expandedY = mesh.position.y + i * 0.15;
+        }
+
+        pos += layer.height;
+        scene.add(mesh);
+        meshes.push(mesh);
+      });
+
+      // 중심 맞추기
+      const totalSize = pos;
+      meshes.forEach(mesh => {
+        if (isWall) {
+          mesh.position.x -= totalSize / 2;
+          mesh.userData.originalX -= totalSize / 2;
+          mesh.userData.expandedX -= totalSize / 2;
+        } else {
+          mesh.position.y -= totalSize / 2;
+          mesh.userData.originalY -= totalSize / 2;
+          mesh.userData.expandedY -= totalSize / 2;
+        }
+      });
+
+      if (isWall) {
+        camera.position.set(0, 1.5, 3.5);
+      } else {
+        camera.position.set(2.5, 1.8, 2.5);
+      }
+      camera.lookAt(0, 0, 0);
+
+      // 호버 상태
+      let isHovered = false;
+      let currentExpand = 0;
+      let rotationSpeed = 0.002;
+
+      container.parentElement.addEventListener('mouseenter', () => {
+        isHovered = true;
+        rotationSpeed = 0.008;
+      });
+      container.parentElement.addEventListener('mouseleave', () => {
+        isHovered = false;
+        rotationSpeed = 0.002;
+      });
+
+      // 애니메이션
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const targetExpand = isHovered ? 1 : 0;
+        currentExpand += (targetExpand - currentExpand) * 0.06;
+
+        meshes.forEach(mesh => {
+          if (isWall) {
+            mesh.position.x = mesh.userData.originalX +
+              (mesh.userData.expandedX - mesh.userData.originalX) * currentExpand;
+          } else {
+            mesh.position.y = mesh.userData.originalY +
+              (mesh.userData.expandedY - mesh.userData.originalY) * currentExpand;
+          }
+        });
+
+        scene.rotation.y += rotationSpeed;
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    }
+
+    // 4개 버튼 생성
+    create3DButton('floor-canvas', 'floor');
+    create3DButton('external-canvas', 'external');
+    create3DButton('internal-canvas', 'internal');
+    create3DButton('roof-canvas', 'roof');
+
+    // 프로젝트 정보 표시
+    function showAbout() {
+      alert(`J.codE M - 건축 탄소배출량 평가 시스템
+
+국내 EPD(환경성적표지) 데이터를 기반으로
+건축 자재의 탄소배출량을 계산하고 비교하는 시스템입니다.
+
+주요 기능:
+• 건축 구조별 자재 선택
+• 실시간 탄소배출량 계산
+• 다양한 어셈블리 조합 비교
+• 시각화 및 분석
+
+데이터 출처: 한국환경산업기술원 EPD
+개발: JUNGLIM Architecture`);
+    }
+  </script>
+</body>
+</html>

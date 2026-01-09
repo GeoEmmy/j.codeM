@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.codE M - 설치 가이드</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .step {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      border-left: 5px solid #00b894;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: #00b894;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .step h2 {
+      font-size: 24px;
+      color: #2d3436;
+      margin-bottom: 15px;
+    }
+
+    .step p {
+      color: #636e72;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+
+    .folder-structure {
+      background: #2d3436;
+      color: #00b894;
+      padding: 20px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .folder-structure .folder {
+      color: #fdcb6e;
+    }
+
+    .folder-structure .file {
+      color: #74b9ff;
+    }
+
+    .folder-structure .important {
+      color: #ff7675;
+      font-weight: bold;
+    }
+
+    .command-box {
+      background: #2d3436;
+      color: #00b894;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .command-box::before {
+      content: '$ ';
+      color: #fdcb6e;
+    }
+
+    .warning-box {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .warning-box h3 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+
+    .warning-box p {
+      color: #856404;
+      line-height: 1.6;
+    }
+
+    .success-box {
+      background: #d4edda;
+      border-left: 5px solid #28a745;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .success-box h3 {
+      color: #155724;
+      margin-bottom: 10px;
+    }
+
+    .success-box p {
+      color: #155724;
+      line-height: 1.6;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist li {
+      padding: 10px 0;
+      border-bottom: 1px solid #dfe6e9;
+    }
+
+    .checklist li::before {
+      content: '✓ ';
+      color: #00b894;
+      font-weight: bold;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .file-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .file-table th,
+    .file-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #dfe6e9;
+    }
+
+    .file-table th {
+      background: #2d3436;
+      color: white;
+    }
+
+    .file-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: #00b894;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #00a383;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 28px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .folder-structure,
+      .command-box {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📁 J.codE M 설치 가이드</h1>
+      <p>폴더 구조 및 실행 방법</p>
+    </div>
+
+    <div class="content">
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-number">1</div>
+        <h2>폴더 구조 이해하기</h2>
+        <p>압축을 풀면 다음과 같은 구조가 생성됩니다:</p>
+        
+        <div class="folder-structure">
+<span class="important">jcode-material/</span>          <span style="color: #95a5a6;">← 프로젝트 루트 폴더</span>
+│
+├── <span class="file">index.html</span>            <span style="color: #95a5a6;">← 메인 페이지</span>
+├── <span class="file">material-selector.html</span> <span style="color: #95a5a6;">← 자재 선택 페이지</span>
+├── <span class="file">assembly-comparison.html</span> <span style="color: #95a5a6;">← 비교 페이지</span>
+├── <span class="file">server.js</span>             <span style="color: #95a5a6;">← 서버 파일</span>
+├── <span class="file">package.json</span>          <span style="color: #95a5a6;">← NPM 설정</span>
+├── <span class="file">README.md</span>             <span style="color: #95a5a6;">← 프로젝트 설명</span>
+│
+├── <span class="folder">css/</span>
+│   └── <span class="file">common.css</span>        <span style="color: #95a5a6;">← 공통 스타일</span>
+│
+├── <span class="folder">js/</span>
+│   └── <span class="file">calculator.js</span>     <span style="color: #95a5a6;">← 계산 로직</span>
+│
+└── <span class="folder">data/</span>
+    └── <span class="file">epd-korea.js</span>      <span style="color: #95a5a6;">← EPD 데이터</span>
+        </div>
+
+        <div class="warning-box">
+          <h3>⚠️ 중요!</h3>
+          <p>이 폴더 구조를 정확히 유지해야 합니다. 파일이나 폴더를 다른 위치로 옮기면 작동하지 않습니다!</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-number">2</div>
+        <h2>파일 역할 이해하기</h2>
+        
+        <table class="file-table">
+          <thead>
+            <tr>
+              <th>파일/폴더</th>
+              <th>역할</th>
+              <th>중요도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📄 index.html</td>
+              <td>메인 페이지 - 4개 구조 선택</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📄 material-selector.html</td>
+              <td>자재 선택 및 레이어 구성</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📄 assembly-comparison.html</td>
+              <td>어셈블리 비교 및 분석</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📄 server.js</td>
+              <td>Express 웹 서버 실행</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📁 css/common.css</td>
+              <td>모든 페이지의 스타일</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📁 js/calculator.js</td>
+              <td>탄소 배출량 계산 로직</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>📁 data/epd-korea.js</td>
+              <td>국내 EPD 자재 데이터베이스</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-number">3</div>
+        <h2>설치 방법</h2>
+        
+        <h3 style="margin: 20px 0 10px 0;">① Node.js 설치 확인</h3>
+        <div class="command-box">node --version</div>
+        <div class="command-box">npm --version</div>
+        <p>설치되어 있지 않으면 <a href="https://nodejs.org" target="_blank">https://nodejs.org</a>에서 다운로드</p>
+
+        <h3 style="margin: 20px 0 10px 0;">② 터미널 열기</h3>
+        <p><strong>Windows:</strong> 폴더에서 Shift + 우클릭 → "여기서 PowerShell 창 열기"</p>
+        <p><strong>Mac/Linux:</strong> 터미널 열고 cd 명령어로 폴더 이동</p>
+
+        <h3 style="margin: 20px 0 10px 0;">③ 패키지 설치</h3>
+        <div class="command-box">npm install</div>
+
+        <h3 style="margin: 20px 0 10px 0;">④ 서버 실행</h3>
+        <div class="command-box">npm start</div>
+        <p>또는</p>
+        <div class="command-box">node server.js</div>
+
+        <div class="success-box">
+          <h3>✅ 성공!</h3>
+          <p>서버가 실행되면 브라우저에서 <strong>http://localhost:3000</strong>으로 접속하세요!</p>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <div class="step-number">4</div>
+        <h2>체크리스트</h2>
+        
+        <ul class="checklist">
+          <li>jcode-material.zip 다운로드 완료</li>
+          <li>압축 해제 완료</li>
+          <li>폴더 구조 확인 (css/, js/, data/ 폴더 존재)</li>
+          <li>Node.js 설치 확인</li>
+          <li>터미널에서 프로젝트 폴더로 이동</li>
+          <li>npm install 실행</li>
+          <li>npm start 실행</li>
+          <li>브라우저에서 localhost:3000 접속</li>
+        </ul>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step">
+        <div class="step-number">5</div>
+        <h2>문제 해결</h2>
+        
+        <h3 style="margin: 20px 0 10px 0;">❌ CSS가 적용되지 않는 경우</h3>
+        <p>→ <code>css/common.css</code> 파일이 올바른 위치에 있는지 확인</p>
+        <p>→ 브라우저 개발자 도구(F12)에서 404 에러 확인</p>
+
+        <h3 style="margin: 20px 0 10px 0;">❌ JavaScript 오류가 나는 경우</h3>
+        <p>→ <code>js/calculator.js</code>와 <code>data/epd-korea.js</code> 위치 확인</p>
+        <p>→ 브라우저 콘솔(F12)에서 에러 메시지 확인</p>
+
+        <h3 style="margin: 20px 0 10px 0;">❌ 서버가 실행되지 않는 경우</h3>
+        <div class="command-box">node --version</div>
+        <p>Node.js가 설치되어 있는지 확인</p>
+        <p>포트 3000이 이미 사용 중이면 server.js에서 PORT를 3001로 변경</p>
+      </div>
+
+      <div class="success-box" style="margin-top: 40px; text-align: center;">
+        <h3>🎉 준비 완료!</h3>
+        <p>이제 J.codE M으로 건축 자재의 탄소배출량을 분석해보세요!</p>
+        <a href="http://localhost:3000" class="btn" target="_blank">시작하기 →</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
