@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(powershell -Command \"Write-Host $PROFILE\")",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell.exe -Command \"winget install JanDeDobbeleer.OhMyPosh -s winget --accept-package-agreements --accept-source-agreements\")",
+      "Bash(powershell.exe -Command \"& ''$env:LOCALAPPDATA\\\\Microsoft\\\\WindowsApps\\\\winget.exe'' install JanDeDobbeleer.OhMyPosh -s winget --accept-package-agreements --accept-source-agreements\")",
+      "Bash(powershell.exe -Command \"echo $PROFILE\")",
+      "Bash(powershell.exe -Command \"Write-Host $PROFILE\")",
+      "Bash(powershell.exe -Command \"if \\(Test-Path $PROFILE\\) { Get-Content $PROFILE } else { Write-Host ''FILE_NOT_EXISTS'' }\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\junglim\\\\Documents\\\\WindowsPowerShell\\\\Microsoft.PowerShell_profile.ps1'' -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -Command \"New-Item -Path ''C:\\\\Users\\\\junglim\\\\Documents\\\\WindowsPowerShell'' -ItemType Directory -Force; Set-Content -Path ''C:\\\\Users\\\\junglim\\\\Documents\\\\WindowsPowerShell\\\\Microsoft.PowerShell_profile.ps1'' -Value ''oh-my-posh init pwsh --config \"\"$env:POSH_THEMES_PATH\\\\illusion.omp.json\"\" | Invoke-Expression''\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\junglim\\\\Documents\\\\WindowsPowerShell\\\\Microsoft.PowerShell_profile.ps1''\")",
+      "Bash(powershell.exe -Command \"Set-Content -Path ''C:\\\\Users\\\\junglim\\\\Documents\\\\WindowsPowerShell\\\\Microsoft.PowerShell_profile.ps1'' -Value ''oh-my-posh init pwsh --config \"\"\\\\`$env:POSH_THEMES_PATH\\\\illusion.omp.json\"\" | Invoke-Expression''\")",
+      "Bash(powershell.exe -Command \"git clone git@github.com:bic98/init_lua.git $env:LOCALAPPDATA\\\\nvim\")",
+      "Bash(git clone:*)",
+      "Bash(winget install:*)",
+      "Bash(nvim:*)",
+      "Bash(echo:*)",
+      "Bash(unzip:*)",
+      "Bash(\"$LOCALAPPDATA/nvim-win64/bin/nvim.exe\" --version)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd $env:LOCALAPPDATA\\\\nvim; .\\\\install.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"$LOCALAPPDATA/nvim/install.ps1\")",
+      "Bash(curl:*)",
+      "Bash(\"$LOCALAPPDATA/Programs/oh-my-posh/bin/oh-my-posh.exe\" --version)"
+    ]
+  }
+}
