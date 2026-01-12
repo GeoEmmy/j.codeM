@@ -326,22 +326,38 @@
       gap: 5px;
     }
 
+    .assembly-card .carbon-display-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
     .assembly-card .carbon-display {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       padding: 15px;
       border-radius: 10px;
       text-align: center;
-      margin: 15px 0;
+    }
+
+    .assembly-card .carbon-display.total {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    }
+
+    .assembly-card .carbon-display .label {
+      font-size: 11px;
+      opacity: 0.85;
+      margin-bottom: 5px;
     }
 
     .assembly-card .carbon-display .value {
-      font-size: 32px;
+      font-size: 24px;
       font-weight: 700;
     }
 
     .assembly-card .carbon-display .unit {
-      font-size: 12px;
+      font-size: 11px;
       margin-top: 5px;
       opacity: 0.9;
     }
@@ -626,7 +642,7 @@
   <div class="container">
     <!-- 페이지 헤더 -->
     <div class="page-header">
-      <h1>📊 어셈블리 비교</h1>
+      <h2>어셈블리 비교</h2>
       <p>저장된 어셈블리의 탄소배출량을 비교하고 분석하세요</p>
     </div>
 
@@ -636,7 +652,7 @@
     <!-- 비교 차트 -->
     <div class="comparison-section" id="comparisonSection">
       <div class="section-header">
-        <h2>탄소 배출량 비교</h2>
+        <h3>탄소 배출량 비교</h3>
         <div class="actions">
           <button class="btn btn-secondary" onclick="exportData()">
             📥 CSV 내보내기
@@ -658,7 +674,7 @@
     <!-- 어셈블리 리스트 -->
     <div class="assemblies-section">
       <div class="section-header">
-        <h2>저장된 어셈블리</h2>
+        <h3>저장된 어셈블리</h3>
         <div class="actions">
           <button class="btn btn-primary" onclick="createNewAssembly()">
             ➕ 새 어셈블리
@@ -704,31 +720,42 @@
 
     // 통계 업데이트
     function updateStats() {
-      const stats = calculator.getStatistics();
+      const allAssemblies = calculator.getAllAssemblies();
       const statsGrid = document.getElementById('statsGrid');
-      
+
+      // 총 배출량
+      const totalCarbon = allAssemblies.reduce((sum, a) => sum + a.totalCarbon, 0);
+
+      // 타입별 배출량 계산
+      const floorCarbon = calculator.getAssembliesByType('floor').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const externalCarbon = calculator.getAssembliesByType('external').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const internalCarbon = calculator.getAssembliesByType('internal').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const roofCarbon = calculator.getAssembliesByType('roof').reduce((sum, a) => sum + a.totalCarbon, 0);
+
       statsGrid.innerHTML = `
         <div class="stat-card">
-          <div class="icon">📦</div>
-          <div class="label">총 어셈블리</div>
-          <div class="value">${stats.count}</div>
-        </div>
-        <div class="stat-card">
-          <div class="icon">📊</div>
-          <div class="label">평균 배출량</div>
-          <div class="value">${formatNumber(stats.average, 0)}</div>
+          <div class="label">총 배출량</div>
+          <div class="value">${formatNumber(totalCarbon, 0)}</div>
           <div class="unit">kg CO₂eq</div>
         </div>
         <div class="stat-card">
-          <div class="icon">🌱</div>
-          <div class="label">최소 배출량</div>
-          <div class="value">${formatNumber(stats.min, 0)}</div>
+          <div class="label">바닥 배출량</div>
+          <div class="value">${formatNumber(floorCarbon, 0)}</div>
           <div class="unit">kg CO₂eq</div>
         </div>
         <div class="stat-card">
-          <div class="icon">🔥</div>
-          <div class="label">최대 배출량</div>
-          <div class="value">${formatNumber(stats.max, 0)}</div>
+          <div class="label">외벽 배출량</div>
+          <div class="value">${formatNumber(externalCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">내벽 배출량</div>
+          <div class="value">${formatNumber(internalCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">지붕 배출량</div>
+          <div class="value">${formatNumber(roofCarbon, 0)}</div>
           <div class="unit">kg CO₂eq</div>
         </div>
       `;
@@ -818,9 +845,17 @@
               <div class="badge badge-info">${grade}</div>
             </div>
             
-            <div class="carbon-display">
-              <div class="value">${formatNumber(carbonPerM2, 1)}</div>
-              <div class="unit">kg CO₂eq/m²</div>
+            <div class="carbon-display-grid">
+              <div class="carbon-display">
+                <div class="label">m²당 배출량</div>
+                <div class="value">${formatNumber(carbonPerM2, 1)}</div>
+                <div class="unit">kg CO₂eq/m²</div>
+              </div>
+              <div class="carbon-display total">
+                <div class="label">전체 배출량</div>
+                <div class="value">${formatNumber(assembly.totalCarbon, 0)}</div>
+                <div class="unit">kg CO₂eq</div>
+              </div>
             </div>
             
             <div class="layers-list">
