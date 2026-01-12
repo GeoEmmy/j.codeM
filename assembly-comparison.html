@@ -744,7 +744,7 @@
       
       if (assemblies.length === 0) {
         chartContainer.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
             <div class="icon">📊</div>
             <h3>비교할 어셈블리가 없습니다</h3>
             <p>자재를 선택하여 어셈블리를 만들어보세요</p>
@@ -789,7 +789,7 @@
       
       if (assemblies.length === 0) {
         grid.innerHTML = `
-          <div class="empty-state">
+          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; grid-column: 1 / -1;">
             <div class="icon">📦</div>
             <h3>저장된 어셈블리가 없습니다</h3>
             <p>자재 선택 페이지에서 어셈블리를 만들어보세요</p>
