@@ -293,6 +293,12 @@
       border-radius: 25px;
       overflow: visible;
       min-height: auto; /* 1600px → 1700px (더 높게) */
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .pyramid-stage.loaded {
+      opacity: 1;
     }
 
     /* 하나의 큰 피라미드 배경 (정삼각형에 가깝게 - 더 크게) */
@@ -1863,9 +1869,12 @@
       });
       
       container.innerHTML = html;
-      
+
       // 선택 상태 업데이트
       updateMaterialCards();
+
+      // 피라미드 로드 완료 표시
+      document.querySelector('.pyramid-stage').classList.add('loaded');
     }
     
     // 자재 선택 상태 업데이트
