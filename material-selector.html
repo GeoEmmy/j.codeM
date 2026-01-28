@@ -305,7 +305,7 @@
     /* 하나의 큰 피라미드 배경 (정삼각형에 가깝게 - 더 크게) */
     .pyramid-background {
       position: absolute;
-      top: 48%;
+      top: 650px; /* 고정 위치 */
       left: 50%;
       transform: translate(-50%, -50%);
       width: 0;
@@ -355,7 +355,7 @@
       align-items: center;
       gap: 15px;
       flex-wrap: nowrap; /* 한 줄로 유지 */
-      padding: 20px 30px;
+      padding: 5px 30px; /* 상하 패딩 */
       transition: all 0.3s ease;
       position: relative;
       border-bottom: none; /* 기본적으로 구분선 없음 */
@@ -459,7 +459,7 @@
     }
 
     .material-tile:hover {
-      transform: translateY(-8px) scale(1.1);
+      transform: translateY(-8px);
       box-shadow: 0 12px 24px rgba(0,184,148,0.4),
                   inset 0 0 0 2px var(--primary-color);
       z-index: 100;
@@ -470,9 +470,7 @@
     }
 
     .material-tile.selected {
-      box-shadow: 0 0 0 5px var(--primary-color),
-                  0 15px 40px rgba(0,184,148,0.5);
-      transform: scale(1.08);
+      box-shadow: none;
     }
 
     .material-tile.selected::after {
@@ -533,45 +531,29 @@
       font-weight: 300;*/
     }
 
-    /* 타일 오버레이 (호버 시 정보 표시) */
-    .material-tile .tile-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top,
-        rgba(0,0,0,0.95) 0%,
-        rgba(0,0,0,0.8) 70%,
-        transparent 100%);
-      padding: 10px 8px 8px;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
+    /* 타일 래퍼 */
+    .tile-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      height: 90px; /* 고정 높이: 타일 70px + 이름 20px */
     }
 
-    .material-tile:hover .tile-info {
-      transform: translateY(0);
-    }
-
-    .material-tile .tile-name {
+    /* 타일 아래 자재명 */
+    .tile-name-below {
       font-size: 9px;
-      font-weight: 700;
-      color: white;
-      text-align: center;
-      display: block;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      margin-bottom: 3px;
-      line-height: 1.1;
-    }
-
-    .material-tile .tile-gwp {
-      font-size: 8px;
       font-weight: 600;
-      color: var(--primary-color);
+      color: #636e72;
       text-align: center;
-      display: block;
-      background: rgba(255,255,255,0.95);
-      padding: 2px 5px;
-      border-radius: 5px;
+      margin-top: 4px;
+      line-height: 1.2;
+      max-width: 70px;
+      height: 16px; /* 고정 높이 */
+      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* GWP 뱃지 (항상 표시) */
@@ -1846,28 +1828,30 @@
               const imageUrl = getMaterialImageUrl(material);
 
               tiles.push(`
-                <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
-                     style="background-image: url('${escapeHtml(imageUrl)}')"
-                     tabindex="0"
-                     role="button"
-                     aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
-                     onclick="selectMaterial('${escapeHtml(material.id)}')"
-                     onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
-                     data-id="${escapeHtml(material.id)}">
-                  <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
-                  <div class="level-indicator"></div>
-                  <div class="tile-info">
-                    <span class="tile-name">${escapeHtml(material.name)}</span>
-                    <span class="tile-gwp">${formatNumber(material.gwp, 0)} CO₂</span>
+                <div class="tile-wrapper">
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
+                       style="background-image: url('${escapeHtml(imageUrl)}')"
+                       tabindex="0"
+                       role="button"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
+                       onclick="selectMaterial('${escapeHtml(material.id)}')"
+                       onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                       data-id="${escapeHtml(material.id)}">
+                    <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
+                    <div class="level-indicator"></div>
                   </div>
+                  <div class="tile-name-below">${escapeHtml(material.name)}</div>
                 </div>
               `);
               materialIndex++; // 자재를 사용했으므로 인덱스 증가
             } else {
               // 자재가 없으면 빈 슬롯
               tiles.push(`
-                <div class="material-tile empty-slot level-${level}">
-                  <div class="empty-slot-label">-</div>
+                <div class="tile-wrapper">
+                  <div class="material-tile empty-slot level-${level}">
+                    <div class="empty-slot-label">-</div>
+                  </div>
+                  <div class="tile-name-below"></div>
                 </div>
               `);
             }
