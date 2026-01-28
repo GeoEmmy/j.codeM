@@ -223,11 +223,11 @@
       </div>
     </a>
     
-    <a href="material-selector.html?type=roof" class="button-box" data-type="roof">
-      <div class="canvas-container" id="roof-canvas"></div>
+    <a href="material-selector.html?type=ceiling" class="button-box" data-type="ceiling">
+      <div class="canvas-container" id="ceiling-canvas"></div>
       <div class="label-wrap">
-        <div class="label">Roof</div>
-        <div class="label-sub">지붕 구성</div>
+        <div class="label">Ceiling</div>
+        <div class="label-sub">천장 마감</div>
       </div>
     </a>
   </div>
@@ -267,12 +267,11 @@
         { name: '스터드', color: 0x00b894, height: 0.3 },
         { name: '석고보드', color: 0xdfe6e9, height: 0.1 }
       ],
-      roof: [
-        { name: '지붕재', color: 0x2d3436, height: 0.1 },
-        { name: '방수층', color: 0x00cec9, height: 0.08 },
-        { name: '단열재', color: 0x55efc4, height: 0.4 },
-        { name: '콘크리트', color: 0x636e72, height: 0.3 },
-        { name: '천장재', color: 0xffffff, height: 0.05 }
+      ceiling: [
+        { name: '석고보드', color: 0xeeeeee, height: 0.04 },
+        { name: '석고보드', color: 0xf0f0f0, height: 0.04 },
+        { name: 'M-bar', color: 0x707070, height: 0.06 },
+        { name: '달대', color: 0x888888, height: 0.1 }
       ]
     };
 
@@ -281,6 +280,7 @@
       const container = document.getElementById(containerId);
       const width = 240, height = 260;
       const isWall = (type === 'external' || type === 'internal');
+      const isCeiling = (type === 'ceiling');
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
@@ -293,68 +293,117 @@
       const light = new THREE.DirectionalLight(0xffffff, 0.8);
       light.position.set(5, 10, 7);
       scene.add(light);
-      
+
       const light2 = new THREE.DirectionalLight(0x00b894, 0.3);
       light2.position.set(-5, 5, -5);
       scene.add(light2);
-      
+
       scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-      // 레이어 생성
-      const layers = structures[type];
       const meshes = [];
-      let pos = 0;
 
-      layers.forEach((layer, i) => {
-        let geometry, mesh;
+      if (isCeiling) {
+        // 천장 경량철골 구조 렌더링
+        const metalMat = new THREE.MeshPhongMaterial({ color: 0x888888, shininess: 60 });
+        const gypsumMat = new THREE.MeshPhongMaterial({ color: 0xf0f0f0, shininess: 20 });
 
-        if (isWall) {
-          geometry = new THREE.BoxGeometry(layer.height, 2, 1.3);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ 
-            color: layer.color,
-            shininess: 30
-          }));
-          
-          mesh.position.x = pos + layer.height / 2;
-          mesh.userData.originalX = mesh.position.x;
-          mesh.userData.expandedX = mesh.position.x + i * 0.15;
-        } else {
-          geometry = new THREE.BoxGeometry(2, layer.height, 1.3);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ 
-            color: layer.color,
-            shininess: 30
-          }));
-          
-          mesh.position.y = pos + layer.height / 2;
-          mesh.userData.originalY = mesh.position.y;
-          mesh.userData.expandedY = mesh.position.y + i * 0.15;
+        // 페인트 (연민트색, 가장 아래)
+        const paintMat = new THREE.MeshPhongMaterial({ color: 0xa8e6cf, shininess: 30 });
+        const paint = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.02, 1.2), paintMat);
+        paint.position.y = -0.26;
+        paint.userData = { originalY: -0.26, expandedY: -0.55 };
+        scene.add(paint);
+        meshes.push(paint);
+
+        // 석고보드 2겹 (내벽 두께와 동일: 0.1)
+        const gypsum1 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 1.2), gypsumMat);
+        gypsum1.position.y = -0.2;
+        gypsum1.userData = { originalY: -0.2, expandedY: -0.45 };
+        scene.add(gypsum1);
+        meshes.push(gypsum1);
+
+        const gypsum2 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 1.2), gypsumMat);
+        gypsum2.position.y = -0.1;
+        gypsum2.userData = { originalY: -0.1, expandedY: -0.25 };
+        scene.add(gypsum2);
+        meshes.push(gypsum2);
+
+        // M-bar 가로 (3개)
+        for (let i = -1; i <= 1; i++) {
+          const mbarH = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.03), metalMat);
+          mbarH.position.set(0, 0.1, i * 0.4);
+          mbarH.userData = { originalY: 0.1, expandedY: 0 };
+          scene.add(mbarH);
+          meshes.push(mbarH);
         }
 
-        pos += layer.height;
-        scene.add(mesh);
-        meshes.push(mesh);
-      });
-
-      // 중심 맞추기
-      const totalSize = pos;
-      meshes.forEach(mesh => {
-        if (isWall) {
-          mesh.position.x -= totalSize / 2;
-          mesh.userData.originalX -= totalSize / 2;
-          mesh.userData.expandedX -= totalSize / 2;
-        } else {
-          mesh.position.y -= totalSize / 2;
-          mesh.userData.originalY -= totalSize / 2;
-          mesh.userData.expandedY -= totalSize / 2;
+        // M-bar 세로 (3개)
+        for (let i = -1; i <= 1; i++) {
+          const mbarV = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 1.2), metalMat);
+          mbarV.position.set(i * 0.5, 0.1, 0);
+          mbarV.userData = { originalY: 0.1, expandedY: 0 };
+          scene.add(mbarV);
+          meshes.push(mbarV);
         }
-      });
 
-      if (isWall) {
-        camera.position.set(0, 1.5, 3.5);
+        camera.position.set(2, 1.5, 2);
+        camera.lookAt(0, -0.1, 0);
       } else {
-        camera.position.set(2.5, 1.8, 2.5);
+        // 기존 레이어 방식
+        const layers = structures[type];
+        let pos = 0;
+
+        layers.forEach((layer, i) => {
+          let geometry, mesh;
+
+          if (isWall) {
+            geometry = new THREE.BoxGeometry(layer.height, 2, 1.3);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+              color: layer.color,
+              shininess: 30
+            }));
+
+            mesh.position.x = pos + layer.height / 2;
+            mesh.userData.originalX = mesh.position.x;
+            mesh.userData.expandedX = mesh.position.x + i * 0.15;
+          } else {
+            geometry = new THREE.BoxGeometry(2, layer.height, 1.3);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+              color: layer.color,
+              shininess: 30
+            }));
+
+            mesh.position.y = pos + layer.height / 2;
+            mesh.userData.originalY = mesh.position.y;
+            mesh.userData.expandedY = mesh.position.y + i * 0.15;
+          }
+
+          pos += layer.height;
+          scene.add(mesh);
+          meshes.push(mesh);
+        });
+
+        // 중심 맞추기
+        const totalSize = pos;
+        meshes.forEach(mesh => {
+          if (isWall) {
+            mesh.position.x -= totalSize / 2;
+            mesh.userData.originalX -= totalSize / 2;
+            mesh.userData.expandedX -= totalSize / 2;
+          } else {
+            mesh.position.y -= totalSize / 2;
+            mesh.userData.originalY -= totalSize / 2;
+            mesh.userData.expandedY -= totalSize / 2;
+          }
+        });
+
+        if (isWall) {
+          camera.position.set(0, 1.5, 3.5);
+        } else {
+          camera.position.set(2.5, 1.8, 2.5);
+        }
+        camera.lookAt(0, 0, 0);
       }
-      camera.lookAt(0, 0, 0);
 
       // 호버 상태
       let isHovered = false;
@@ -398,7 +447,7 @@
     create3DButton('floor-canvas', 'floor');
     create3DButton('external-canvas', 'external');
     create3DButton('internal-canvas', 'internal');
-    create3DButton('roof-canvas', 'roof');
+    create3DButton('ceiling-canvas', 'ceiling');
 
     // 프로젝트 정보 표시
     function showAbout() {
@@ -414,7 +463,7 @@
 • 시각화 및 분석
 
 데이터 출처: 한국환경산업기술원 EPD
-개발: JUNGLIM Architecture`);
+개발: JUNGLIM`);
     }
   </script>
 </body>
