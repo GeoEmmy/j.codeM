@@ -1253,8 +1253,19 @@
 
   <script src="data/epd-korea.js"></script>
   <script src="js/calculator.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+          integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script>
+    // XSS 방지를 위한 HTML 이스케이프 함수
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const structureType = urlParams.get('type') || 'floor';
     
@@ -1791,14 +1802,18 @@
               const imageUrl = getMaterialImageUrl(material);
               
               tiles.push(`
-                <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}" 
-                     style="background-image: url('${imageUrl}')"
-                     onclick="selectMaterial('${material.id}')" 
-                     data-id="${material.id}">
+                <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
+                     style="background-image: url('${escapeHtml(imageUrl)}')"
+                     tabindex="0"
+                     role="button"
+                     aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
+                     onclick="selectMaterial('${escapeHtml(material.id)}')"
+                     onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                     data-id="${escapeHtml(material.id)}">
                   <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
                   <div class="level-indicator"></div>
                   <div class="tile-info">
-                    <span class="tile-name">${material.name}</span>
+                    <span class="tile-name">${escapeHtml(material.name)}</span>
                     <span class="tile-gwp">${formatNumber(material.gwp, 0)} CO₂</span>
                   </div>
                 </div>
@@ -1877,11 +1892,11 @@
       
       container.innerHTML = selectedLayers.map((layer, index) => {
         const carbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, 1);
-        
+
         return `
           <div class="layer-item">
             <div class="layer-header">
-              <span class="layer-name">${index + 1}. ${layer.material.name}</span>
+              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}</span>
               <button class="remove-btn" onclick="removeLayer(${layer.id})">✕</button>
             </div>
             <div class="thickness-input">
@@ -1929,19 +1944,6 @@
       document.getElementById('totalCarbon').textContent = formatNumber(total, 2);
     }
 
-    // 자재 카드 선택 상태 업데이트
-    function updateMaterialCards() {
-      const selectedIds = selectedLayers.map(l => l.material.id);
-      document.querySelectorAll('.material-item').forEach(card => {
-        const id = card.dataset.id;
-        if (selectedIds.includes(id)) {
-          card.classList.add('selected');
-        } else {
-          card.classList.remove('selected');
-        }
-      });
-    }
-
     // 필터링
     function filterMaterials(filter) {
       currentFilter = filter;
@@ -1973,15 +1975,28 @@
         alert('레이어를 추가해주세요.');
         return;
       }
-      
+
       const name = document.getElementById('assemblyName').value.trim();
       if (!name) {
         alert('어셈블리 이름을 입력해주세요.');
         return;
       }
-      
-      const area = parseFloat(document.getElementById('assemblyArea').value) || 1;
-   
+      if (name.length > 100) {
+        alert('어셈블리 이름은 100자 이하로 입력해주세요.');
+        return;
+      }
+
+      const areaInput = document.getElementById('assemblyArea').value;
+      const area = parseFloat(areaInput);
+      if (isNaN(area) || area <= 0) {
+        alert('면적은 0보다 큰 숫자를 입력해주세요.');
+        return;
+      }
+      if (area > 100000) {
+        alert('면적은 100,000m² 이하로 입력해주세요.');
+        return;
+      }
+
       calculator.addAssembly(name, structureType, selectedLayers, area);
       
       alert('어셈블리가 저장되었습니다!');

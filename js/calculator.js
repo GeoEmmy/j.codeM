@@ -89,7 +89,13 @@ class CarbonCalculator {
 
   // LocalStorage에 저장
   saveToLocalStorage() {
-    localStorage.setItem('jcode_assemblies', JSON.stringify(this.assemblies));
+    try {
+      localStorage.setItem('jcode_assemblies', JSON.stringify(this.assemblies));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        alert('저장 공간이 부족합니다. 일부 어셈블리를 삭제해주세요.');
+      }
+    }
   }
 
   // LocalStorage에서 불러오기

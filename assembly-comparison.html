@@ -696,20 +696,36 @@
   </div>
 
   <!-- 상세 모달 -->
-  <div class="modal" id="detailModal">
+  <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="닫기">✕</button>
       <div id="modalContent"></div>
     </div>
   </div>
 
   <script src="data/epd-korea.js"></script>
   <script src="js/calculator.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+          integrity="sha384-C7h9bKdF/Gm5GIiH5DnLF+6T7jSEv4nx4rvQxPX6zCJf+gqDvPvmPZDzOVGOjhRb"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+          integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
   <script>
+    // XSS 방지를 위한 HTML 이스케이프 함수
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
     let currentFilter = 'all';
     let currentChartFilter = 'all';
+
+    // Three.js 리소스 관리를 위한 배열
+    const threeResources = [];
 
     // 초기화
     function init() {
@@ -800,7 +816,7 @@
             <div class="bar" style="height: ${heightPx}px" onclick="showDetail(${assembly.id})">
               <div class="value-label">${formatNumber(carbonPerM2, 0)}</div>
             </div>
-            <div class="bar-label">${assembly.name}</div>
+            <div class="bar-label">${escapeHtml(assembly.name)}</div>
           </div>
         `;
       }).join('');
@@ -833,10 +849,10 @@
         return `
           <div class="assembly-card">
             <div class="preview-3d-small" id="preview3d-${assembly.id}"></div>
-            
+
             <div class="card-header">
               <div>
-                <div class="assembly-name">${assembly.name}</div>
+                <div class="assembly-name">${escapeHtml(assembly.name)}</div>
                 <div class="assembly-type">
                   ${getStructureTypeIcon(assembly.structureType)} 
                   ${getStructureTypeName(assembly.structureType)}
@@ -859,8 +875,8 @@
             </div>
             
             <div class="layers-list">
-              ${assembly.layers.map(l => 
-                `<span class="layer-tag">${l.material.name} (${l.thickness}mm)</span>`
+              ${assembly.layers.map(l =>
+                `<span class="layer-tag">${escapeHtml(l.material.name)} (${l.thickness}mm)</span>`
               ).join('')}
             </div>
             
@@ -883,24 +899,56 @@
       
       // 각 어셈블리의 3D 렌더링
       setTimeout(() => {
+        cleanupThreeResources(); // 기존 리소스 정리
         assemblies.forEach(assembly => {
           renderAssembly3D(assembly);
         });
       }, 100);
     }
 
+    // Three.js 리소스 정리 함수
+    function cleanupThreeResources() {
+      threeResources.forEach(resource => {
+        if (resource.animationId) {
+          cancelAnimationFrame(resource.animationId);
+        }
+        if (resource.renderer) {
+          resource.renderer.dispose();
+        }
+        if (resource.scene) {
+          resource.scene.traverse(obj => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) {
+              if (Array.isArray(obj.material)) {
+                obj.material.forEach(m => m.dispose());
+              } else {
+                obj.material.dispose();
+              }
+            }
+          });
+        }
+      });
+      threeResources.length = 0;
+    }
+
     // 어셈블리 3D 렌더링
     function renderAssembly3D(assembly) {
       const container = document.getElementById(`preview3d-${assembly.id}`);
       if (!container) return;
-      
+
+      // 기존 캔버스 제거
+      const existingCanvas = container.querySelector('canvas');
+      if (existingCanvas) {
+        existingCanvas.remove();
+      }
+
       const width = container.clientWidth;
       const height = 150;
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      
+
       renderer.setSize(width, height);
       renderer.setClearColor(0x000000, 0);
       renderer.shadowMap.enabled = true;
@@ -1046,8 +1094,11 @@
       camera.lookAt(0, 0, 0);
 
       // 애니메이션 - 자동 회전
+      const resource = { renderer, scene, animationId: null };
+      threeResources.push(resource);
+
       function animate() {
-        requestAnimationFrame(animate);
+        resource.animationId = requestAnimationFrame(animate);
         group.rotation.y += 0.003; // 천천히 Y축 회전
         renderer.render(scene, camera);
       }
@@ -1089,7 +1140,7 @@
       
       const modalContent = document.getElementById('modalContent');
       modalContent.innerHTML = `
-        <h3>${assembly.name}</h3>
+        <h3 id="modalTitle">${escapeHtml(assembly.name)}</h3>
         <div class="detail-grid">
           <div class="detail-item">
             <div class="detail-label">구조 타입</div>
@@ -1126,7 +1177,7 @@
             const layerCarbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, assembly.area);
             return `
               <div class="detail-item">
-                <div class="detail-label">${i + 1}. ${layer.material.name}</div>
+                <div class="detail-label">${i + 1}. ${escapeHtml(layer.material.name)}</div>
                 <div class="detail-value">
                   두께: ${layer.thickness}mm | 
                   배출: ${formatNumber(layerCarbon, 2)} kg CO₂eq
@@ -1182,6 +1233,16 @@
     document.getElementById('detailModal').addEventListener('click', (e) => {
       if (e.target.id === 'detailModal') {
         closeModal();
+      }
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('detailModal');
+        if (modal.classList.contains('show')) {
+          closeModal();
+        }
       }
     });
 
