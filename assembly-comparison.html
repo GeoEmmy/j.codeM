@@ -666,7 +666,7 @@
         <button class="tab-btn" onclick="filterChart('floor')">🏗️ 바닥</button>
         <button class="tab-btn" onclick="filterChart('external')">🏢 외벽</button>
         <button class="tab-btn" onclick="filterChart('internal')">🚪 내벽</button>
-        <button class="tab-btn" onclick="filterChart('roof')">🏠 지붕</button>
+        <button class="tab-btn" onclick="filterChart('ceiling')">⬜ 천장 마감</button>
       </div>
       <div class="chart-container">
         <div class="bar-chart" id="barChart"></div>
@@ -691,7 +691,7 @@
         <button class="tab-btn" onclick="filterAssemblies('floor')">🏗️ 바닥</button>
         <button class="tab-btn" onclick="filterAssemblies('external')">🏢 외벽</button>
         <button class="tab-btn" onclick="filterAssemblies('internal')">🚪 내벽</button>
-        <button class="tab-btn" onclick="filterAssemblies('roof')">🏠 지붕</button>
+        <button class="tab-btn" onclick="filterAssemblies('ceiling')">⬜ 천장 마감</button>
       </div>
       <div class="assemblies-grid" id="assembliesGrid"></div>
     </div>
@@ -748,7 +748,7 @@
       const floorCarbon = calculator.getAssembliesByType('floor').reduce((sum, a) => sum + a.totalCarbon, 0);
       const externalCarbon = calculator.getAssembliesByType('external').reduce((sum, a) => sum + a.totalCarbon, 0);
       const internalCarbon = calculator.getAssembliesByType('internal').reduce((sum, a) => sum + a.totalCarbon, 0);
-      const roofCarbon = calculator.getAssembliesByType('roof').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const ceilingCarbon = calculator.getAssembliesByType('ceiling').reduce((sum, a) => sum + a.totalCarbon, 0);
 
       statsGrid.innerHTML = `
         <div class="stat-card">
@@ -772,8 +772,8 @@
           <div class="unit">kg CO₂eq</div>
         </div>
         <div class="stat-card">
-          <div class="label">지붕 배출량</div>
-          <div class="value">${formatNumber(roofCarbon, 0)}</div>
+          <div class="label">천장 배출량</div>
+          <div class="value">${formatNumber(ceilingCarbon, 0)}</div>
           <div class="unit">kg CO₂eq</div>
         </div>
       `;

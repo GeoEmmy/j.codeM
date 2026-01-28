@@ -267,7 +267,7 @@ function getStructureTypeName(type) {
     floor: '바닥 구조',
     external: '외벽 구조',
     internal: '내벽 구조',
-    roof: '지붕 구조'
+    ceiling: '천장 마감'
   };
   return names[type] || type;
 }
@@ -278,7 +278,7 @@ function getStructureTypeIcon(type) {
     floor: '🏗️',
     external: '🏢',
     internal: '🚪',
-    roof: '🏠'
+    ceiling: '⬜'
   };
   return icons[type] || '📦';
 }

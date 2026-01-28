@@ -225,11 +225,11 @@
       </div>
     </a>
     
-    <a href="material-selector.html?type=roof" class="button-box" data-type="roof">
-      <div class="canvas-container" id="roof-canvas"></div>
+    <a href="material-selector.html?type=ceiling" class="button-box" data-type="ceiling">
+      <div class="canvas-container" id="ceiling-canvas"></div>
       <div class="label-wrap">
-        <div class="label">Roof</div>
-        <div class="label-sub">지붕 구성</div>
+        <div class="label">Ceiling</div>
+        <div class="label-sub">천장 마감</div>
       </div>
     </a>
   </div>
@@ -269,12 +269,10 @@
         { name: '스터드', color: 0x00b894, height: 0.3 },
         { name: '석고보드', color: 0xdfe6e9, height: 0.1 }
       ],
-      roof: [
-        { name: '지붕재', color: 0x2d3436, height: 0.1 },
-        { name: '방수층', color: 0x00cec9, height: 0.08 },
-        { name: '단열재', color: 0x55efc4, height: 0.4 },
-        { name: '콘크리트', color: 0x636e72, height: 0.3 },
-        { name: '천장재', color: 0xffffff, height: 0.05 }
+      ceiling: [
+        { name: '석고보드', color: 0xf5f5f5, height: 0.15 },
+        { name: '경량철골', color: 0xc0c0c0, height: 0.3 },
+        { name: '석고보드', color: 0xf5f5f5, height: 0.15 }
       ]
     };
 
@@ -400,7 +398,7 @@
     create3DButton('floor-canvas', 'floor');
     create3DButton('external-canvas', 'external');
     create3DButton('internal-canvas', 'internal');
-    create3DButton('roof-canvas', 'roof');
+    create3DButton('ceiling-canvas', 'ceiling');
 
     // 프로젝트 정보 표시
     function showAbout() {
