@@ -1690,14 +1690,35 @@
     // 초기화
     function init() {
       materials = KOREAN_EPD[structureType]?.materials || [];
-      
+
       // 네비게이션 활성화 상태 설정
       updateNavigation();
-      
+
+      // 필터 버튼 가시성 업데이트
+      updateFilterButtons();
+
       // 3D 초기화
       init3DPreview();
-      
+
       renderPyramid();
+    }
+
+    // 구조 타입에 따라 필터 버튼 표시/숨김
+    function updateFilterButtons() {
+      const hideFilters = {
+        ceiling: ['구조재', '단열재', '방수재']
+      };
+
+      const filtersToHide = hideFilters[structureType] || [];
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        if (filtersToHide.includes(filter)) {
+          btn.style.display = 'none';
+        } else {
+          btn.style.display = '';
+        }
+      });
     }
 
     // 네비게이션 활성화 상태 업데이트
@@ -1726,7 +1747,7 @@
           } else if (currentFilter === '단열재') {
             return m.categoryName.includes('단열');
           } else if (currentFilter === '마감재') {
-            return ['마감재', '외장재', '지붕재', '천장재'].includes(m.categoryName);
+            return ['마감재', '외장재', '지붕재', '천장재', '달대'].includes(m.categoryName);
           } else if (currentFilter === '방수재') {
             return m.categoryName.includes('방수');
           }
