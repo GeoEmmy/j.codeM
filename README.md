@@ -153,17 +153,17 @@ http://localhost:3000
 
 ## 📝 라이선스
 
-이 프로젝트는 JUNGLIM Architecture의 내부 사용을 위해 개발되었습니다.
+이 프로젝트는 JUNGLIM의 내부 사용을 위해 개발되었습니다.
 
 ## 👥 개발
 
-- **기획**: JUNGLIM Architecture
+- **기획**: JUNGLIM
 - **개발**: J.codE M Team
 - **데이터**: 한국환경산업기술원 EPD
 
 ## 📞 문의
 
-프로젝트 관련 문의사항이 있으시면 JUNGLIM Architecture로 연락주시기 바랍니다.
+프로젝트 관련 문의사항이 있으시면 JUNGLIM로 연락주시기 바랍니다.
 
 ---
 
