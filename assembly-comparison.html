@@ -846,8 +846,7 @@
       
       grid.innerHTML = assemblies.map(assembly => {
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
-        const grade = getCarbonGrade(carbonPerM2);
-        
+
         return `
           <div class="assembly-card">
             <div class="preview-3d-small" id="preview3d-${assembly.id}"></div>
@@ -856,11 +855,10 @@
               <div>
                 <div class="assembly-name">${escapeHtml(assembly.name)}</div>
                 <div class="assembly-type">
-                  ${getStructureTypeIcon(assembly.structureType)} 
+                  ${getStructureTypeIcon(assembly.structureType)}
                   ${getStructureTypeName(assembly.structureType)}
                 </div>
               </div>
-              <div class="badge badge-info">${grade}</div>
             </div>
             
             <div class="carbon-display-grid">
@@ -1138,8 +1136,7 @@
       if (!assembly) return;
       
       const carbonPerM2 = assembly.totalCarbon / assembly.area;
-      const grade = getCarbonGrade(carbonPerM2);
-      
+
       const modalContent = document.getElementById('modalContent');
       modalContent.innerHTML = `
         <h3 id="modalTitle">${escapeHtml(assembly.name)}</h3>
@@ -1162,10 +1159,6 @@
           <div class="detail-item">
             <div class="detail-label">단위 면적당 배출량</div>
             <div class="detail-value">${formatNumber(carbonPerM2, 2)} kg CO₂eq/m²</div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-label">탄소 등급</div>
-            <div class="detail-value">${grade}</div>
           </div>
           <div class="detail-item">
             <div class="detail-label">생성 날짜</div>
