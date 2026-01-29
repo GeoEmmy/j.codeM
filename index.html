@@ -372,40 +372,41 @@
           shininess: 100
         });
 
-        // 외부 프레임 (왼쪽)
-        const frameOuter = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.08), frameMat);
-        frameOuter.position.x = -0.5;
-        frameOuter.userData = { originalX: -0.5, expandedX: -0.7 };
-        scene.add(frameOuter);
-        meshes.push(frameOuter);
+        // 창호 그룹
+        const windowGroup = new THREE.Group();
+        const frameT = 0.06;  // 프레임 두께
+        const frameD = 0.08;  // 프레임 깊이 (얇게)
+        const winW = 1.0;     // 창 너비
+        const winH = 1.4;     // 창 높이
+        const glassD = 1.3;   // 유리 깊이 (벽체와 동일)
 
-        // 유리 (중앙)
-        const glass = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.2, 0.02), glassMat);
-        glass.position.x = 0;
-        glass.userData = { originalX: 0, expandedX: 0 };
-        scene.add(glass);
-        meshes.push(glass);
+        // 왼쪽 프레임
+        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameLeft.position.x = -winW/2 + frameT/2;
+        windowGroup.add(frameLeft);
 
-        // 내부 프레임 (오른쪽)
-        const frameInner = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.08), frameMat);
-        frameInner.position.x = 0.5;
-        frameInner.userData = { originalX: 0.5, expandedX: 0.7 };
-        scene.add(frameInner);
-        meshes.push(frameInner);
+        // 오른쪽 프레임
+        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameRight.position.x = winW/2 - frameT/2;
+        windowGroup.add(frameRight);
 
         // 상단 프레임
-        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.06, 0.08), frameMat);
-        frameTop.position.set(0, 0.67, 0);
-        frameTop.userData = { originalX: 0, expandedX: 0 };
-        scene.add(frameTop);
-        meshes.push(frameTop);
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameTop.position.set(0, winH/2 - frameT/2, 0);
+        windowGroup.add(frameTop);
 
         // 하단 프레임
-        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.06, 0.08), frameMat);
-        frameBottom.position.set(0, -0.67, 0);
-        frameBottom.userData = { originalX: 0, expandedX: 0 };
-        scene.add(frameBottom);
-        meshes.push(frameBottom);
+        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameBottom.position.set(0, -winH/2 + frameT/2, 0);
+        windowGroup.add(frameBottom);
+
+        // 유리 (프레임 안쪽에 딱 맞게, 두께는 얇게)
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
+        windowGroup.add(glass);
+
+        scene.add(windowGroup);
+        meshes.push(windowGroup);
+        windowGroup.userData = { isWindowGroup: true };
 
         camera.position.set(0, 1.5, 3.5);
         camera.lookAt(0, 0, 0);
@@ -488,7 +489,11 @@
         currentExpand += (targetExpand - currentExpand) * 0.06;
 
         meshes.forEach(mesh => {
-          if (isWall || isWindow) {
+          if (mesh.userData.isWindowGroup) {
+            // 창호는 전체 크기만 10% 커짐
+            const scale = 1 + currentExpand * 0.1;
+            mesh.scale.set(scale, scale, scale);
+          } else if (isWall) {
             mesh.position.x = mesh.userData.originalX +
               (mesh.userData.expandedX - mesh.userData.originalX) * currentExpand;
           } else {
