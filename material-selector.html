@@ -166,55 +166,88 @@
       }
     }
 
-    /* 반응형 - 모바일 */
-    @media (max-width: 768px) {
+    /* 반응형 - 태블릿 */
+    @media (max-width: 900px) {
       .main-nav {
+        flex-wrap: wrap;
+        justify-content: center;
         padding: 14px 20px;
-        gap: 15px;
+        gap: 10px;
+      }
+
+      .nav-brand {
+        order: 1;
+        width: auto;
+      }
+
+      .nav-actions {
+        order: 2;
+        gap: 8px;
+      }
+
+      .nav-menu {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        max-width: none;
       }
 
       .nav-btn {
-        padding: 8px 16px;
-        font-size: 13px;
+        padding: 8px 14px;
+        font-size: 12px;
       }
 
       .action-btn {
-        padding: 8px 16px;
+        padding: 8px 14px;
         font-size: 12px;
+      }
+
+      .nav-brand .brand-link {
+        font-size: 22px;
+      }
+    }
+
+    /* 반응형 - 모바일 */
+    @media (max-width: 600px) {
+      .main-nav {
+        padding: 12px 15px;
+        gap: 8px;
+      }
+
+      .nav-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
       }
 
       .nav-brand .brand-link {
         font-size: 20px;
       }
 
-      .nav-menu {
-        gap: 6px;
-      }
-
-      .nav-actions {
-        gap: 8px;
+      .comparison-btn {
+        display: none;
       }
     }
 
     /* 더 작은 모바일 */
-    @media (max-width: 480px) {
-      .main-nav {
-        padding: 12px 15px;
-        gap: 10px;
+    @media (max-width: 400px) {
+      .nav-menu {
+        gap: 4px;
       }
 
       .nav-btn {
-        padding: 7px 12px;
-        font-size: 12px;
+        padding: 5px 8px;
+        font-size: 10px;
       }
 
-      .action-btn {
-        padding: 7px 12px;
-        font-size: 11px;
-      }
-
-      .comparison-btn {
-        display: none; /* 매우 작은 화면에서는 숨김 */
+      .home-btn {
+        display: none;
       }
     }
 
@@ -627,42 +660,107 @@
       box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
     }
 
-    /* 반응형 */
+    /* 반응형 - 태블릿 */
+    @media (max-width: 1200px) {
+      .pyramid-row {
+        max-width: 100% !important;
+        flex-wrap: wrap;
+      }
+
+      .pyramid-background {
+        display: none;
+      }
+
+      .pyramid-stage {
+        background: linear-gradient(to bottom, rgba(0, 184, 148, 0.03), rgba(0, 184, 148, 0.08));
+        border-radius: 20px;
+      }
+    }
+
     @media (max-width: 768px) {
       .pyramid-stage {
-        padding: 50px 20px 40px;
+        padding: 30px 15px;
+        min-height: auto;
       }
 
       .material-tile {
-        width: 70px;  /* 70px 유지 */
-        height: 70px; /* 70px 유지 */
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+        min-height: 60px;
       }
 
       .pyramid-row {
-        gap: 15px;  /* gap도 유지 */
+        gap: 10px;
+        padding: 5px 10px;
+      }
+
+      .tile-wrapper {
+        height: 80px;
+      }
+
+      .tile-name-below {
+        font-size: 8px;
+        max-width: 60px;
+      }
+
+      .material-tile .gwp-badge {
+        font-size: 8px;
+        padding: 2px 4px;
       }
 
       .page-title h2 {
-        font-size: 24px;
+        font-size: 22px;
+      }
+
+      .filter-btn {
+        padding: 8px 16px;
+        font-size: 11px;
       }
     }
 
     @media (max-width: 480px) {
       .pyramid-stage {
-        padding: 40px 15px 30px;
+        padding: 20px 10px;
       }
 
       .material-tile {
-        width: 70px;  /* 70px 유지 */
-        height: 70px; /* 70px 유지 */
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        min-height: 50px;
       }
 
       .pyramid-row {
-        gap: 15px;  /* gap도 유지 */
+        gap: 6px;
+        padding: 4px 5px;
+      }
+
+      .tile-wrapper {
+        height: 68px;
+      }
+
+      .tile-name-below {
+        font-size: 7px;
+        max-width: 50px;
+      }
+
+      .material-tile .gwp-badge {
+        font-size: 7px;
+        padding: 1px 3px;
       }
 
       .page-title h2 {
-        font-size: 20px;
+        font-size: 18px;
+      }
+
+      .filter-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+      }
+
+      .material-filters {
+        gap: 6px;
       }
     }
 
@@ -1106,7 +1204,7 @@
       margin-bottom: 15px;
     }
 
-    /* 필터 */
+    /* 사이드바 반응형 */
     @media (max-width: 1200px) {
       .page-wrapper {
         flex-direction: column;
@@ -1114,9 +1212,16 @@
 
       .sidebar {
         width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
         height: auto;
         position: relative;
         top: 0;
+        order: 2;
+      }
+
+      .main-content {
+        order: 1;
       }
 
       .pyramid-container {
@@ -1133,6 +1238,68 @@
 
       .pyramid-level {
         max-width: 100% !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        padding: 20px;
+      }
+
+      .sidebar h2 {
+        font-size: 18px;
+      }
+
+      .preview-3d {
+        height: 200px;
+      }
+
+      .total-carbon .value {
+        font-size: 24px;
+      }
+
+      .layer-item {
+        padding: 12px;
+      }
+
+      .empty-state {
+        padding: 30px 15px;
+      }
+
+      .empty-state .icon {
+        font-size: 36px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        padding: 15px;
+      }
+
+      .sidebar h2 {
+        font-size: 16px;
+      }
+
+      .preview-3d {
+        height: 180px;
+      }
+
+      .total-carbon {
+        padding: 15px;
+      }
+
+      .total-carbon .value {
+        font-size: 22px;
+      }
+
+      .total-carbon .label,
+      .total-carbon .unit {
+        font-size: 11px;
+      }
+
+      .save-assembly-section .btn {
+        padding: 10px 15px;
+        font-size: 13px;
       }
     }
   </style>
