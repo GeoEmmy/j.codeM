@@ -534,7 +534,7 @@ const KOREAN_EPD = {
         gwp: 28890,
         unit: 'kg CO2eq/m³',
         density: 2700,
-        color: '#95a5a6',
+        color: '#A8A9AD',
         source: '한국환경산업기술원',
         description: '일반 알루미늄 창호 프레임'
       },
@@ -547,7 +547,7 @@ const KOREAN_EPD = {
         gwp: 30500,
         unit: 'kg CO2eq/m³',
         density: 2700,
-        color: '#636e72',
+        color: '#71797E',
         source: '한국환경산업기술원',
         description: '단열 브레이크 적용 알루미늄 프레임'
       },
@@ -560,7 +560,7 @@ const KOREAN_EPD = {
         gwp: 3100,
         unit: 'kg CO2eq/m³',
         density: 1400,
-        color: '#dfe6e9',
+        color: '#F5F5F5',
         source: '한국환경산업기술원',
         description: 'uPVC 창호 프레임'
       },
@@ -573,7 +573,7 @@ const KOREAN_EPD = {
         gwp: -680,
         unit: 'kg CO2eq/m³',
         density: 500,
-        color: '#d63031',
+        color: '#8B4513',
         source: '한국환경산업기술원',
         description: '천연 목재 창호 프레임'
       },
@@ -586,7 +586,7 @@ const KOREAN_EPD = {
         gwp: 8500,
         unit: 'kg CO2eq/m³',
         density: 1200,
-        color: '#e17055',
+        color: '#A0522D',
         source: '한국환경산업기술원',
         description: '내부 목재, 외부 알루미늄 복합'
       },
@@ -600,7 +600,7 @@ const KOREAN_EPD = {
         gwp: 1520,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#74b9ff',
+        color: '#C8E6F5',
         source: '한국환경산업기술원',
         description: '일반 판유리'
       },
@@ -613,7 +613,7 @@ const KOREAN_EPD = {
         gwp: 1680,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#0984e3',
+        color: '#A5D8E8',
         source: '한국환경산업기술원',
         description: '복층 유리 (공기층 12mm)'
       },
@@ -626,7 +626,7 @@ const KOREAN_EPD = {
         gwp: 1850,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#6c5ce7',
+        color: '#8BCADB',
         source: '한국환경산업기술원',
         description: '삼중 유리 (공기층 2개)'
       },
@@ -639,7 +639,7 @@ const KOREAN_EPD = {
         gwp: 1920,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#00cec9',
+        color: '#A8E6CF',
         source: '한국환경산업기술원',
         description: '저방사 코팅 복층 유리'
       },
@@ -652,7 +652,7 @@ const KOREAN_EPD = {
         gwp: 2150,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#00b894',
+        color: '#88D8B0',
         source: '한국환경산업기술원',
         description: '저방사 코팅 삼중 유리'
       },
@@ -665,7 +665,7 @@ const KOREAN_EPD = {
         gwp: 1750,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#a29bfe',
+        color: '#D4E8F2',
         source: '한국환경산업기술원',
         description: '열처리 강화 유리'
       },
@@ -678,7 +678,7 @@ const KOREAN_EPD = {
         gwp: 1880,
         unit: 'kg CO2eq/m³',
         density: 2500,
-        color: '#fdcb6e',
+        color: '#B5D6E8',
         source: '한국환경산업기술원',
         description: 'PVB 필름 접합 유리'
       }
