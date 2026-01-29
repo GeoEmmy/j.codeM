@@ -2042,11 +2042,31 @@
       const material = materials.find(m => m.id === materialId);
       if (!material) return;
 
-      selectedLayers.push({
-        material: material,
-        thickness: 100,
-        id: Date.now()
-      });
+      // 창호일 경우 같은 카테고리(프레임/유리)는 하나만 선택 가능
+      if (structureType === 'window') {
+        const category = material.category;
+        // 같은 카테고리가 이미 있으면 교체
+        const existingIndex = selectedLayers.findIndex(l => l.material.category === category);
+        if (existingIndex !== -1) {
+          selectedLayers[existingIndex] = {
+            material: material,
+            thickness: 100,
+            id: Date.now()
+          };
+        } else {
+          selectedLayers.push({
+            material: material,
+            thickness: 100,
+            id: Date.now()
+          });
+        }
+      } else {
+        selectedLayers.push({
+          material: material,
+          thickness: 100,
+          id: Date.now()
+        });
+      }
 
       updateSelectedLayers();
       updateTotalCarbon();
