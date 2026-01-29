@@ -373,36 +373,36 @@
         });
 
         // 외부 프레임 (왼쪽)
-        const frameOuter = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.8, 1.2), frameMat);
-        frameOuter.position.x = -0.4;
-        frameOuter.userData = { originalX: -0.4, expandedX: -0.6 };
+        const frameOuter = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.08), frameMat);
+        frameOuter.position.x = -0.5;
+        frameOuter.userData = { originalX: -0.5, expandedX: -0.7 };
         scene.add(frameOuter);
         meshes.push(frameOuter);
 
         // 유리 (중앙)
-        const glass = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.6, 1.0), glassMat);
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.2, 0.02), glassMat);
         glass.position.x = 0;
         glass.userData = { originalX: 0, expandedX: 0 };
         scene.add(glass);
         meshes.push(glass);
 
         // 내부 프레임 (오른쪽)
-        const frameInner = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.8, 1.2), frameMat);
-        frameInner.position.x = 0.4;
-        frameInner.userData = { originalX: 0.4, expandedX: 0.6 };
+        const frameInner = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.08), frameMat);
+        frameInner.position.x = 0.5;
+        frameInner.userData = { originalX: 0.5, expandedX: 0.7 };
         scene.add(frameInner);
         meshes.push(frameInner);
 
         // 상단 프레임
-        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 1.2), frameMat);
-        frameTop.position.set(0, 0.85, 0);
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.06, 0.08), frameMat);
+        frameTop.position.set(0, 0.67, 0);
         frameTop.userData = { originalX: 0, expandedX: 0 };
         scene.add(frameTop);
         meshes.push(frameTop);
 
         // 하단 프레임
-        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 1.2), frameMat);
-        frameBottom.position.set(0, -0.85, 0);
+        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.06, 0.08), frameMat);
+        frameBottom.position.set(0, -0.67, 0);
         frameBottom.userData = { originalX: 0, expandedX: 0 };
         scene.add(frameBottom);
         meshes.push(frameBottom);
@@ -488,7 +488,7 @@
         currentExpand += (targetExpand - currentExpand) * 0.06;
 
         meshes.forEach(mesh => {
-          if (isWall) {
+          if (isWall || isWindow) {
             mesh.position.x = mesh.userData.originalX +
               (mesh.userData.expandedX - mesh.userData.originalX) * currentExpand;
           } else {
