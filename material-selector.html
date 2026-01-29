@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>자재 선택 - J.codE M</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/common.css">
   <style>
@@ -280,30 +282,37 @@
       box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
     }
 
-    /* 피라미드 스테이지 */
+    /* 피라미드 스테이지 - visibility로 변경 */
     .pyramid-stage {
       position: relative;
       width: 100%;
-      max-width: 1800px;  /* 1600px → 1800px (더 넓게) */
+      max-width: 1800px;
       margin: 40px auto;
-      padding: 60px 80px 100px;  /* 상단 패딩 줄임: 100px → 60px */
+      padding: 60px 80px 100px;
       background: transparent;
       border-radius: 25px;
       overflow: visible;
-      min-height: auto; /* 1600px → 1700px (더 높게) */
+      min-height: 900px; /* 자재 없을 때도 동일한 높이 유지 */
+      visibility: hidden; /* opacity 대신 visibility 사용 */
+      transition: opacity 0.3s ease;
+    }
+
+    .pyramid-stage.loaded {
+      visibility: visible; /* 로드 완료 시 보이기 */
+      opacity: 1;
     }
 
     /* 하나의 큰 피라미드 배경 (정삼각형에 가깝게 - 더 크게) */
     .pyramid-background {
       position: absolute;
-      top: 48%;  /* 50% → 45%로 위로 올림 */
+      top: 650px; /* 고정 위치 */
       left: 50%;
       transform: translate(-50%, -50%);
       width: 0;
       height: 0;
-      border-left: 700px solid transparent;      /* 밑변 1800px (800px → 900px) */
-      border-right: 700px solid transparent;     /* 밑변 1800px */
-      border-bottom: 1350px solid rgba(0, 184, 148, 0.08); /* 높이: 1800 × √3/2 ≈ 1558px */
+      border-left: 700px solid transparent;
+      border-right: 700px solid transparent;
+      border-bottom: 1350px solid rgba(0, 184, 148, 0.08);
       z-index: 0;
       pointer-events: none;
     }
@@ -324,6 +333,21 @@
       pointer-events: auto; /* 타일은 클릭 가능 */
     }
 
+    /* 빈 자재 메시지 오버레이 */
+    .empty-materials-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      text-align: center;
+      color: #95a5a6;
+      background: transparent;
+      padding: 20px 30px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
     /* 각 레벨 행 + 얇은 구분선 */
     .pyramid-row {
       display: flex;
@@ -331,7 +355,7 @@
       align-items: center;
       gap: 15px;
       flex-wrap: nowrap; /* 한 줄로 유지 */
-      padding: 20px 30px;
+      padding: 5px 30px; /* 상하 패딩 */
       transition: all 0.3s ease;
       position: relative;
       border-bottom: none; /* 기본적으로 구분선 없음 */
@@ -427,15 +451,15 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, 
-        rgba(0,0,0,0) 0%, 
+      background: linear-gradient(135deg,
+        rgba(0,0,0,0) 0%,
         rgba(0,0,0,0.2) 100%);
       opacity: 0.6;
       transition: opacity 0.3s;
     }
 
     .material-tile:hover {
-      transform: translateY(-8px) scale(1.1);
+      transform: translateY(-8px);
       box-shadow: 0 12px 24px rgba(0,184,148,0.4),
                   inset 0 0 0 2px var(--primary-color);
       z-index: 100;
@@ -446,9 +470,7 @@
     }
 
     .material-tile.selected {
-      box-shadow: 0 0 0 5px var(--primary-color),
-                  0 15px 40px rgba(0,184,148,0.5);
-      transform: scale(1.08);
+      box-shadow: none;
     }
 
     .material-tile.selected::after {
@@ -482,7 +504,7 @@
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));  /* 글로시한 그라디언트 */
       border: none;
       cursor: default;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
                   inset 0 1px 2px rgba(255, 255, 255, 0.8);  /* 외부 그림자 + 내부 하이라이트 */
       flex-shrink: 0;
       opacity: 0.2;  /* 전체 투명도 */
@@ -494,7 +516,7 @@
 
     .material-tile.empty-slot:hover {
       transform: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
                   inset 0 1px 2px rgba(255, 255, 255, 0.8);
       z-index: auto;
     }
@@ -509,45 +531,29 @@
       font-weight: 300;*/
     }
 
-    /* 타일 오버레이 (호버 시 정보 표시) */
-    .material-tile .tile-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, 
-        rgba(0,0,0,0.95) 0%, 
-        rgba(0,0,0,0.8) 70%, 
-        transparent 100%);
-      padding: 10px 8px 8px;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
+    /* 타일 래퍼 */
+    .tile-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      height: 90px; /* 고정 높이: 타일 70px + 이름 20px */
     }
 
-    .material-tile:hover .tile-info {
-      transform: translateY(0);
-    }
-
-    .material-tile .tile-name {
+    /* 타일 아래 자재명 */
+    .tile-name-below {
       font-size: 9px;
-      font-weight: 700;
-      color: white;
-      text-align: center;
-      display: block;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      margin-bottom: 3px;
-      line-height: 1.1;
-    }
-
-    .material-tile .tile-gwp {
-      font-size: 8px;
       font-weight: 600;
-      color: var(--primary-color);
+      color: #636e72;
       text-align: center;
-      display: block;
-      background: rgba(255,255,255,0.95);
-      padding: 2px 5px;
-      border-radius: 5px;
+      margin-top: 4px;
+      line-height: 1.2;
+      max-width: 70px;
+      height: 16px; /* 고정 높이 */
+      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* GWP 뱃지 (항상 표시) */
@@ -626,12 +632,12 @@
       .pyramid-stage {
         padding: 50px 20px 40px;
       }
-      
+
       .material-tile {
         width: 70px;  /* 70px 유지 */
         height: 70px; /* 70px 유지 */
       }
-      
+
       .pyramid-row {
         gap: 15px;  /* gap도 유지 */
       }
@@ -645,12 +651,12 @@
       .pyramid-stage {
         padding: 40px 15px 30px;
       }
-      
+
       .material-tile {
         width: 70px;  /* 70px 유지 */
         height: 70px; /* 70px 유지 */
       }
-      
+
       .pyramid-row {
         gap: 15px;  /* gap도 유지 */
       }
@@ -1141,7 +1147,7 @@
         <span class="logo-accent">M</span>
       </a>
     </div>
-    
+
     <!-- 중앙: 부재 메뉴 -->
     <div class="nav-menu">
       <a href="?type=floor" class="nav-btn" data-type="floor">
@@ -1153,14 +1159,14 @@
       <a href="?type=internal" class="nav-btn" data-type="internal">
         내벽
       </a>
-      <a href="?type=roof" class="nav-btn" data-type="roof">
-        지붕
+      <a href="?type=ceiling" class="nav-btn" data-type="ceiling">
+        천장 마감
       </a>
       <a href="?type=window" class="nav-btn" data-type="window">
         창호
       </a>
     </div>
-    
+
     <!-- 우측: 액션 버튼 -->
     <div class="nav-actions">
       <a href="assembly-comparison.html" class="action-btn comparison-btn">
@@ -1174,7 +1180,7 @@
 
   <div class="page-wrapper">
     <!-- 메인 컨텐츠 - 피라미드 -->
-    <main class="main-content"> 
+    <main class="main-content">
       <!-- 자재 카테고리 필터 -->
       <div class="material-filters">
         <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
@@ -1206,11 +1212,11 @@
     <!-- 사이드바 -->
     <aside class="sidebar">
       <h2>🏗️ Assembly making</h2>
-      
+
       <!-- 3D 미리보기 -->
       <div class="preview-3d" id="preview3D">
       </div>
-      
+
       <div id="selectedLayers" class="selected-layers">
         <div class="empty-state">
           <div class="icon">📦</div>
@@ -1228,17 +1234,17 @@
       <label for="assemblyName" style="display: block; margin-bottom: 5px; color: #636e72; font-size: 13px;">
         어셈블리 이름
       </label>
-        <input 
-          type="text" 
-          id="assemblyName" 
+        <input
+          type="text"
+          id="assemblyName"
           placeholder="floor 01"
         >
       <label for="assemblyArea" style="display: block; margin-bottom: 5px; color: #636e72; font-size: 13px;">
         적용면적(m²)
       </label>
-      <input 
-        type="number" 
-        id="assemblyArea" 
+      <input
+        type="number"
+        id="assemblyArea"
         placeholder="예: 1"
         value="1"
         min="0.01"
@@ -1271,7 +1277,7 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const structureType = urlParams.get('type') || 'floor';
-    
+
     let selectedLayers = [];
     let currentFilter = 'all';
     let materials = [];
@@ -1287,52 +1293,48 @@
       'concrete': 'images/concrete.jpg',
       'cement': 'images/concrete.jpg',
       'mortar': 'images/mortar.jpg',
-      
+
       // 벽돌/블록 - 붉은색/갈색
       'brick': 'https://picsum.photos/id/152/100/100',
       'block': 'https://picsum.photos/id/206/100/100',
-      
+
       // 목재 - 나무결
       'wood': 'https://picsum.photos/id/175/100/100',
       'timber': 'https://picsum.photos/id/180/100/100',
       'plywood': 'https://picsum.photos/id/193/100/100',
       'lumber': 'https://picsum.photos/id/225/100/100',
       'flooring': 'https://picsum.photos/id/381/100/100',
-      
+
       // 단열재 - 노란색/흰색
       'insulation': 'images/eps.jpg',
       'xps': 'images/xps.jpg',
       'eps': 'images/eps.jpg',
       'glasswool': 'images/glasswool.jpg',
       'rockwool': 'images/rockwool.jpg',
-      
+
       // 석고보드 - 흰색
       'gypsum': 'https://picsum.photos/id/47/100/100',
       'plaster': 'https://picsum.photos/id/102/100/100',
-      
+
       // 타일/세라믹 - 광택
       'tile': 'images/ceramictile.jpg',
       'ceramic': 'images/ceramictile.jpg',
       'porcelain': 'images/ceramictile.jpg',
-      
+
       // 금속 - 은색/회색
       'steel': 'images/steel.jpg',
       'aluminum': 'images/aluminum.jpg',
       'metal': 'images/steel.jpg',
-      
+
       // 유리
       'glass': 'images/double.jpg',
-      
+
       // 방수재 - 검정색
       'waterproof': 'images/urethanwaterproof.jpg',
       'asphalt': 'images/asphaltwaterproof.jpg',
-      
+
       // 페인트 - 밝은색
       'paint': 'images/paint.jpg',
-      
-      // 창호 프레임
-      'frame': 'images/aluminum.jpg',
-      'pvc': 'images/pvc.jpg',
 
       // 기본값
       'default': 'https://picsum.photos/id/50/100/100'
@@ -1341,16 +1343,16 @@
     // 자재명으로 이미지 URL 찾기
     function getMaterialImageUrl(material) {
       const name = material.name.toLowerCase();
-      
+
       // 키워드 매칭
       for (const [keyword, url] of Object.entries(MATERIAL_IMAGE_MAP)) {
-        if (name.includes(keyword) || 
-            name.includes(keyword.replace(/[aeiou]/g, '')) || 
+        if (name.includes(keyword) ||
+            name.includes(keyword.replace(/[aeiou]/g, '')) ||
             material.id?.includes(keyword)) {
           return url;
         }
       }
-      
+
       // 한글 키워드 매칭
       if (name.includes('콘크리트')) return MATERIAL_IMAGE_MAP.concrete;
       if (name.includes('벽돌')) return MATERIAL_IMAGE_MAP.brick;
@@ -1361,9 +1363,6 @@
       if (name.includes('금속') || name.includes('강판') || name.includes('알루미늄')) return MATERIAL_IMAGE_MAP.metal;
       if (name.includes('방수') || name.includes('아스팔트')) return MATERIAL_IMAGE_MAP.waterproof;
       if (name.includes('페인트')) return MATERIAL_IMAGE_MAP.paint;
-      if (name.includes('프레임') || name.includes('frame')) return MATERIAL_IMAGE_MAP.frame;
-      if (name.includes('pvc') || name.includes('PVC')) return MATERIAL_IMAGE_MAP.pvc;
-      if (name.includes('유리')) return MATERIAL_IMAGE_MAP.glass;
 
       return MATERIAL_IMAGE_MAP.default;
     }
@@ -1377,7 +1376,7 @@
       scene3D = new THREE.Scene();
       camera3D = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      
+
       renderer3D.setSize(width, height);
       renderer3D.setClearColor(0x000000, 0);
       renderer3D.shadowMap.enabled = true;
@@ -1387,18 +1386,18 @@
       // 개선된 조명
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
       scene3D.add(ambientLight);
-      
+
       const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
       directionalLight1.position.set(5, 10, 7);
       directionalLight1.castShadow = true;
       directionalLight1.shadow.camera.near = 0.1;
       directionalLight1.shadow.camera.far = 50;
       scene3D.add(directionalLight1);
-      
+
       const directionalLight2 = new THREE.DirectionalLight(0x74b9ff, 0.3);
       directionalLight2.position.set(-5, 5, -5);
       scene3D.add(directionalLight2);
-      
+
       const directionalLight3 = new THREE.DirectionalLight(0xffeaa7, 0.2);
       directionalLight3.position.set(0, -5, 5);
       scene3D.add(directionalLight3);
@@ -1425,19 +1424,19 @@
     // 3D 애니메이션
     function animate3D() {
       requestAnimationFrame(animate3D);
-      
+
       // 자동 회전 추가
       if (group3D && !isDragging) {
         group3D.rotation.y += 0.005; // 천천히 Y축 회전
       }
-      
+
       renderer3D.render(scene3D, camera3D);
     }
 
     // 자재 타입별 재질 속성
     function getMaterialProperties(material) {
       const name = material.name.toLowerCase();
-      
+
       // 콘크리트
       if (name.includes('콘크리트')) {
         return {
@@ -1449,7 +1448,7 @@
         };
       }
       // 단열재 (XPS, EPS, 유리면, 암면)
-      if (name.includes('단열') || name.includes('xps') || name.includes('eps') || 
+      if (name.includes('단열') || name.includes('xps') || name.includes('eps') ||
           name.includes('유리면') || name.includes('암면') || name.includes('스티로폼')) {
         return {
           color: 0xffd93d,
@@ -1522,7 +1521,7 @@
         };
       }
       // 금속 (알루미늄, 강판, 철)
-      if (name.includes('금속') || name.includes('알루미늄') || name.includes('강판') || 
+      if (name.includes('금속') || name.includes('알루미늄') || name.includes('강판') ||
           name.includes('철') || name.includes('스틸')) {
         return {
           color: 0xc0c0c0,
@@ -1605,7 +1604,7 @@
       if (group3D) {
         scene3D.remove(group3D);
       }
-      
+
       // 새 그룹 생성
       group3D = new THREE.Group();
       layerMeshes = [];
@@ -1660,7 +1659,7 @@
 
         // 외곽선 추가 (더 두껍게)
         const edges = new THREE.EdgesGeometry(geometry);
-        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ 
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
           color: 0x000000,
           linewidth: 2,
           opacity: 0.6,
@@ -1674,7 +1673,7 @@
         const context = canvas.getContext('2d');
         canvas.width = 512;
         canvas.height = 128;
-        
+
         context.fillStyle = 'rgba(255, 255, 255, 0.9)';
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = '#2d3436';
@@ -1682,12 +1681,12 @@
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.fillText(layer.material.name, canvas.width / 2, canvas.height / 2);
-        
+
         const texture = new THREE.CanvasTexture(canvas);
         const labelMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
         const label = new THREE.Sprite(labelMaterial);
         label.scale.set(1, 0.25, 1);
-        
+
         if (isWall) {
           label.position.set(0, 0, 0.7);
         } else {
@@ -1710,7 +1709,7 @@
           mesh.position.y -= totalSize / 2;
         }
       });
-      
+
       // 그룹을 scene에 추가
       scene3D.add(group3D);
     }
@@ -1773,13 +1772,31 @@
       // 네비게이션 활성화 상태 설정
       updateNavigation();
 
-      // 카테고리 필터 렌더링
-      renderCategoryFilters();
+      // 필터 버튼 가시성 업데이트
+      updateFilterButtons();
 
       // 3D 초기화
       init3DPreview();
 
       renderPyramid();
+    }
+
+    // 구조 타입에 따라 필터 버튼 표시/숨김
+    function updateFilterButtons() {
+      const hideFilters = {
+        ceiling: ['구조재', '단열재', '방수재']
+      };
+
+      const filtersToHide = hideFilters[structureType] || [];
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        if (filtersToHide.includes(filter)) {
+          btn.style.display = 'none';
+        } else {
+          btn.style.display = '';
+        }
+      });
     }
 
     // 네비게이션 활성화 상태 업데이트
@@ -1797,7 +1814,8 @@
     // 피라미드 렌더링 (Denmark 절대값 기준)
     function renderPyramid() {
       const container = document.getElementById('pyramidTiles');
-      
+      const pyramidStage = document.querySelector('.pyramid-stage');
+
       // 카테고리 필터 적용
       let filtered = materials;
       if (currentFilter !== 'all') {
@@ -1808,7 +1826,7 @@
           } else if (currentFilter === '단열재') {
             return m.categoryName.includes('단열');
           } else if (currentFilter === '마감재') {
-            return ['마감재', '외장재', '지붕재', '천장재'].includes(m.categoryName);
+            return ['마감재', '외장재', '지붕재', '천장재', '달대'].includes(m.categoryName);
           } else if (currentFilter === '방수재') {
             return m.categoryName.includes('방수');
           } else if (currentFilter === '프레임') {
@@ -1819,22 +1837,20 @@
           return m.categoryName === currentFilter;
         });
       }
-      
+
       // GWP 순으로 정렬
       filtered.sort((a, b) => b.gwp - a.gwp); // 높은 것부터 정렬
-      
-      if (filtered.length === 0) {
-        container.innerHTML = '<div style="text-align: center; color: #95a5a6; padding: 40px;">해당 카테고리의 자재가 없습니다</div>';
-        return;
-      }
-      
+
+      // 자재가 없어도 빈 피라미드 구조 유지 (return 하지 않음)
+      const showEmptyMessage = filtered.length === 0;
+
       // 5개 그룹으로 분류
       const groups = [[], [], [], [], []]; // 5개 그룹
-      
+
       filtered.forEach(material => {
         const gwp = material.gwp;
         let group;
-        
+
         if (gwp >= 10000) {
           group = 0; // 그룹 1: 10,000 이상 (1~2행)
         } else if (gwp >= 1000) {
@@ -1846,10 +1862,10 @@
         } else {
           group = 4; // 그룹 5: 음수 (10~11행)
         }
-        
+
         groups[group].push(material);
       });
-      
+
       // 각 그룹의 행 배정
       const groupRowConfigs = [
         { rows: [1, 2], level: 1 },           // 그룹 1: 1~2행 (빨강)
@@ -1858,65 +1874,67 @@
         { rows: [8, 9], level: 4 },           // 그룹 4: 8~9행 (민트)
         { rows: [10, 11], level: 5 }          // 그룹 5: 10~11행 (녹색)
       ];
-      
+
       // 11개 행으로 나누기 (슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16)
       const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 11개 행
-      
+
       let html = '';
-      
+
       // 각 그룹 처리
       groups.forEach((groupMaterials, groupIndex) => {
         const config = groupRowConfigs[groupIndex];
         const rowIndices = config.rows.map(r => r - 1); // 행 번호를 인덱스로 변환 (1-based → 0-based)
         const level = config.level;
         const isLastGroup = groupIndex === groups.length - 1;
-        
+
         let materialIndex = 0; // 이 그룹 내에서의 자재 인덱스
-        
+
         // 그룹의 각 행 생성
         rowIndices.forEach((rowIndex, rowIndexInGroup) => {
           const rowNumber = rowIndex + 1; // 다시 1-based로
           const slotCount = rowSlotCounts[rowIndex]; // 해당 행의 슬롯 개수
           const isLastRowInGroup = rowIndexInGroup === rowIndices.length - 1;
-          
+
           // 슬롯 개수만큼 타일 생성
           const tiles = [];
           for (let i = 0; i < slotCount; i++) {
             const material = groupMaterials[materialIndex];
-            
+
             if (material) {
               // 자재가 있으면 타일 생성
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
-              
+
               tiles.push(`
-                <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
-                     style="background-image: url('${escapeHtml(imageUrl)}')"
-                     tabindex="0"
-                     role="button"
-                     aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
-                     onclick="selectMaterial('${escapeHtml(material.id)}')"
-                     onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
-                     data-id="${escapeHtml(material.id)}">
-                  <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
-                  <div class="level-indicator"></div>
-                  <div class="tile-info">
-                    <span class="tile-name">${escapeHtml(material.name)}</span>
-                    <span class="tile-gwp">${formatNumber(material.gwp, 0)} CO₂</span>
+                <div class="tile-wrapper">
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
+                       style="background-image: url('${escapeHtml(imageUrl)}')"
+                       tabindex="0"
+                       role="button"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
+                       onclick="selectMaterial('${escapeHtml(material.id)}')"
+                       onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                       data-id="${escapeHtml(material.id)}">
+                    <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
+                    <div class="level-indicator"></div>
                   </div>
+                  <div class="tile-name-below">${escapeHtml(material.name)}</div>
                 </div>
               `);
               materialIndex++; // 자재를 사용했으므로 인덱스 증가
             } else {
               // 자재가 없으면 빈 슬롯
               tiles.push(`
-                <div class="material-tile empty-slot level-${level}">
-                  <div class="empty-slot-label">-</div>
+                <div class="tile-wrapper">
+                  <div class="material-tile empty-slot level-${level}">
+                    <div class="empty-slot-label">-</div>
+                  </div>
+                  <div class="tile-name-below"></div>
                 </div>
               `);
             }
           }
-          
+
           // 마지막 그룹이 아닌 경우, 그룹의 마지막 행에만 구분선 추가
           const showBorder = isLastRowInGroup && !isLastGroup;
           html += `
@@ -1926,19 +1944,29 @@
           `;
         });
       });
-      
+
       container.innerHTML = html;
-      
+
+      // 자재가 없으면 메시지 오버레이 추가
+      if (showEmptyMessage) {
+        container.insertAdjacentHTML('beforeend', '<div class="empty-materials-overlay">해당 카테고리의 자재가 없습니다</div>');
+      }
+
       // 선택 상태 업데이트
       updateMaterialCards();
+
+      // 피라미드 로드 완료 표시 - requestAnimationFrame으로 다음 프레임에서 실행
+      requestAnimationFrame(() => {
+        pyramidStage.classList.add('loaded');
+      });
     }
-    
+
     // 자재 선택 상태 업데이트
     function updateMaterialCards() {
       document.querySelectorAll('.material-tile').forEach(tile => {
         const materialId = tile.getAttribute('data-id');
         const isSelected = selectedLayers.some(l => l.material.id === materialId);
-        
+
         if (isSelected) {
           tile.classList.add('selected');
         } else {
@@ -1951,13 +1979,13 @@
     function selectMaterial(materialId) {
       const material = materials.find(m => m.id === materialId);
       if (!material) return;
-      
+
       selectedLayers.push({
         material: material,
         thickness: 100,
         id: Date.now()
       });
-      
+
       updateSelectedLayers();
       updateTotalCarbon();
       updateMaterialCards(); // 타일 선택 상태 업데이트
@@ -1967,7 +1995,7 @@
     // 선택된 레이어 업데이트
     function updateSelectedLayers() {
       const container = document.getElementById('selectedLayers');
-      
+
       if (selectedLayers.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
@@ -1977,7 +2005,7 @@
         `;
         return;
       }
-      
+
       container.innerHTML = selectedLayers.map((layer, index) => {
         const carbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, 1);
 
@@ -1989,10 +2017,10 @@
             </div>
             <div class="thickness-input">
               <label>두께:</label>
-              <input 
-                type="number" 
-                value="${layer.thickness}" 
-                min="1" 
+              <input
+                type="number"
+                value="${layer.thickness}"
+                min="1"
                 step="1"
                 onchange="updateThickness(${layer.id}, this.value)"
               >
@@ -2035,19 +2063,19 @@
     // 필터링
     function filterMaterials(filter) {
       currentFilter = filter;
-      
+
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
       });
       document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-      
+
       renderPyramid();
     }
 
     // 레이어 초기화
     function clearLayers() {
       if (selectedLayers.length === 0) return;
-      
+
       if (confirm('모든 레이어를 초기화하시겠습니까?')) {
         selectedLayers = [];
         updateSelectedLayers();
@@ -2086,9 +2114,9 @@
       }
 
       calculator.addAssembly(name, structureType, selectedLayers, area);
-      
+
       alert('어셈블리가 저장되었습니다!');
-      
+
       if (confirm('어셈블리 비교 페이지로 이동하시겠습니까?')) {
         window.location.href = 'assembly-comparison.html';
       } else {

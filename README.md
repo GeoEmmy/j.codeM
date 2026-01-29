@@ -22,7 +22,6 @@
 ### 3. 어셈블리 비교
 - 여러 자재 조합(어셈블리) 저장
 - 시각적 차트를 통한 비교 분석
-- 탄소 등급 (A+++ ~ D) 평가
 
 ### 4. 데이터 관리
 - LocalStorage 기반 데이터 저장
@@ -110,18 +109,6 @@ http://localhost:3000
 - **3D Visualization**: Three.js
 - **Data Storage**: LocalStorage (브라우저)
 - **Styling**: Custom CSS with Google Fonts (Poppins)
-
-## 📈 탄소 등급 기준
-
-| 등급 | 탄소배출량 (kg CO₂eq/m²) |
-|------|-------------------------|
-| A+++ | < 50                    |
-| A++  | 50 ~ 100               |
-| A+   | 100 ~ 150              |
-| A    | 150 ~ 200              |
-| B    | 200 ~ 250              |
-| C    | 250 ~ 300              |
-| D    | > 300                  |
 
 ## 🔧 커스터마이징
 

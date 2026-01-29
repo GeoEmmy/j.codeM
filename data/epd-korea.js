@@ -437,164 +437,86 @@ const KOREAN_EPD = {
     ]
   },
 
-  roof: {
-    // 지붕 구조체
+  ceiling: {
+    // 천장 마감 구조
     materials: [
       {
-        id: 'concrete_roof',
-        name: '철근콘크리트 슬래브',
-        nameEn: 'RC Roof Slab',
+        id: 'steel_stud_ceiling',
+        name: '경량철골 스터드 (C형강)',
+        nameEn: 'Steel Stud (C-Channel)',
         category: 'structural',
-        categoryName: '구조재',
-        gwp: 350,
-        unit: 'kg CO2eq/m³',
-        density: 2400,
-        color: '#636e72',
-        source: '한국환경산업기술원',
-        description: '옥상 구조 슬래브'
-      },
-      {
-        id: 'xps_roof',
-        name: '옥상 단열재 (XPS)',
-        nameEn: 'XPS Roof Insulation',
-        category: 'insulation',
-        categoryName: '단열재',
-        gwp: 282,
-        unit: 'kg CO2eq/m³',
-        density: 35,
-        color: '#74b9ff',
-        source: '한국환경산업기술원',
-        description: '옥상 압출법 단열재'
-      },
-      {
-        id: 'eps_roof',
-        name: '옥상 단열재 (EPS)',
-        nameEn: 'EPS Roof Insulation',
-        category: 'insulation',
-        categoryName: '단열재',
-        gwp: 94,
-        unit: 'kg CO2eq/m³',
-        density: 25,
-        color: '#a29bfe',
-        source: '한국환경산업기술원',
-        description: '옥상 비드법 단열재'
-      },
-      {
-        id: 'rockwool_roof',
-        name: '옥상 단열재 (암면)',
-        nameEn: 'Rock Wool Roof Insulation',
-        category: 'insulation',
-        categoryName: '단열재',
-        gwp: 93,
-        unit: 'kg CO2eq/m³',
-        density: 120,
-        color: '#e17055',
-        source: '한국환경산업기술원',
-        description: '옥상 암면 단열재'
-      },
-      {
-        id: 'waterproof_membrane',
-        name: '아스팔트 방수시트',
-        nameEn: 'Asphalt Waterproof Membrane',
-        category: 'waterproofing',
-        categoryName: '방수층',
-        gwp: 446,
-        unit: 'kg CO2eq/m³',
-        density: 1100,
-        color: '#2d3436',
-        source: '한국환경산업기술원',
-        description: '개량 아스팔트 방수'
-      },
-      {
-        id: 'waterproof_urethane',
-        name: '우레탄 방수',
-        nameEn: 'Urethane Waterproofing',
-        category: 'waterproofing',
-        categoryName: '방수층',
-        gwp: 1850,
-        unit: 'kg CO2eq/m³',
-        density: 1200,
-        color: '#00cec9',
-        source: '한국환경산업기술원',
-        description: '액체 우레탄 방수'
-      },
-      {
-        id: 'concrete_tile',
-        name: '콘크리트 기와',
-        nameEn: 'Concrete Roof Tile',
-        category: 'roofing',
-        categoryName: '지붕재',
-        gwp: 260,
-        unit: 'kg CO2eq/m³',
-        density: 2100,
-        color: '#d63031',
-        source: '한국환경산업기질원',
-        description: '콘크리트 기와'
-      },
-      {
-        id: 'clay_tile',
-        name: '점토 기와',
-        nameEn: 'Clay Roof Tile',
-        category: 'roofing',
-        categoryName: '지붕재',
-        gwp: 523,
-        unit: 'kg CO2eq/m³',
-        density: 1900,
-        color: '#e17055',
-        source: '한국환경산업기술원',
-        description: '소성 점토 기와'
-      },
-      {
-        id: 'metal_roof',
-        name: '금속 지붕재 (강판)',
-        nameEn: 'Metal Roofing (Steel)',
-        category: 'roofing',
-        categoryName: '지붕재',
-        gwp: 2851,
+        categoryName: '달대',
+        gwp: 2800,
         unit: 'kg CO2eq/m³',
         density: 7850,
-        color: '#95a5a6',
+        color: '#c0c0c0',
         source: '한국환경산업기술원',
-        description: '컬러강판 지붕재'
+        description: '천장 달대용 경량철골'
       },
       {
-        id: 'asphalt_shingle',
-        name: '아스팔트 슁글',
-        nameEn: 'Asphalt Shingle',
-        category: 'roofing',
-        categoryName: '지붕재',
-        gwp: 446,
-        unit: 'kg CO2eq/m³',
-        density: 1100,
-        color: '#2d3436',
-        source: '한국환경산업기술원',
-        description: '아스팔트 지붕재'
-      },
-      {
-        id: 'mortar_roof',
-        name: '시멘트 모르타르 (보호층)',
-        nameEn: 'Cement Mortar (Protection)',
-        category: 'finishing',
-        categoryName: '마감재',
-        gwp: 235,
-        unit: 'kg CO2eq/m³',
-        density: 2000,
-        color: '#b2bec3',
-        source: '한국환경산업기술원',
-        description: '보호 모르타르'
-      },
-      {
-        id: 'gypsum_ceiling',
-        name: '석고보드 (천장)',
-        nameEn: 'Gypsum Board (Ceiling)',
+        id: 'gypsum_board_9.5',
+        name: '석고보드 9.5T',
+        nameEn: 'Gypsum Board 9.5mm',
         category: 'finishing',
         categoryName: '천장재',
         gwp: 93,
         unit: 'kg CO2eq/m³',
         density: 800,
+        color: '#f5f5f5',
+        source: '한국환경산업기술원',
+        description: '일반 천장 석고보드 9.5mm'
+      },
+      {
+        id: 'gypsum_board_12.5',
+        name: '석고보드 12.5T',
+        nameEn: 'Gypsum Board 12.5mm',
+        category: 'finishing',
+        categoryName: '천장재',
+        gwp: 93,
+        unit: 'kg CO2eq/m³',
+        density: 800,
+        color: '#f5f5f5',
+        source: '한국환경산업기술원',
+        description: '일반 천장 석고보드 12.5mm'
+      },
+      {
+        id: 'gypsum_board_fire_ceiling',
+        name: '방화석고보드',
+        nameEn: 'Fire-resistant Gypsum Board',
+        category: 'finishing',
+        categoryName: '천장재',
+        gwp: 110,
+        unit: 'kg CO2eq/m³',
+        density: 900,
+        color: '#fab1a0',
+        source: '한국환경산업기술원',
+        description: '내화 성능 천장 석고보드'
+      },
+      {
+        id: 'acoustic_board',
+        name: '흡음 텍스',
+        nameEn: 'Acoustic Ceiling Tile',
+        category: 'finishing',
+        categoryName: '천장재',
+        gwp: 85,
+        unit: 'kg CO2eq/m³',
+        density: 350,
         color: '#dfe6e9',
         source: '한국환경산업기술원',
-        description: '천장 마감재'
+        description: '사무실용 흡음 천장재'
+      },
+      {
+        id: 'mineral_fiber_ceiling',
+        name: '미네랄파이버 천장재',
+        nameEn: 'Mineral Fiber Ceiling',
+        category: 'finishing',
+        categoryName: '천장재',
+        gwp: 75,
+        unit: 'kg CO2eq/m³',
+        density: 300,
+        color: '#ffeaa7',
+        source: '한국환경산업기술원',
+        description: '미네랄울 기반 천장재'
       }
     ]
   },
@@ -770,10 +692,7 @@ const MATERIAL_CATEGORIES = {
   insulation: { name: '단열재', color: '#00b894', icon: '🧊' },
   waterproofing: { name: '방수층', color: '#00cec9', icon: '💧' },
   exterior: { name: '외장재', color: '#6c5ce7', icon: '🏢' },
-  roofing: { name: '지붕재', color: '#d63031', icon: '🏠' },
-  finishing: { name: '마감재', color: '#fdcb6e', icon: '🎨' },
-  frame: { name: '프레임', color: '#636e72', icon: '🪟' },
-  glass: { name: '유리', color: '#74b9ff', icon: '🔲' }
+  finishing: { name: '마감재', color: '#fdcb6e', icon: '🎨' }
 };
 
 // 환경 영향 카테고리

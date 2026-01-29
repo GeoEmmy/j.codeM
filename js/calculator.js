@@ -216,17 +216,6 @@ function getCarbonColor(carbon, min, max) {
   }
 }
 
-// 탄소 배출량 등급 계산 (A+++ ~ D)
-function getCarbonGrade(carbonPerM2) {
-  if (carbonPerM2 < 50) return 'A+++';
-  if (carbonPerM2 < 100) return 'A++';
-  if (carbonPerM2 < 150) return 'A+';
-  if (carbonPerM2 < 200) return 'A';
-  if (carbonPerM2 < 250) return 'B';
-  if (carbonPerM2 < 300) return 'C';
-  return 'D';
-}
-
 // CSV 다운로드
 function downloadCSV(csvContent, filename = 'assemblies.csv') {
   const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -267,8 +256,7 @@ function getStructureTypeName(type) {
     floor: '바닥 구조',
     external: '외벽 구조',
     internal: '내벽 구조',
-    roof: '지붕 구조',
-    window: '창호'
+    ceiling: '천장 마감'
   };
   return names[type] || type;
 }
@@ -279,8 +267,7 @@ function getStructureTypeIcon(type) {
     floor: '🏗️',
     external: '🏢',
     internal: '🚪',
-    roof: '🏠',
-    window: '🪟'
+    ceiling: '⬜'
   };
   return icons[type] || '📦';
 }
