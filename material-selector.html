@@ -1617,8 +1617,8 @@
       // 창호일 경우 프레임+유리 형태로 렌더링
       if (isWindow) {
         // 선택한 자재에서 프레임과 유리 찾기
-        const frameMaterialLayer = selectedLayers.find(l => l.material.category === '프레임');
-        const glassMaterialLayer = selectedLayers.find(l => l.material.category === '유리');
+        const frameMaterialLayer = selectedLayers.find(l => l.material.categoryName === '프레임');
+        const glassMaterialLayer = selectedLayers.find(l => l.material.categoryName === '유리');
 
         // 프레임 재질 - 자재의 color 필드 사용
         const frameColor = frameMaterialLayer ? frameMaterialLayer.material.color : '#636e72';
