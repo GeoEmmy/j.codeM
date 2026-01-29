@@ -519,6 +519,170 @@ const KOREAN_EPD = {
         description: '미네랄울 기반 천장재'
       }
     ]
+  },
+
+  window: {
+    // 창호 구조체
+    materials: [
+      // 프레임
+      {
+        id: 'aluminum_frame',
+        name: '알루미늄 프레임',
+        nameEn: 'Aluminum Frame',
+        category: 'frame',
+        categoryName: '프레임',
+        gwp: 28890,
+        unit: 'kg CO2eq/m³',
+        density: 2700,
+        color: '#95a5a6',
+        source: '한국환경산업기술원',
+        description: '일반 알루미늄 창호 프레임'
+      },
+      {
+        id: 'aluminum_thermal_frame',
+        name: '알루미늄 단열 프레임',
+        nameEn: 'Aluminum Thermal Break Frame',
+        category: 'frame',
+        categoryName: '프레임',
+        gwp: 30500,
+        unit: 'kg CO2eq/m³',
+        density: 2700,
+        color: '#636e72',
+        source: '한국환경산업기술원',
+        description: '단열 브레이크 적용 알루미늄 프레임'
+      },
+      {
+        id: 'pvc_frame',
+        name: 'PVC 프레임',
+        nameEn: 'PVC Frame',
+        category: 'frame',
+        categoryName: '프레임',
+        gwp: 3100,
+        unit: 'kg CO2eq/m³',
+        density: 1400,
+        color: '#dfe6e9',
+        source: '한국환경산업기술원',
+        description: 'uPVC 창호 프레임'
+      },
+      {
+        id: 'wood_frame',
+        name: '목재 프레임',
+        nameEn: 'Wood Frame',
+        category: 'frame',
+        categoryName: '프레임',
+        gwp: -680,
+        unit: 'kg CO2eq/m³',
+        density: 500,
+        color: '#d63031',
+        source: '한국환경산업기술원',
+        description: '천연 목재 창호 프레임'
+      },
+      {
+        id: 'wood_aluminum_frame',
+        name: '목재-알루미늄 복합 프레임',
+        nameEn: 'Wood-Aluminum Composite Frame',
+        category: 'frame',
+        categoryName: '프레임',
+        gwp: 8500,
+        unit: 'kg CO2eq/m³',
+        density: 1200,
+        color: '#e17055',
+        source: '한국환경산업기술원',
+        description: '내부 목재, 외부 알루미늄 복합'
+      },
+      // 유리
+      {
+        id: 'single_glass',
+        name: '단층 유리 (5mm)',
+        nameEn: 'Single Glass 5mm',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1520,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#74b9ff',
+        source: '한국환경산업기술원',
+        description: '일반 판유리'
+      },
+      {
+        id: 'double_glass',
+        name: '복층 유리 (5+12+5)',
+        nameEn: 'Double Glazing 5+12+5',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1680,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#0984e3',
+        source: '한국환경산업기술원',
+        description: '복층 유리 (공기층 12mm)'
+      },
+      {
+        id: 'triple_glass',
+        name: '삼중 유리 (5+12+5+12+5)',
+        nameEn: 'Triple Glazing 5+12+5+12+5',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1850,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#6c5ce7',
+        source: '한국환경산업기술원',
+        description: '삼중 유리 (공기층 2개)'
+      },
+      {
+        id: 'low_e_double',
+        name: 'Low-E 복층 유리',
+        nameEn: 'Low-E Double Glazing',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1920,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#00cec9',
+        source: '한국환경산업기술원',
+        description: '저방사 코팅 복층 유리'
+      },
+      {
+        id: 'low_e_triple',
+        name: 'Low-E 삼중 유리',
+        nameEn: 'Low-E Triple Glazing',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 2150,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#00b894',
+        source: '한국환경산업기술원',
+        description: '저방사 코팅 삼중 유리'
+      },
+      {
+        id: 'tempered_glass',
+        name: '강화 유리',
+        nameEn: 'Tempered Glass',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1750,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#a29bfe',
+        source: '한국환경산업기술원',
+        description: '열처리 강화 유리'
+      },
+      {
+        id: 'laminated_glass',
+        name: '접합 유리',
+        nameEn: 'Laminated Glass',
+        category: 'glass',
+        categoryName: '유리',
+        gwp: 1880,
+        unit: 'kg CO2eq/m³',
+        density: 2500,
+        color: '#fdcb6e',
+        source: '한국환경산업기술원',
+        description: 'PVB 필름 접합 유리'
+      }
+    ]
   }
 };
 
