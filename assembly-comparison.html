@@ -665,6 +665,7 @@
         <button class="tab-btn" onclick="filterChart('external')">🏢 외벽</button>
         <button class="tab-btn" onclick="filterChart('internal')">🚪 내벽</button>
         <button class="tab-btn" onclick="filterChart('roof')">🏠 지붕</button>
+        <button class="tab-btn" onclick="filterChart('window')">🪟 창호</button>
       </div>
       <div class="chart-container">
         <div class="bar-chart" id="barChart"></div>
@@ -690,6 +691,7 @@
         <button class="tab-btn" onclick="filterAssemblies('external')">🏢 외벽</button>
         <button class="tab-btn" onclick="filterAssemblies('internal')">🚪 내벽</button>
         <button class="tab-btn" onclick="filterAssemblies('roof')">🏠 지붕</button>
+        <button class="tab-btn" onclick="filterAssemblies('window')">🪟 창호</button>
       </div>
       <div class="assemblies-grid" id="assembliesGrid"></div>
     </div>
@@ -747,6 +749,7 @@
       const externalCarbon = calculator.getAssembliesByType('external').reduce((sum, a) => sum + a.totalCarbon, 0);
       const internalCarbon = calculator.getAssembliesByType('internal').reduce((sum, a) => sum + a.totalCarbon, 0);
       const roofCarbon = calculator.getAssembliesByType('roof').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const windowCarbon = calculator.getAssembliesByType('window').reduce((sum, a) => sum + a.totalCarbon, 0);
 
       statsGrid.innerHTML = `
         <div class="stat-card">
@@ -772,6 +775,11 @@
         <div class="stat-card">
           <div class="label">지붕 배출량</div>
           <div class="value">${formatNumber(roofCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">창호 배출량</div>
+          <div class="value">${formatNumber(windowCarbon, 0)}</div>
           <div class="unit">kg CO₂eq</div>
         </div>
       `;
@@ -1009,11 +1017,27 @@
         if (name.includes('페인트')) {
           return { color: 0xffffff, roughness: 0.4, metalness: 0, emissive: 0xffffff, emissiveIntensity: 0.05 };
         }
+        // 알루미늄 프레임
+        if (name.includes('알루미늄') && name.includes('프레임')) {
+          return { color: 0x8a8a8a, roughness: 0.2, metalness: 0.95, emissive: 0x333333, emissiveIntensity: 0.1 };
+        }
+        // PVC 프레임
+        if (name.includes('pvc') || name.includes('PVC')) {
+          return { color: 0xf5f5f5, roughness: 0.4, metalness: 0, emissive: 0xffffff, emissiveIntensity: 0.02 };
+        }
+        // 목재 프레임
+        if (name.includes('목재') && name.includes('프레임')) {
+          return { color: 0x8b6f47, roughness: 0.75, metalness: 0 };
+        }
+        // 유리
+        if (name.includes('유리')) {
+          return { color: 0x87CEEB, roughness: 0.05, metalness: 0.1, emissive: 0x87CEEB, emissiveIntensity: 0.05, transparent: true, opacity: 0.4 };
+        }
         return { color: 0x00b894, roughness: 0.7, metalness: 0 };
       }
 
       // 레이어 생성
-      const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
+      const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal' || assembly.structureType === 'window');
       let pos = 0;
       const meshes = [];
       
@@ -1027,30 +1051,34 @@
         // 자재별 속성 가져오기
         const matProps = getMaterialProps(layer.material);
 
+        // 투명도 계산 (유리일 경우 matProps에서 가져옴)
+        const isTransparent = matProps.transparent || thickness < 0.05;
+        const materialOpacity = matProps.opacity || (thickness < 0.05 ? 0.85 : 1);
+
         if (isWall) {
           geometry = new THREE.BoxGeometry(thickness, 1.5, 1);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ 
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
             color: matProps.color,
             roughness: matProps.roughness,
             metalness: matProps.metalness,
             emissive: matProps.emissive || 0x000000,
             emissiveIntensity: matProps.emissiveIntensity || 0,
-            transparent: thickness < 0.05,
-            opacity: thickness < 0.05 ? 0.85 : 1
+            transparent: isTransparent,
+            opacity: materialOpacity
           }));
           mesh.position.x = pos + thickness / 2;
           mesh.castShadow = true;
           mesh.receiveShadow = true;
         } else {
           geometry = new THREE.BoxGeometry(1.5, thickness, 1);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ 
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
             color: matProps.color,
             roughness: matProps.roughness,
             metalness: matProps.metalness,
             emissive: matProps.emissive || 0x000000,
             emissiveIntensity: matProps.emissiveIntensity || 0,
-            transparent: thickness < 0.05,
-            opacity: thickness < 0.05 ? 0.85 : 1
+            transparent: isTransparent,
+            opacity: materialOpacity
           }));
           mesh.position.y = pos + thickness / 2;
           mesh.castShadow = true;

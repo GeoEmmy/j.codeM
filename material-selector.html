@@ -1156,6 +1156,9 @@
       <a href="?type=roof" class="nav-btn" data-type="roof">
         지붕
       </a>
+      <a href="?type=window" class="nav-btn" data-type="window">
+        창호
+      </a>
     </div>
     
     <!-- 우측: 액션 버튼 -->
@@ -1327,6 +1330,10 @@
       // 페인트 - 밝은색
       'paint': 'images/paint.jpg',
       
+      // 창호 프레임
+      'frame': 'images/aluminum.jpg',
+      'pvc': 'images/pvc.jpg',
+
       // 기본값
       'default': 'https://picsum.photos/id/50/100/100'
     };
@@ -1354,7 +1361,10 @@
       if (name.includes('금속') || name.includes('강판') || name.includes('알루미늄')) return MATERIAL_IMAGE_MAP.metal;
       if (name.includes('방수') || name.includes('아스팔트')) return MATERIAL_IMAGE_MAP.waterproof;
       if (name.includes('페인트')) return MATERIAL_IMAGE_MAP.paint;
-      
+      if (name.includes('프레임') || name.includes('frame')) return MATERIAL_IMAGE_MAP.frame;
+      if (name.includes('pvc') || name.includes('PVC')) return MATERIAL_IMAGE_MAP.pvc;
+      if (name.includes('유리')) return MATERIAL_IMAGE_MAP.glass;
+
       return MATERIAL_IMAGE_MAP.default;
     }
 
@@ -1395,7 +1405,8 @@
 
       // 카메라 위치
       const isWall = (structureType === 'external' || structureType === 'internal');
-      if (isWall) {
+      const isWindow = (structureType === 'window');
+      if (isWall || isWindow) {
         camera3D.position.set(0, 1, 4);
       } else {
         camera3D.position.set(2.5, 2, 2.5);
@@ -1533,6 +1544,51 @@
           shininess: 60
         };
       }
+      // 알루미늄 프레임
+      if (name.includes('알루미늄') && name.includes('프레임')) {
+        return {
+          color: 0x8a8a8a,
+          roughness: 0.2,
+          metalness: 0.95,
+          emissive: 0x333333,
+          emissiveIntensity: 0.1,
+          shininess: 100
+        };
+      }
+      // PVC 프레임
+      if (name.includes('pvc') || name.includes('PVC')) {
+        return {
+          color: 0xf5f5f5,
+          roughness: 0.4,
+          metalness: 0,
+          emissive: 0xffffff,
+          emissiveIntensity: 0.02,
+          shininess: 60
+        };
+      }
+      // 목재 프레임
+      if (name.includes('목재') && name.includes('프레임')) {
+        return {
+          color: 0x8b6f47,
+          roughness: 0.75,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 25
+        };
+      }
+      // 유리 (일반, 복층, 삼중, Low-E)
+      if (name.includes('유리')) {
+        return {
+          color: 0x87CEEB,
+          roughness: 0.05,
+          metalness: 0.1,
+          emissive: 0x87CEEB,
+          emissiveIntensity: 0.05,
+          shininess: 100,
+          transparent: true,
+          opacity: 0.4
+        };
+      }
       // 기본값
       return {
         color: 0x00b894,
@@ -1556,7 +1612,7 @@
 
       if (selectedLayers.length === 0) return;
 
-      const isWall = (structureType === 'external' || structureType === 'internal');
+      const isWall = (structureType === 'external' || structureType === 'internal' || structureType === 'window');
       let pos = 0;
 
       selectedLayers.forEach((layer, index) => {
@@ -1566,17 +1622,21 @@
         // 자재별 재질 속성 가져오기
         const matProps = getMaterialProperties(layer.material);
 
+        // 투명도 계산 (유리일 경우 matProps에서 가져옴)
+        const isTransparent = matProps.transparent || thickness < 0.05;
+        const materialOpacity = matProps.opacity || (thickness < 0.05 ? 0.85 : 1);
+
         if (isWall) {
           // 벽체 (가로로 쌓임)
           geometry = new THREE.BoxGeometry(thickness, 2, 1.3);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ 
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
             color: matProps.color,
             roughness: matProps.roughness,
             metalness: matProps.metalness,
             emissive: matProps.emissive,
             emissiveIntensity: matProps.emissiveIntensity || 0,
-            transparent: thickness < 0.05,
-            opacity: thickness < 0.05 ? 0.85 : 1
+            transparent: isTransparent,
+            opacity: materialOpacity
           }));
           mesh.position.x = pos + thickness / 2;
           mesh.castShadow = true;
@@ -1584,14 +1644,14 @@
         } else {
           // 바닥/지붕 (위로 쌓임)
           geometry = new THREE.BoxGeometry(2, thickness, 1.3);
-          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ 
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
             color: matProps.color,
             roughness: matProps.roughness,
             metalness: matProps.metalness,
             emissive: matProps.emissive,
             emissiveIntensity: matProps.emissiveIntensity || 0,
-            transparent: thickness < 0.05,
-            opacity: thickness < 0.05 ? 0.85 : 1
+            transparent: isTransparent,
+            opacity: materialOpacity
           }));
           mesh.position.y = pos + thickness / 2;
           mesh.castShadow = true;
@@ -1685,16 +1745,40 @@
       camera3D.position.z = Math.max(2, Math.min(8, camera3D.position.z));
     }
 
+    // 카테고리 필터 렌더링
+    function renderCategoryFilters() {
+      const filterContainer = document.querySelector('.material-filters');
+
+      // 창호 타입일 경우 프레임/유리 필터로 변경
+      if (structureType === 'window') {
+        filterContainer.innerHTML = `
+          <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
+            전체
+          </button>
+          <button class="filter-btn" onclick="filterMaterials('프레임')" data-filter="프레임">
+            프레임
+          </button>
+          <button class="filter-btn" onclick="filterMaterials('유리')" data-filter="유리">
+            유리
+          </button>
+        `;
+      }
+      // 기본 필터는 HTML에 이미 있음
+    }
+
     // 초기화
     function init() {
       materials = KOREAN_EPD[structureType]?.materials || [];
-      
+
       // 네비게이션 활성화 상태 설정
       updateNavigation();
-      
+
+      // 카테고리 필터 렌더링
+      renderCategoryFilters();
+
       // 3D 초기화
       init3DPreview();
-      
+
       renderPyramid();
     }
 
@@ -1727,6 +1811,10 @@
             return ['마감재', '외장재', '지붕재', '천장재'].includes(m.categoryName);
           } else if (currentFilter === '방수재') {
             return m.categoryName.includes('방수');
+          } else if (currentFilter === '프레임') {
+            return m.categoryName === '프레임';
+          } else if (currentFilter === '유리') {
+            return m.categoryName === '유리';
           }
           return m.categoryName === currentFilter;
         });

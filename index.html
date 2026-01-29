@@ -59,9 +59,9 @@
 
     .button-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 30px;
-      max-width: 1200px;
+      max-width: 1500px;
     }
 
     .button-box {
@@ -230,6 +230,14 @@
         <div class="label-sub">천장 마감</div>
       </div>
     </a>
+
+    <a href="material-selector.html?type=window" class="button-box" data-type="window">
+      <div class="canvas-container" id="window-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Window</div>
+        <div class="label-sub">창호</div>
+      </div>
+    </a>
   </div>
 
   <div class="quick-actions">
@@ -272,6 +280,11 @@
         { name: '석고보드', color: 0xf0f0f0, height: 0.04 },
         { name: 'M-bar', color: 0x707070, height: 0.06 },
         { name: '달대', color: 0x888888, height: 0.1 }
+      ],
+      window: [
+        { name: '외부 프레임', type: 'frame', color: 0x636e72 },
+        { name: '유리', type: 'glass', color: 0x87CEEB, opacity: 0.3 },
+        { name: '내부 프레임', type: 'frame', color: 0x636e72 }
       ]
     };
 
@@ -281,6 +294,7 @@
       const width = 240, height = 260;
       const isWall = (type === 'external' || type === 'internal');
       const isCeiling = (type === 'ceiling');
+      const isWindow = (type === 'window');
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
@@ -348,6 +362,53 @@
 
         camera.position.set(2, 1.5, 2);
         camera.lookAt(0, -0.1, 0);
+      } else if (isWindow) {
+        // 창호 (프레임 + 유리) 구조 렌더링
+        const frameMat = new THREE.MeshPhongMaterial({ color: 0x636e72, shininess: 60 });
+        const glassMat = new THREE.MeshPhongMaterial({
+          color: 0x87CEEB,
+          transparent: true,
+          opacity: 0.3,
+          shininess: 100
+        });
+
+        // 외부 프레임 (왼쪽)
+        const frameOuter = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.8, 1.2), frameMat);
+        frameOuter.position.x = -0.4;
+        frameOuter.userData = { originalX: -0.4, expandedX: -0.6 };
+        scene.add(frameOuter);
+        meshes.push(frameOuter);
+
+        // 유리 (중앙)
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(0.05, 1.6, 1.0), glassMat);
+        glass.position.x = 0;
+        glass.userData = { originalX: 0, expandedX: 0 };
+        scene.add(glass);
+        meshes.push(glass);
+
+        // 내부 프레임 (오른쪽)
+        const frameInner = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.8, 1.2), frameMat);
+        frameInner.position.x = 0.4;
+        frameInner.userData = { originalX: 0.4, expandedX: 0.6 };
+        scene.add(frameInner);
+        meshes.push(frameInner);
+
+        // 상단 프레임
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 1.2), frameMat);
+        frameTop.position.set(0, 0.85, 0);
+        frameTop.userData = { originalX: 0, expandedX: 0 };
+        scene.add(frameTop);
+        meshes.push(frameTop);
+
+        // 하단 프레임
+        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 1.2), frameMat);
+        frameBottom.position.set(0, -0.85, 0);
+        frameBottom.userData = { originalX: 0, expandedX: 0 };
+        scene.add(frameBottom);
+        meshes.push(frameBottom);
+
+        camera.position.set(0, 1.5, 3.5);
+        camera.lookAt(0, 0, 0);
       } else {
         // 기존 레이어 방식
         const layers = structures[type];
@@ -443,11 +504,12 @@
       animate();
     }
 
-    // 4개 버튼 생성
+    // 5개 버튼 생성
     create3DButton('floor-canvas', 'floor');
     create3DButton('external-canvas', 'external');
     create3DButton('internal-canvas', 'internal');
     create3DButton('ceiling-canvas', 'ceiling');
+    create3DButton('window-canvas', 'window');
 
     // 프로젝트 정보 표시
     function showAbout() {
