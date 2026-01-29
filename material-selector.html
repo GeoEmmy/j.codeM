@@ -2101,7 +2101,11 @@
       ];
 
       // 11개 행으로 나누기 (슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16)
-      const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 11개 행
+      // 모바일에서는 3번째 그룹(6행)부터 최대 6개로 제한
+      const isMobile = window.innerWidth <= 600;
+      const rowSlotCounts = isMobile
+        ? [1, 2, 3, 4, 6, 6, 6, 6, 6, 6, 6]  // 모바일: 6행부터 6개 제한
+        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 데스크탑: 원본
 
       let html = '';
 
@@ -2372,6 +2376,16 @@
     }
 
     init();
+
+    // 화면 크기 변경 시 피라미드 다시 렌더링 (모바일 ↔ 데스크탑 전환 시)
+    let lastIsMobile = window.innerWidth <= 600;
+    window.addEventListener('resize', () => {
+      const currentIsMobile = window.innerWidth <= 600;
+      if (currentIsMobile !== lastIsMobile) {
+        lastIsMobile = currentIsMobile;
+        renderPyramid();
+      }
+    });
   </script>
 </body>
 </html>
