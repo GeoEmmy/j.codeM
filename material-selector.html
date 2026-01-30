@@ -9,15 +9,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/common.css">
   <style>
+    /* 전체 페이지 스크롤 제거 */
+    body {
+      overflow: hidden;
+    }
+
     /* 메인 네비게이션 */
     .main-nav {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 20px 50px;
+      height: 80px;
+      box-sizing: border-box;
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(10px);
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
@@ -221,15 +230,19 @@
 
     .page-wrapper {
       display: flex;
-      min-height: 100vh;
-      gap: 20px;
+      height: calc(100vh - 80px);
+      margin-top: 80px;
+      gap: 0;
+      overflow: hidden;
     }
 
     /* 메인 컨텐츠 - 피라미드 */
     .main-content {
       flex: 1;
       padding: 0px;
+      overflow-y: auto;
       overflow-x: auto;
+      height: 100%;
     }
 
     /* 페이지 타이틀 */
@@ -940,10 +953,10 @@
       background: white;
       box-shadow: 2px 0 20px rgba(0,0,0,0.05);
       padding: 30px;
-      position: sticky;
-      top: 80px;
-      height: calc(100vh - 100px);
+      position: relative;
+      height: 100%;
       overflow-y: auto;
+      box-sizing: border-box;
     }
 
     .sidebar h2 {
@@ -1107,14 +1120,27 @@
       margin-bottom: 15px;
     }
 
-    /* 필터 */
+    /* 반응형 - 태블릿 이하 */
     @media (max-width: 1200px) {
+      body {
+        overflow: auto;
+      }
+
       .page-wrapper {
         flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+
+      .main-content {
+        height: auto;
+        overflow: visible;
       }
 
       .sidebar {
         width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
         height: auto;
         position: relative;
         top: 0;
@@ -1420,6 +1446,22 @@
       renderer3D.domElement.addEventListener('wheel', onWheel);
 
       animate3D();
+
+      // 리사이즈 핸들러
+      window.addEventListener('resize', resize3DPreview);
+      // 초기 레이아웃 완료 후 크기 재조정
+      setTimeout(resize3DPreview, 100);
+    }
+
+    // 3D 리사이즈
+    function resize3DPreview() {
+      const container = document.getElementById('preview3D');
+      if (!container || !renderer3D || !camera3D) return;
+      const width = container.clientWidth;
+      const height = 250;
+      renderer3D.setSize(width, height);
+      camera3D.aspect = width / height;
+      camera3D.updateProjectionMatrix();
     }
 
     // 3D 애니메이션
