@@ -9,18 +9,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/common.css">
   <style>
-    /* 전체 페이지 스크롤 제거 */
-    body {
+    /* 전체 페이지 */
+    html, body {
+      height: 100%;
+      margin: 0;
       overflow: hidden;
     }
 
     /* 컨텐츠 컨테이너 */
     .container {
-      margin-top: 80px;
-      height: calc(100vh - 80px);
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
       overflow-y: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 내부 콘텐츠 래퍼 */
+    .content-wrapper {
       padding: 30px 50px;
-      box-sizing: border-box;
     }
 
     /* 메인 네비게이션 */
@@ -40,6 +51,16 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
       gap: 40px;
+    }
+
+    /* 중앙 메뉴 공간 */
+    .nav-menu {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+      max-width: none;
+      margin-right: 230px;
     }
 
     /* 로고 */
@@ -646,7 +667,9 @@
         <span class="logo-accent">M</span>
       </a>
     </div>
-    
+
+    <!-- 중앙: 빈 공간 (material-selector와 레이아웃 동일하게) -->
+    <div class="nav-menu"></div>
 
     <!-- 우측: 액션 버튼 -->
     <div class="nav-actions">
@@ -654,12 +677,13 @@
         어셈블리 비교
       </a>
       <a href="material-selector.html" class="action-btn home-btn">
-        메인으로
+        자재 선택
       </a>
     </div>
   </nav>
 
   <div class="container">
+    <div class="content-wrapper">
     <!-- 페이지 헤더 -->
     <div class="page-header">
       <h2>어셈블리 비교</h2>
@@ -714,6 +738,7 @@
         <button class="tab-btn" onclick="filterAssemblies('window')">창호</button>
       </div>
       <div class="assemblies-grid" id="assembliesGrid"></div>
+    </div>
     </div>
   </div>
 
