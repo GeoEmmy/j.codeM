@@ -751,6 +751,7 @@
       const externalCarbon = calculator.getAssembliesByType('external').reduce((sum, a) => sum + a.totalCarbon, 0);
       const internalCarbon = calculator.getAssembliesByType('internal').reduce((sum, a) => sum + a.totalCarbon, 0);
       const ceilingCarbon = calculator.getAssembliesByType('ceiling').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const windowCarbon = calculator.getAssembliesByType('window').reduce((sum, a) => sum + a.totalCarbon, 0);
 
       statsGrid.innerHTML = `
         <div class="stat-card">
