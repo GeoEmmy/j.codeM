@@ -498,6 +498,7 @@
     .bar-chart {
       display: flex;
       align-items: flex-end;
+      justify-content: center;
       gap: 8px;
       height: 248px;
     }
@@ -517,7 +518,6 @@
 
     .bar {
       width: 100%;
-      background: linear-gradient(to top, var(--primary-color), var(--secondary-color));
       border-radius: 10px 10px 0 0;
       position: relative;
       transition: var(--transition);
@@ -944,9 +944,20 @@
       `;
     }
 
+    // 부재별 색상 정의 (진한색 → 연한색 그라데이션)
+    const structureColors = {
+      floor: ['#5D3A1A', '#D2691E'],      // 바닥: 진한브라운 → 연한브라운
+      external: ['#1a5276', '#85c1e9'],   // 외벽: 진한블루 → 연한블루
+      internal: ['#145a32', '#82e0aa'],   // 내벽: 진한그린 → 연한그린
+      ceiling: ['#4a235a', '#d7bde2'],    // 천장마감: 진한퍼플 → 연한퍼플
+      window: ['#006064', '#80deea'],     // 창호: 진한스카이 → 연한스카이
+      all: ['#00695c', '#80cbc4']         // 전체: 진한민트 → 연한민트
+    };
+
     // 단일 차트 렌더링 헬퍼 함수
-    function renderSingleChart(containerId, assemblies, emptyMessage, chartHeight = 160) {
+    function renderSingleChart(containerId, assemblies, emptyMessage, chartHeight = 160, colorKey = 'all') {
       const chartContainer = document.getElementById(containerId);
+      const colors = structureColors[colorKey] || structureColors.all;
 
       if (assemblies.length === 0) {
         chartContainer.innerHTML = `
@@ -958,11 +969,11 @@
         return;
       }
 
-      // 탄소배출량으로 정렬 (m²당 기준)
+      // 탄소배출량으로 정렬 (큰 것부터 왼쪽에)
       const sorted = [...assemblies].sort((a, b) => {
         const aPerM2 = a.totalCarbon / a.area;
         const bPerM2 = b.totalCarbon / b.area;
-        return aPerM2 - bPerM2;
+        return bPerM2 - aPerM2;
       });
 
       const maxCarbonPerM2 = Math.max(...sorted.map(a => a.totalCarbon / a.area));
@@ -970,10 +981,12 @@
       chartContainer.innerHTML = sorted.map(assembly => {
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
         const heightPx = Math.max(1, (carbonPerM2 / maxCarbonPerM2) * chartHeight);
+        // 전체 차트는 각 어셈블리의 구조타입 색상 사용
+        const barColors = colorKey === 'all' ? structureColors[assembly.structureType] || colors : colors;
 
         return `
           <div class="bar-item">
-            <div class="bar" style="height: ${heightPx}px" onclick="showDetail(${assembly.id})">
+            <div class="bar" style="height: ${heightPx}px; background: linear-gradient(to top, ${barColors[0]}, ${barColors[1]})" onclick="showDetail(${assembly.id})">
               <div class="value-label">${formatNumber(carbonPerM2, 0)}</div>
             </div>
             <div class="bar-label">${escapeHtml(assembly.name)}</div>
@@ -987,14 +1000,14 @@
       const chartHeight = 205;  // 모든 차트 동일 높이
 
       // 구조별 차트 (5개)
-      renderSingleChart('barChartFloor', calculator.getAssembliesByType('floor'), '어셈블리 없음', chartHeight);
-      renderSingleChart('barChartExternal', calculator.getAssembliesByType('external'), '어셈블리 없음', chartHeight);
-      renderSingleChart('barChartInternal', calculator.getAssembliesByType('internal'), '어셈블리 없음', chartHeight);
-      renderSingleChart('barChartCeiling', calculator.getAssembliesByType('ceiling'), '어셈블리 없음', chartHeight);
-      renderSingleChart('barChartWindow', calculator.getAssembliesByType('window'), '어셈블리 없음', chartHeight);
+      renderSingleChart('barChartFloor', calculator.getAssembliesByType('floor'), '어셈블리 없음', chartHeight, 'floor');
+      renderSingleChart('barChartExternal', calculator.getAssembliesByType('external'), '어셈블리 없음', chartHeight, 'external');
+      renderSingleChart('barChartInternal', calculator.getAssembliesByType('internal'), '어셈블리 없음', chartHeight, 'internal');
+      renderSingleChart('barChartCeiling', calculator.getAssembliesByType('ceiling'), '어셈블리 없음', chartHeight, 'ceiling');
+      renderSingleChart('barChartWindow', calculator.getAssembliesByType('window'), '어셈블리 없음', chartHeight, 'window');
 
-      // 전체 차트
-      renderSingleChart('barChartAll', calculator.getAllAssemblies(), '어셈블리가 없음', chartHeight);
+      // 전체 차트 (각 어셈블리별 색상)
+      renderSingleChart('barChartAll', calculator.getAllAssemblies(), '어셈블리가 없음', chartHeight, 'all');
     }
 
     // 어셈블리 렌더링
