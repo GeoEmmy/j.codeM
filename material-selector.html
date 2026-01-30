@@ -53,8 +53,9 @@
       display: flex;
       gap: 8px;
       flex: 1;
-      justify-content: flex-start;
-      max-width: 600px;
+      justify-content: center;
+      max-width: none;
+      margin-right: 230px; /* 사이드바 너비만큼 오프셋 */
     }
 
     .nav-btn {
@@ -268,18 +269,18 @@
     }
 
     .filter-btn:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-      background: rgba(0, 184, 148, 0.05);
+      border-color: #636e72;
+      color: #636e72;
+      background: rgba(99, 110, 114, 0.05);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 184, 148, 0.15);
+      box-shadow: 0 4px 12px rgba(99, 110, 114, 0.15);
     }
 
     .filter-btn.active {
-      background: linear-gradient(135deg, #00b894 0%, #00a281 100%);
-      border-color: var(--primary-color);
+      background: linear-gradient(135deg, #636e72 0%, #4a5568 100%);
+      border-color: #636e72;
       color: white;
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+      box-shadow: 0 4px 15px rgba(99, 110, 114, 0.3);
     }
 
     /* 피라미드 스테이지 - visibility로 변경 */
@@ -613,18 +614,18 @@
     }
 
     .filter-btn:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-      background: rgba(0, 184, 148, 0.05);
+      border-color: #636e72;
+      color: #636e72;
+      background: rgba(99, 110, 114, 0.05);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 184, 148, 0.15);
+      box-shadow: 0 4px 12px rgba(99, 110, 114, 0.15);
     }
 
     .filter-btn.active {
-      background: var(--primary-color);
-      border-color: var(--primary-color);
+      background: linear-gradient(135deg, #636e72 0%, #4a5568 100%);
+      border-color: #636e72;
       color: white;
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+      box-shadow: 0 4px 15px rgba(99, 110, 114, 0.3);
     }
 
     /* 반응형 */
@@ -1160,7 +1161,7 @@
         내벽
       </a>
       <a href="?type=ceiling" class="nav-btn" data-type="ceiling">
-        천장 마감
+        천장마감
       </a>
       <a href="?type=window" class="nav-btn" data-type="window">
         창호
