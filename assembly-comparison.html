@@ -455,20 +455,55 @@
       margin-bottom: 20px;
     }
 
+    /* 차트 영역 배치 */
+    .charts-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .charts-row.five-cols .chart-box {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .charts-row.full-width .chart-box {
+      width: 100%;
+    }
+
+    .chart-box {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 10px 10px 5px 10px;
+    }
+
+    .chart-box-header {
+      text-align: center;
+      margin-bottom: 3px;
+    }
+
+    .chart-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
     .chart-container {
       position: relative;
-      height: 420px;
-      margin-top: 20px;
-      padding-top: 40px;
+      height: 281px;
+      padding-top: 18px;
       overflow: visible;
     }
 
     .bar-chart {
       display: flex;
       align-items: flex-end;
-      gap: 20px;
-      height: 360px;
-      padding: 0 0 20px 0;
+      gap: 8px;
+      height: 248px;
+    }
+
+    .charts-row.full-width .bar-chart {
+      gap: 15px;
     }
 
     .bar-item {
@@ -476,7 +511,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 3px;
     }
 
     .bar {
@@ -496,13 +531,18 @@
 
     .bar .value-label {
       position: absolute;
-      top: -25px;
+      top: -20px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--dark);
       white-space: nowrap;
+    }
+
+    .charts-row.five-cols .bar .value-label {
+      font-size: 10px;
+      top: -16px;
     }
 
     .bar-label {
@@ -512,6 +552,14 @@
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .charts-row.five-cols .bar-label {
+      font-size: 10px;
+    }
+
+    .charts-row.five-cols .bar-item {
+      gap: 2px;
     }
 
     /* 필터/탭 */
@@ -633,7 +681,22 @@
       color: #636e72;
     }
 
+    @media (max-width: 1200px) {
+      .charts-row.five-cols {
+        flex-wrap: wrap;
+      }
+
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 calc(33.33% - 10px);
+        min-width: 200px;
+      }
+    }
+
     @media (max-width: 768px) {
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 calc(50% - 10px);
+      }
+
       .assemblies-grid {
         grid-template-columns: 1fr;
       }
@@ -653,6 +716,12 @@
         height: 100%;
         width: auto;
         border-radius: 0 10px 10px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 100%;
       }
     }
   </style>
@@ -703,16 +772,61 @@
           </button>
         </div>
       </div>
-      <div class="tabs" id="chartTabs">
-        <button class="tab-btn active" onclick="filterChart('all')">전체</button>
-        <button class="tab-btn" onclick="filterChart('floor')">바닥</button>
-        <button class="tab-btn" onclick="filterChart('external')">외벽</button>
-        <button class="tab-btn" onclick="filterChart('internal')">내벽</button>
-        <button class="tab-btn" onclick="filterChart('ceiling')">천장마감</button>
-        <button class="tab-btn" onclick="filterChart('window')">창호</button>
+
+      <!-- 첫 번째 행: 구조별 5개 -->
+      <div class="charts-row five-cols">
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">바닥</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartFloor"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">외벽</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartExternal"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">내벽</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartInternal"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">천장마감</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartCeiling"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">창호</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartWindow"></div>
+          </div>
+        </div>
       </div>
-      <div class="chart-container">
-        <div class="bar-chart" id="barChart"></div>
+
+      <!-- 두 번째 행: 전체 -->
+      <div class="charts-row full-width">
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">전체</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartAll"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -769,7 +883,6 @@
     }
 
     let currentFilter = 'all';
-    let currentChartFilter = 'all';
 
     // Three.js 리소스 관리를 위한 배열
     const threeResources = [];
@@ -830,40 +943,33 @@
       `;
     }
 
-    // 차트 렌더링
-    function renderChart() {
-      const assemblies = currentChartFilter === 'all' 
-        ? calculator.getAllAssemblies()
-        : calculator.getAssembliesByType(currentChartFilter);
-      
-      const chartContainer = document.getElementById('barChart');
-      
+    // 단일 차트 렌더링 헬퍼 함수
+    function renderSingleChart(containerId, assemblies, emptyMessage, chartHeight = 160) {
+      const chartContainer = document.getElementById(containerId);
+
       if (assemblies.length === 0) {
         chartContainer.innerHTML = `
-          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-            <div class="icon">📊</div>
-            <h3>비교할 어셈블리가 없습니다</h3>
-            <p>자재를 선택하여 어셈블리를 만들어보세요</p>
-            <button class="btn btn-primary" onclick="createNewAssembly()">➕ 새 어셈블리</button>
+          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; font-size: 12px;">
+            <div class="icon" style="font-size: 24px;">📊</div>
+            <p style="margin: 5px 0; color: #999;">${emptyMessage}</p>
           </div>
         `;
         return;
       }
-      
+
       // 탄소배출량으로 정렬 (m²당 기준)
       const sorted = [...assemblies].sort((a, b) => {
         const aPerM2 = a.totalCarbon / a.area;
         const bPerM2 = b.totalCarbon / b.area;
         return aPerM2 - bPerM2;
       });
-      
+
       const maxCarbonPerM2 = Math.max(...sorted.map(a => a.totalCarbon / a.area));
-      const chartHeight = 340; // 차트 최대 높이 (px) - 레이블 공간 확보
-      
+
       chartContainer.innerHTML = sorted.map(assembly => {
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
-        const heightPx = Math.max(1, (carbonPerM2 / maxCarbonPerM2) * chartHeight); // 최소 1px
-        
+        const heightPx = Math.max(1, (carbonPerM2 / maxCarbonPerM2) * chartHeight);
+
         return `
           <div class="bar-item">
             <div class="bar" style="height: ${heightPx}px" onclick="showDetail(${assembly.id})">
@@ -873,6 +979,21 @@
           </div>
         `;
       }).join('');
+    }
+
+    // 차트 렌더링 (6개의 차트)
+    function renderChart() {
+      const chartHeight = 205;  // 모든 차트 동일 높이
+
+      // 구조별 차트 (5개)
+      renderSingleChart('barChartFloor', calculator.getAssembliesByType('floor'), '어셈블리 없음', chartHeight);
+      renderSingleChart('barChartExternal', calculator.getAssembliesByType('external'), '어셈블리 없음', chartHeight);
+      renderSingleChart('barChartInternal', calculator.getAssembliesByType('internal'), '어셈블리 없음', chartHeight);
+      renderSingleChart('barChartCeiling', calculator.getAssembliesByType('ceiling'), '어셈블리 없음', chartHeight);
+      renderSingleChart('barChartWindow', calculator.getAssembliesByType('window'), '어셈블리 없음', chartHeight);
+
+      // 전체 차트
+      renderSingleChart('barChartAll', calculator.getAllAssemblies(), '어셈블리가 없음', chartHeight);
     }
 
     // 어셈블리 렌더링
@@ -1254,18 +1375,6 @@
       event.target.classList.add('active');
       
       renderAssemblies();
-    }
-
-    function filterChart(type) {
-      currentChartFilter = type;
-      
-      // 탭 활성화
-      document.querySelectorAll('#chartTabs .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      event.target.classList.add('active');
-      
-      renderChart();
     }
 
     // 상세 보기
