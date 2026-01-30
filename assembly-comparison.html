@@ -1037,12 +1037,79 @@
       }
 
       // 레이어 생성
-      const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal' || assembly.structureType === 'window');
+      const isWindow = (assembly.structureType === 'window');
+      const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
       let pos = 0;
       const meshes = [];
-      
+
       // 모든 레이어를 담을 그룹 생성
       const group = new THREE.Group();
+
+      // 창호일 경우 프레임+유리 형태로 렌더링
+      if (isWindow) {
+        // 선택한 자재에서 프레임과 유리 찾기
+        const frameMaterialLayer = assembly.layers.find(l => l.material.categoryName === '프레임');
+        const glassMaterialLayer = assembly.layers.find(l => l.material.categoryName === '유리');
+
+        // 프레임 재질
+        const frameColor = frameMaterialLayer ? frameMaterialLayer.material.color : '#636e72';
+        const frameMat = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(frameColor),
+          roughness: 0.5,
+          metalness: 0.3
+        });
+
+        // 유리 재질
+        const glassColor = glassMaterialLayer ? glassMaterialLayer.material.color : '#87CEEB';
+        const glassMat = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(glassColor),
+          transparent: true,
+          opacity: 0.4,
+          roughness: 0.1,
+          metalness: 0.1
+        });
+
+        const frameT = 0.06;  // 프레임 두께
+        const frameD = 0.08;  // 프레임 깊이
+        const winW = 1.0;     // 창 너비
+        const winH = 1.4;     // 창 높이
+
+        // 왼쪽 프레임
+        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameLeft.position.x = -winW/2 + frameT/2;
+        group.add(frameLeft);
+
+        // 오른쪽 프레임
+        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameRight.position.x = winW/2 - frameT/2;
+        group.add(frameRight);
+
+        // 상단 프레임
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameTop.position.set(0, winH/2 - frameT/2, 0);
+        group.add(frameTop);
+
+        // 하단 프레임
+        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameBottom.position.set(0, -winH/2 + frameT/2, 0);
+        group.add(frameBottom);
+
+        // 유리
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
+        group.add(glass);
+
+        scene.add(group);
+        camera.position.set(0, 0.5, 2.5);
+        camera.lookAt(0, 0, 0);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          group.rotation.y += 0.005;
+          renderer.render(scene, camera);
+        }
+        animate();
+        return;
+      }
 
       assembly.layers.forEach((layer, index) => {
         const thickness = layer.thickness / 1000; // mm를 m로 변환
