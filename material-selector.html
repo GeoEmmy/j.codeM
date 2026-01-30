@@ -669,48 +669,50 @@
       .pyramid-stage {
         background: linear-gradient(to bottom, rgba(0, 184, 148, 0.03), rgba(0, 184, 148, 0.08));
         border-radius: 20px;
-        overflow: hidden;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .pyramid-tiles {
-        width: 100%;
-        align-items: stretch;
+        min-width: 1000px;
+        width: max-content;
+        padding: 20px 40px;
       }
 
       .pyramid-row {
         max-width: none !important;
         flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-left: 15px;
-        padding-right: 15px;
-        -webkit-overflow-scrolling: touch;
+        justify-content: center;
       }
 
-      /* 각 행별 스크롤바 스타일 */
-      .pyramid-row::-webkit-scrollbar {
-        height: 4px;
+      /* 피라미드 전체 스크롤바 스타일 */
+      .pyramid-stage::-webkit-scrollbar {
+        height: 8px;
       }
 
-      .pyramid-row::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.03);
-        border-radius: 2px;
+      .pyramid-stage::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
       }
 
-      .pyramid-row::-webkit-scrollbar-thumb {
-        background: rgba(0, 184, 148, 0.25);
-        border-radius: 2px;
+      .pyramid-stage::-webkit-scrollbar-thumb {
+        background: rgba(0, 184, 148, 0.3);
+        border-radius: 4px;
       }
 
-      .pyramid-row::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 184, 148, 0.4);
+      .pyramid-stage::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 184, 148, 0.5);
       }
     }
 
     @media (max-width: 768px) {
       .pyramid-stage {
-        padding: 30px 0;
+        padding: 20px 0;
         min-height: auto;
+      }
+
+      .pyramid-tiles {
+        min-width: 900px;
       }
 
       .material-tile {
@@ -722,10 +724,7 @@
 
       .pyramid-row {
         gap: 10px;
-        padding: 5px 15px;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        justify-content: flex-start;
+        padding: 5px 0;
       }
 
       .tile-wrapper {
@@ -755,7 +754,12 @@
 
     @media (max-width: 480px) {
       .pyramid-stage {
-        padding: 20px 0;
+        padding: 15px 0;
+      }
+
+      .pyramid-tiles {
+        min-width: 800px;
+        padding: 15px 30px;
       }
 
       .material-tile {
@@ -767,9 +771,7 @@
 
       .pyramid-row {
         gap: 8px;
-        padding: 4px 10px;
-        overflow-x: auto;
-        justify-content: flex-start;
+        padding: 4px 0;
       }
 
       .tile-wrapper {
