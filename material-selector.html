@@ -662,11 +662,6 @@
 
     /* 반응형 - 태블릿 */
     @media (max-width: 1200px) {
-      .pyramid-row {
-        max-width: 100% !important;
-        flex-wrap: wrap;
-      }
-
       .pyramid-background {
         display: none;
       }
@@ -675,11 +670,44 @@
         background: linear-gradient(to bottom, rgba(0, 184, 148, 0.03), rgba(0, 184, 148, 0.08));
         border-radius: 20px;
       }
+
+      .pyramid-tiles {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .pyramid-row {
+        max-width: none !important;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      /* 스크롤바 스타일 */
+      .pyramid-tiles::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      .pyramid-tiles::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
+      }
+
+      .pyramid-tiles::-webkit-scrollbar-thumb {
+        background: rgba(0, 184, 148, 0.3);
+        border-radius: 3px;
+      }
+
+      .pyramid-tiles::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 184, 148, 0.5);
+      }
     }
 
     @media (max-width: 768px) {
       .pyramid-stage {
-        padding: 30px 15px;
+        padding: 30px 0;
         min-height: auto;
       }
 
@@ -692,11 +720,13 @@
 
       .pyramid-row {
         gap: 10px;
-        padding: 5px 10px;
+        padding: 5px 15px;
+        flex-wrap: nowrap;
       }
 
       .tile-wrapper {
         height: 80px;
+        flex-shrink: 0;
       }
 
       .tile-name-below {
@@ -721,28 +751,28 @@
 
     @media (max-width: 480px) {
       .pyramid-stage {
-        padding: 20px 10px;
+        padding: 20px 0;
       }
 
       .material-tile {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        min-height: 50px;
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        min-height: 55px;
       }
 
       .pyramid-row {
-        gap: 6px;
-        padding: 4px 5px;
+        gap: 8px;
+        padding: 4px 10px;
       }
 
       .tile-wrapper {
-        height: 68px;
+        height: 72px;
       }
 
       .tile-name-below {
         font-size: 7px;
-        max-width: 50px;
+        max-width: 55px;
       }
 
       .material-tile .gwp-badge {
@@ -2101,11 +2131,7 @@
       ];
 
       // 11개 행으로 나누기 (슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16)
-      // 모바일에서는 3번째 그룹(6행)부터 최대 6개로 제한
-      const isMobile = window.innerWidth <= 600;
-      const rowSlotCounts = isMobile
-        ? [1, 2, 3, 4, 6, 6, 6, 6, 6, 6, 6]  // 모바일: 6행부터 6개 제한
-        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 데스크탑: 원본
+      const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 11개 행
 
       let html = '';
 
@@ -2376,16 +2402,6 @@
     }
 
     init();
-
-    // 화면 크기 변경 시 피라미드 다시 렌더링 (모바일 ↔ 데스크탑 전환 시)
-    let lastIsMobile = window.innerWidth <= 600;
-    window.addEventListener('resize', () => {
-      const currentIsMobile = window.innerWidth <= 600;
-      if (currentIsMobile !== lastIsMobile) {
-        lastIsMobile = currentIsMobile;
-        renderPyramid();
-      }
-    });
   </script>
 </body>
 </html>
