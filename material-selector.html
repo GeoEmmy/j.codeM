@@ -669,39 +669,41 @@
       .pyramid-stage {
         background: linear-gradient(to bottom, rgba(0, 184, 148, 0.03), rgba(0, 184, 148, 0.08));
         border-radius: 20px;
+        overflow: hidden;
       }
 
       .pyramid-tiles {
         width: 100%;
-        overflow-x: auto;
-        padding-bottom: 10px;
+        align-items: stretch;
       }
 
       .pyramid-row {
         max-width: none !important;
         flex-wrap: nowrap;
         justify-content: flex-start;
-        padding-left: 20px;
-        padding-right: 20px;
+        overflow-x: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+        -webkit-overflow-scrolling: touch;
       }
 
-      /* 스크롤바 스타일 */
-      .pyramid-tiles::-webkit-scrollbar {
-        height: 6px;
+      /* 각 행별 스크롤바 스타일 */
+      .pyramid-row::-webkit-scrollbar {
+        height: 4px;
       }
 
-      .pyramid-tiles::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 3px;
+      .pyramid-row::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 2px;
       }
 
-      .pyramid-tiles::-webkit-scrollbar-thumb {
-        background: rgba(0, 184, 148, 0.3);
-        border-radius: 3px;
+      .pyramid-row::-webkit-scrollbar-thumb {
+        background: rgba(0, 184, 148, 0.25);
+        border-radius: 2px;
       }
 
-      .pyramid-tiles::-webkit-scrollbar-thumb:hover {
-        background: rgba(0, 184, 148, 0.5);
+      .pyramid-row::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 184, 148, 0.4);
       }
     }
 
@@ -722,6 +724,8 @@
         gap: 10px;
         padding: 5px 15px;
         flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
       }
 
       .tile-wrapper {
@@ -764,10 +768,13 @@
       .pyramid-row {
         gap: 8px;
         padding: 4px 10px;
+        overflow-x: auto;
+        justify-content: flex-start;
       }
 
       .tile-wrapper {
         height: 72px;
+        flex-shrink: 0;
       }
 
       .tile-name-below {
