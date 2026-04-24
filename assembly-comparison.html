@@ -1086,7 +1086,7 @@
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
         const colors = structureColors[assembly.structureType] || structureColors.all;
         const perM2Bg = `background: linear-gradient(135deg, ${colors[0]}, ${colors[1]})`;
-        const totalBg = `background: ${colors[0]}; opacity: 0.85`;
+        const totalBg = `background: ${colors[0]}33; color: ${colors[0]}`;
 
         return `
           <div class="assembly-card">
@@ -1127,10 +1127,10 @@
             </div>
             
             <div class="actions">
-              <button class="btn btn-primary" onclick="showDetail(${assembly.id})">
+              <button class="btn" style="background:#f1f5f9; color:#64748b;" onclick="showDetail(${assembly.id})">
                 상세보기
               </button>
-              <button class="btn btn-danger" onclick="deleteAssembly(${assembly.id})">
+              <button class="btn" style="background:#fef2f2; color:#dc2626;" onclick="deleteAssembly(${assembly.id})">
                 삭제
               </button>
             </div>
@@ -1279,10 +1279,7 @@
       const height = 180;
 
       const scene = new THREE.Scene();
-      const isCeilingType = (assembly.structureType === 'ceiling');
-      const isWindowType = (assembly.structureType === 'window');
-      const fov = (isCeilingType || isWindowType) ? 35 : 45;
-      const camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
       renderer.setSize(width, height);
@@ -1376,8 +1373,8 @@
 
       // 천장일 경우 전용 렌더링
       if (isCeiling && assembly.layers.length > 0) {
-        const gridW = 1.6;
-        const gridD = 1.0;
+        const gridW = 2.0;
+        const gridD = 1.3;
 
         const hasCeilingFrame = assembly.layers.some(l =>
           (l.material.name || '').includes('경량철골') || (l.material.nameEn || '').includes('light_steel_ceiling')
@@ -1531,8 +1528,8 @@
         }
 
         scene.add(group);
-        camera.position.set(2.2, 1.2, 2.2);
-        camera.lookAt(0, 0.05, 0);
+        camera.position.set(2.5, 2, 2.5);
+        camera.lookAt(0, 0, 0);
 
         const resource = { renderer, scene, animationId: null };
         threeResources.push(resource);
@@ -1577,20 +1574,28 @@
             color: new THREE.Color(frameColor), roughness: 0.5, metalness: 0.3
           });
 
-          group.add(new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat)).position.x = -winW/2 + frameT/2;
-          group.add(new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat)).position.x = winW/2 - frameT/2;
+          const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+          frameLeft.position.x = -winW/2 + frameT/2;
+          group.add(frameLeft);
+
+          const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+          frameRight.position.x = winW/2 - frameT/2;
+          group.add(frameRight);
+
           const ft = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
           ft.position.set(0, winH/2 - frameT/2, 0); group.add(ft);
           const fb = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
           fb.position.set(0, -winH/2 + frameT/2, 0); group.add(fb);
 
-          group.add(new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat));
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
+          group.add(glass);
         } else {
-          group.add(new THREE.Mesh(new THREE.BoxGeometry(winW, winH, 0.015), glassMat));
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, 0.015), glassMat);
+          group.add(glass);
         }
 
         scene.add(group);
-        camera.position.set(0.6, 0.2, 4.0);
+        camera.position.set(0, 1, 4);
         camera.lookAt(0, 0, 0);
 
         function animate() {
