@@ -19,7 +19,7 @@
     /* 컨텐츠 컨테이너 */
     .container {
       position: fixed;
-      top: 80px;
+      top: 72px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -44,13 +44,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 50px;
-      height: 80px;
+      padding: 16px 44px;
+      height: 72px;
       box-sizing: border-box;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
-      gap: 40px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      gap: 36px;
     }
 
     /* 중앙 메뉴 공간 */
@@ -69,10 +70,10 @@
       align-items: center;
       gap: 4px;
       text-decoration: none;
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 700;
-      letter-spacing: -1.5px;
-      transition: opacity 0.3s ease;
+      letter-spacing: -0.5px;
+      transition: opacity 0.2s ease;
     }
 
     .nav-brand .brand-link:hover {
@@ -91,17 +92,17 @@
 
     .nav-btn {
       position: relative;
-      padding: 10px 28px;
+      padding: 8px 22px;
       background: transparent;
       border: none;
       text-decoration: none;
-      color: #636e72;
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      transition: var(--transition);
       cursor: pointer;
-      border-radius: 10px;
+      border-radius: 8px;
     }
 
     .nav-btn::before {
@@ -118,7 +119,7 @@
 
     .nav-btn:hover {
       color: var(--primary-color);
-      background: rgba(0, 184, 148, 0.05);
+      background: rgba(0, 184, 148, 0.06);
     }
 
     .nav-btn:hover::before {
@@ -127,8 +128,8 @@
 
     .nav-btn.active {
       color: white;
-      background: linear-gradient(135deg, #00b894 0%, #00a281 100%);
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.25);
+      background: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
     }
 
     .nav-btn.active::before {
@@ -142,37 +143,37 @@
     }
 
     .action-btn {
-      padding: 10px 24px;
+      padding: 8px 20px;
       background: white;
-      border: 1.5px solid #e8ecf1;
-      border-radius: 10px;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 8px;
       text-decoration: none;
-      color: #636e72;
-      font-size: 14px;
-      font-weight: 600;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
       letter-spacing: -0.2px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: var(--transition);
       cursor: pointer;
     }
 
     .comparison-btn {
       color: var(--primary-color);
-      border-color: rgba(0, 184, 148, 0.3);
+      border-color: rgba(0, 184, 148, 0.25);
       background: rgba(0, 184, 148, 0.03);
     }
 
     .comparison-btn.active {
       color: white;
-      background: linear-gradient(135deg, #00b894 0%, #00a281 100%);
+      background: var(--primary-color);
       border-color: var(--primary-color);
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.25);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
     }
 
     .comparison-btn:hover:not(.active) {
       background: var(--primary-color);
       border-color: var(--primary-color);
       color: white;
-      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.25);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
       transform: translateY(-1px);
     }
 
@@ -263,33 +264,35 @@
 
     .stat-card {
       background: white;
-      padding: 25px;
-      border-radius: 15px;
+      padding: 22px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
       text-align: center;
     }
 
     .stat-card .icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-
-    .stat-card .label {
-      font-size: 12px;
-      color: #636e72;
+      font-size: 28px;
       margin-bottom: 8px;
     }
 
+    .stat-card .label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
     .stat-card .value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
       color: var(--dark);
     }
 
     .stat-card .unit {
-      font-size: 12px;
-      color: #b2bec3;
-      margin-top: 5px;
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
     }
 
     /* 어셈블리 리스트 */
@@ -305,8 +308,9 @@
     }
 
     .section-header h2 {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
+      letter-spacing: -0.3px;
     }
 
     .section-header .actions {
@@ -322,25 +326,26 @@
 
     .assembly-card {
       background: white;
-      border-radius: 15px;
-      padding: 25px;
+      border-radius: var(--radius);
+      padding: 24px;
       box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
       transition: var(--transition);
       position: relative;
-      border-left: none; /* 5px solid var(--primary-color); */
     }
 
     .assembly-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-hover);
+      border-color: transparent;
     }
 
     .assembly-card .preview-3d-small {
       width: 100%;
-      height: 150px;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      height: 180px;
+      background: var(--bg-light);
       border-radius: 10px;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       position: relative;
       overflow: hidden;
     }
@@ -360,8 +365,8 @@
     }
 
     .assembly-card .assembly-type {
-      font-size: 12px;
-      color: #636e72;
+      font-size: 11px;
+      color: #64748b;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -375,15 +380,10 @@
     }
 
     .assembly-card .carbon-display {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      padding: 15px;
+      padding: 14px;
       border-radius: 10px;
       text-align: center;
-    }
-
-    .assembly-card .carbon-display.total {
-      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
     }
 
     .assembly-card .carbon-display .label {
@@ -410,22 +410,22 @@
     .assembly-card .layer-tag {
       display: inline-block;
       background: var(--bg-light);
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 6px;
       font-size: 11px;
-      margin: 3px;
-      color: #636e72;
+      margin: 2px;
+      color: #64748b;
     }
 
     .assembly-card .metadata {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 15px;
-      padding-top: 15px;
+      margin-top: 14px;
+      padding-top: 14px;
       border-top: 1px solid var(--light-gray);
       font-size: 11px;
-      color: #95a5a6;
+      color: #94a3b8;
     }
 
     .assembly-card .actions {
@@ -443,16 +443,18 @@
     /* 비교 차트 */
     .comparison-section {
       background: white;
-      padding: 30px;
-      border-radius: 15px;
+      padding: 28px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      margin-bottom: 40px;
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      margin-bottom: 36px;
     }
 
     .comparison-section h2 {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      letter-spacing: -0.3px;
     }
 
     /* 차트 영역 배치 */
@@ -472,8 +474,8 @@
     }
 
     .chart-box {
-      background: #f8f9fa;
-      border-radius: 12px;
+      background: var(--bg-light);
+      border-radius: 10px;
       padding: 10px 10px 5px 10px;
     }
 
@@ -524,7 +526,7 @@
 
     .bar {
       width: 100%;
-      border-radius: 10px 10px 0 0;
+      border-radius: 6px 6px 0 0;
       position: relative;
       transition: var(--transition);
       cursor: pointer;
@@ -532,8 +534,8 @@
     }
 
     .bar:hover {
-      transform: scaleY(1.05);
-      box-shadow: 0 -5px 20px rgba(0, 184, 148, 0.3);
+      transform: scaleY(1.03);
+      box-shadow: 0 -4px 12px rgba(0, 184, 148, 0.2);
     }
 
     .bar .value-label {
@@ -553,9 +555,9 @@
     }
 
     .bar-label {
-      font-size: 12px;
+      font-size: 11px;
       text-align: center;
-      color: #636e72;
+      color: #64748b;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -595,14 +597,14 @@
     }
 
     .tab-btn {
-      padding: 10px 20px;
+      padding: 8px 18px;
       background: white;
-      border: 2px solid var(--light-gray);
-      border-radius: 10px;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 8px;
       font-size: 13px;
       cursor: pointer;
       transition: var(--transition);
-      font-family: 'Poppins', sans-serif;
+      font-family: var(--font);
       font-weight: 500;
     }
 
@@ -618,24 +620,24 @@
 
     .empty-state {
       text-align: center;
-      padding: 80px 20px;
-      color: #b2bec3;
+      padding: 60px 20px;
+      color: #94a3b8;
     }
 
     .empty-state .icon {
-      font-size: 64px;
-      margin-bottom: 20px;
+      font-size: 48px;
+      margin-bottom: 16px;
     }
 
     .empty-state h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #636e72;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #64748b;
     }
 
     .empty-state p {
-      font-size: 14px;
-      margin-bottom: 25px;
+      font-size: 13px;
+      margin-bottom: 20px;
     }
 
     /* 모달 */
@@ -658,17 +660,19 @@
 
     .modal-content {
       background: white;
-      border-radius: 20px;
-      padding: 40px;
+      border-radius: var(--radius);
+      padding: 32px;
       max-width: 600px;
       width: 90%;
       max-height: 80vh;
       overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     }
 
     .modal-content h3 {
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 20px;
+      margin-bottom: 18px;
+      letter-spacing: -0.3px;
     }
 
     .modal-content .detail-grid {
@@ -683,13 +687,14 @@
     }
 
     .modal-content .detail-label {
-      font-size: 12px;
-      color: #636e72;
-      margin-bottom: 5px;
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      font-weight: 500;
     }
 
     .modal-content .detail-value {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--dark);
     }
@@ -765,7 +770,8 @@
     <div class="nav-menu"></div>
 
     <!-- 우측: 액션 버튼 -->
-    <div class="nav-actions">
+    <div class="nav-actions" style="display:flex; align-items:center; gap:12px;">
+      <img src="junglim_logo.png" alt="JUNGLIM" style="height: 14px;">
       <a href="assembly-comparison.html" class="action-btn comparison-btn active">
         어셈블리 비교
       </a>
@@ -825,7 +831,7 @@
         </div>
         <div class="chart-box">
           <div class="chart-box-header">
-            <span class="chart-box-title">천장마감</span>
+            <span class="chart-box-title">천장</span>
           </div>
           <div class="chart-container">
             <div class="bar-chart" id="barChartCeiling"></div>
@@ -872,7 +878,7 @@
         <button class="tab-btn" onclick="filterAssemblies('floor')">바닥</button>
         <button class="tab-btn" onclick="filterAssemblies('external')">외벽</button>
         <button class="tab-btn" onclick="filterAssemblies('internal')">내벽</button>
-        <button class="tab-btn" onclick="filterAssemblies('ceiling')">천장마감</button>
+        <button class="tab-btn" onclick="filterAssemblies('ceiling')">천장</button>
         <button class="tab-btn" onclick="filterAssemblies('window')">창호</button>
       </div>
       <div class="assemblies-grid" id="assembliesGrid"></div>
@@ -969,12 +975,12 @@
 
     // 부재별 색상 정의 (진한색 → 연한색 그라데이션)
     const structureColors = {
-      floor: ['#5D3A1A', '#D2691E'],      // 바닥: 진한브라운 → 연한브라운
-      external: ['#1a5276', '#85c1e9'],   // 외벽: 진한블루 → 연한블루
-      internal: ['#145a32', '#82e0aa'],   // 내벽: 진한그린 → 연한그린
-      ceiling: ['#4a235a', '#d7bde2'],    // 천장마감: 진한퍼플 → 연한퍼플
-      window: ['#006064', '#80deea'],     // 창호: 진한스카이 → 연한스카이
-      all: ['#00695c', '#80cbc4']         // 전체: 진한민트 → 연한민트
+      floor: ['#e8590c', '#fb923c'],      // 바닥: 주황
+      external: ['#d97706', '#fbbf24'],   // 외벽: 노랑
+      internal: ['#00b894', '#6ee7b7'],   // 내벽: 초록
+      ceiling: ['#56b3d6', '#a5dff0'],    // 천장: 연한 하늘
+      window: ['#2563eb', '#60a5fa'],     // 창호: 파랑
+      all: ['#475569', '#94a3b8']         // 전체: 슬레이트
     };
 
     // 단일 차트 렌더링 헬퍼 함수
@@ -1078,6 +1084,9 @@
       
       grid.innerHTML = assemblies.map(assembly => {
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
+        const colors = structureColors[assembly.structureType] || structureColors.all;
+        const perM2Bg = `background: linear-gradient(135deg, ${colors[0]}, ${colors[1]})`;
+        const totalBg = `background: ${colors[0]}; opacity: 0.85`;
 
         return `
           <div class="assembly-card">
@@ -1092,14 +1101,14 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="carbon-display-grid">
-              <div class="carbon-display">
+              <div class="carbon-display" style="${perM2Bg}">
                 <div class="label">m²당 배출량</div>
                 <div class="value">${formatNumber(carbonPerM2, 1)}</div>
                 <div class="unit">kg CO₂eq/m²</div>
               </div>
-              <div class="carbon-display total">
+              <div class="carbon-display" style="${totalBg}">
                 <div class="label">전체 배출량</div>
                 <div class="value">${formatNumber(assembly.totalCarbon, 0)}</div>
                 <div class="unit">kg CO₂eq</div>
@@ -1164,6 +1173,98 @@
     }
 
     // 어셈블리 3D 렌더링
+    // 천장 프로시저럴 텍스처 생성
+    function makeTexture(type, size) {
+      const s = size || 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = s; canvas.height = s;
+      const ctx = canvas.getContext('2d');
+
+      if (type === 'acoustic_tex') {
+        ctx.fillStyle = '#f2efe8'; ctx.fillRect(0,0,s,s);
+        ctx.fillStyle = '#e0ddd5';
+        for (let i=0;i<800;i++){const x=Math.random()*s,y=Math.random()*s;ctx.beginPath();ctx.arc(x,y,0.8+Math.random()*1.2,0,Math.PI*2);ctx.fill();}
+      } else if (type === 'gypsum') {
+        ctx.fillStyle = '#f0ece4'; ctx.fillRect(0,0,s,s);
+        ctx.strokeStyle = '#e5e0d8'; ctx.lineWidth = 0.3;
+        for (let i=0;i<200;i++){ctx.beginPath();ctx.moveTo(Math.random()*s,Math.random()*s);ctx.lineTo(Math.random()*s,Math.random()*s);ctx.stroke();}
+      } else if (type === 'wood') {
+        ctx.fillStyle = '#c49a5a'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){const o=Math.sin(y*0.05)*8;ctx.strokeStyle=`rgba(${140+Math.random()*30},${100+Math.random()*20},${50+Math.random()*20},0.3)`;ctx.lineWidth=1+Math.random()*2;ctx.beginPath();ctx.moveTo(0,y+o);ctx.bezierCurveTo(s*0.3,y+o+Math.random()*4,s*0.7,y+o-Math.random()*4,s,y+o);ctx.stroke();}
+      } else if (type === 'wood_dark') {
+        ctx.fillStyle = '#8b6914'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){ctx.strokeStyle=`rgba(${100+Math.random()*30},${70+Math.random()*20},${20+Math.random()*15},0.35)`;ctx.lineWidth=1+Math.random()*2;ctx.beginPath();ctx.moveTo(0,y);ctx.bezierCurveTo(s*0.3,y+Math.random()*5,s*0.7,y-Math.random()*5,s,y);ctx.stroke();}
+      } else if (type === 'plywood') {
+        ctx.fillStyle = '#d2ad6e'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=1){const w=Math.sin(y*0.03)*12+Math.sin(y*0.08)*5;const b=150+Math.sin(y*0.02)*30;ctx.strokeStyle=`rgba(${b},${b-30},${b-70},0.2)`;ctx.lineWidth=1.5+Math.sin(y*0.1)*0.8;ctx.beginPath();ctx.moveTo(w,y);ctx.bezierCurveTo(s*0.3+w,y+Math.random()*2,s*0.7+w,y-Math.random()*2,s+w,y);ctx.stroke();}
+      } else if (type === 'mdf') {
+        ctx.fillStyle = '#c9a96e'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<3000;i++){ctx.fillStyle=`rgba(${170+Math.random()*30},${140+Math.random()*30},${80+Math.random()*30},0.08)`;ctx.fillRect(Math.random()*s,Math.random()*s,2,2);}
+      } else if (type === 'wood_wool') {
+        ctx.fillStyle = '#bfa05c'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<300;i++){const x=Math.random()*s,y=Math.random()*s,len=20+Math.random()*50,angle=-0.3+Math.random()*0.6,thick=1.5+Math.random()*3;ctx.strokeStyle=`rgba(${130+Math.random()*60},${100+Math.random()*50},${40+Math.random()*30},0.35)`;ctx.lineWidth=thick;ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x+len*0.3,y+Math.random()*6-3,x+len*0.7,y+Math.random()*6-3,x+Math.cos(angle)*len,y+Math.sin(angle)*len);ctx.stroke();}
+      } else if (type === 'aluminum') {
+        ctx.fillStyle = '#c8cdd0'; ctx.fillRect(0,0,s,s);
+        for (let x=0;x<s;x++){ctx.strokeStyle=`rgba(${190+Math.random()*40},${195+Math.random()*40},${200+Math.random()*40},0.15)`;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,s);ctx.stroke();}
+      } else if (type === 'spray') {
+        ctx.fillStyle = '#d5cfc5'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<2000;i++){const r=1+Math.random()*3;ctx.fillStyle=`rgba(${180+Math.random()*40},${175+Math.random()*35},${165+Math.random()*30},0.2)`;ctx.beginPath();ctx.arc(Math.random()*s,Math.random()*s,r,0,Math.PI*2);ctx.fill();}
+      } else if (type === 'concrete') {
+        ctx.fillStyle = '#b0aca6'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<1500;i++){ctx.fillStyle=`rgba(${150+Math.random()*40},${145+Math.random()*40},${138+Math.random()*35},0.1)`;ctx.fillRect(Math.random()*s,Math.random()*s,1+Math.random()*3,1+Math.random()*3);}
+      } else if (type === 'acoustic_slat') {
+        ctx.fillStyle = '#b08050'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){ctx.strokeStyle=`rgba(${140+Math.random()*30},${95+Math.random()*25},${50+Math.random()*20},0.25)`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(s,y+Math.random()*3-1.5);ctx.stroke();}
+        ctx.fillStyle='rgba(30,20,10,0.85)';const sl=s/20;for(let x=sl;x<s;x+=sl){ctx.fillRect(x-1,0,2,s);}
+      }
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    // 천장 자재별 3D 재질
+    function getCeilingMaterial3D(material) {
+      const name = (material.name || '').toLowerCase();
+      const nameEn = (material.nameEn || '').toLowerCase();
+      if (name.includes('알루미늄') && !name.includes('재활용') || nameEn === 'aluminum_ceiling' || nameEn === 'aluminum_louver')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('aluminum'), roughness: 0.15, metalness: 0.85 });
+      if (name.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum'))
+        return new THREE.MeshStandardMaterial({ map: makeTexture('aluminum'), color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+      if (name.includes('흡음텍스') || nameEn === 'acoustic_tex')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('acoustic_tex'), roughness: 0.95, metalness: 0.0 });
+      if (name.includes('석고텍스') || nameEn === 'gypsum_tex')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('gypsum'), roughness: 0.9, metalness: 0.0 });
+      if (name.includes('석고보드') || nameEn === 'gypsum_board')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('gypsum'), color: 0xf5f2ed, roughness: 0.85, metalness: 0.0 });
+      if (name.includes('페인트') || nameEn === 'paint')
+        return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 });
+      if (name.includes('목모') || nameEn === 'wood_wool_board')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood_wool'), roughness: 0.95, metalness: 0.0 });
+      if (name.includes('목재패널') || nameEn === 'wood_panel')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood'), roughness: 0.65, metalness: 0.05 });
+      if ((name.includes('루버') && name.includes('목재')) || nameEn === 'wood_louver')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood_dark'), roughness: 0.6, metalness: 0.05 });
+      if (name.includes('smc') || nameEn === 'pvc_ceiling')
+        return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.25, metalness: 0.05 });
+      if (name.includes('폴리카보네이트') || nameEn === 'polycarbonate')
+        return new THREE.MeshStandardMaterial({ color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7 });
+      if (name.includes('합판') || nameEn === 'plywood')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('plywood'), roughness: 0.55, metalness: 0.0 });
+      if (name.toUpperCase().includes('MDF') || nameEn === 'mdf')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('mdf'), roughness: 0.45, metalness: 0.0 });
+      if (name.includes('천장지') || nameEn === 'wallpaper')
+        return new THREE.MeshStandardMaterial({ color: 0xfaf8f5, roughness: 0.9, metalness: 0.0 });
+      if (name.includes('뿜칠') || name.includes('질석') || nameEn === 'perlite')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('spray'), roughness: 1.0, metalness: 0.0 });
+      if (name.includes('흡음패널') || nameEn === 'acoustic_panel')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('acoustic_slat'), roughness: 0.6, metalness: 0.05 });
+      if (name.includes('노출콘크리트') || nameEn === 'exposed_concrete')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('concrete'), roughness: 0.55, metalness: 0.0 });
+      return new THREE.MeshStandardMaterial({ color: new THREE.Color(material.color || '#636e72'), roughness: 0.7, metalness: 0.1 });
+    }
+
     function renderAssembly3D(assembly) {
       const container = document.getElementById(`preview3d-${assembly.id}`);
       if (!container) return;
@@ -1175,10 +1276,13 @@
       }
 
       const width = container.clientWidth;
-      const height = 150;
+      const height = 180;
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      const isCeilingType = (assembly.structureType === 'ceiling');
+      const isWindowType = (assembly.structureType === 'window');
+      const fov = (isCeilingType || isWindowType) ? 35 : 45;
+      const camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
       renderer.setSize(width, height);
@@ -1263,11 +1367,183 @@
       // 레이어 생성
       const isWindow = (assembly.structureType === 'window');
       const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
+      const isCeiling = (assembly.structureType === 'ceiling');
       let pos = 0;
       const meshes = [];
 
       // 모든 레이어를 담을 그룹 생성
       const group = new THREE.Group();
+
+      // 천장일 경우 전용 렌더링
+      if (isCeiling && assembly.layers.length > 0) {
+        const gridW = 1.6;
+        const gridD = 1.0;
+
+        const hasCeilingFrame = assembly.layers.some(l =>
+          (l.material.name || '').includes('경량철골') || (l.material.nameEn || '').includes('light_steel_ceiling')
+        );
+
+        if (hasCeilingFrame) {
+          // T-bar 재질
+          const tBarMat = new THREE.MeshStandardMaterial({ color: 0xd0d0d0, roughness: 0.3, metalness: 0.7 });
+          const wireMat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.4, metalness: 0.6 });
+
+          const mainRunnerSpacing = 0.6;
+          const mainCount = Math.floor(gridD / mainRunnerSpacing);
+          for (let i = 0; i <= mainCount; i++) {
+            const z = -gridD/2 + i * mainRunnerSpacing;
+            const web = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.03, 0.002), tBarMat);
+            web.position.set(0, -0.015, z); group.add(web);
+            const flange = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.002, 0.024), tBarMat);
+            flange.position.set(0, -0.031, z); group.add(flange);
+          }
+
+          const crossSpacing = 0.6;
+          const crossCount = Math.floor(gridW / crossSpacing);
+          for (let i = 0; i <= crossCount; i++) {
+            const x = -gridW/2 + i * crossSpacing;
+            const web = new THREE.Mesh(new THREE.BoxGeometry(0.002, 0.025, gridD), tBarMat);
+            web.position.set(x, -0.0125, 0); group.add(web);
+            const flange = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.002, gridD), tBarMat);
+            flange.position.set(x, -0.026, 0); group.add(flange);
+          }
+
+          // 행거 와이어
+          for (let i = 0; i <= mainCount; i += 2) {
+            const z = -gridD/2 + i * mainRunnerSpacing;
+            for (let j = 0; j <= crossCount; j += 2) {
+              const x = -gridW/2 + j * crossSpacing;
+              const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.25, 6), wireMat);
+              wire.position.set(x, 0.125, z); group.add(wire);
+              const anchor = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.005, 0.03), wireMat);
+              anchor.position.set(x, 0.252, z); group.add(anchor);
+            }
+          }
+
+          // 패널 레이어 (경량철골 제외)
+          const panelLayers = assembly.layers.filter(l =>
+            !(l.material.name || '').includes('경량철골')
+          );
+          let pYPos = -0.033;
+          const tileGap = 0.008;
+          const tileSize = mainRunnerSpacing - tileGap;
+
+          panelLayers.forEach((pLayer) => {
+            const pName = (pLayer.material.name || '').toLowerCase();
+            const pNameEn = (pLayer.material.nameEn || '').toLowerCase();
+            const pThick = (pLayer.thickness || 10) / 1000;
+            const pMat = getCeilingMaterial3D(pLayer.material);
+
+            if (pName.includes('루버') || pNameEn.includes('louver')) {
+              const isAlu = pName.includes('알루미늄') || pNameEn.includes('aluminum');
+              const louverW = isAlu ? 0.018 : 0.035;
+              const louverH = isAlu ? 0.06 : 0.045;
+              const lSpacing = isAlu ? 0.05 : 0.065;
+              const lCount = Math.floor(gridW / lSpacing);
+              for (let i = 0; i <= lCount; i++) {
+                const x = -gridW/2 + i * lSpacing + louverW/2;
+                const louver = new THREE.Mesh(new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), pMat);
+                louver.position.set(x, pYPos - louverH/2, 0); group.add(louver);
+              }
+              pYPos -= louverH + 0.005;
+            } else if (pName.includes('뿜칠') || pName.includes('질석') || pNameEn.includes('perlite') || pNameEn.includes('spray')) {
+              const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, pThick, gridD), pMat);
+              spray.position.set(0, pYPos - pThick/2, 0); group.add(spray);
+              pYPos -= pThick + 0.003;
+            } else if (pName.includes('페인트') || pNameEn === 'paint') {
+              const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), pMat);
+              paint.position.set(0, pYPos - 0.0015, 0); group.add(paint);
+              pYPos -= 0.005;
+            } else if (pName.includes('석고보드') || pName.includes('천장지') || pName.includes('mdf') ||
+                       pName.includes('합판') || pName.includes('흡음패널') ||
+                       pNameEn === 'gypsum_board' || pNameEn === 'wallpaper' || pNameEn === 'mdf' ||
+                       pNameEn === 'plywood' || pNameEn === 'acoustic_panel') {
+              const panel = new THREE.Mesh(new THREE.BoxGeometry(gridW, pThick, gridD), pMat);
+              panel.position.set(0, pYPos - pThick/2, 0); group.add(panel);
+              pYPos -= pThick + 0.005;
+            } else {
+              // 타일형 (텍스, 목모보드, SMC, 알루미늄천장 등) — 600x600 그리드
+              const colCount = Math.floor(gridW / mainRunnerSpacing);
+              for (let row = 0; row <= mainCount; row++) {
+                for (let col = 0; col <= colCount; col++) {
+                  const x = -gridW/2 + col * mainRunnerSpacing + mainRunnerSpacing/2;
+                  const z = -gridD/2 + row * mainRunnerSpacing + mainRunnerSpacing/2;
+                  if (x - tileSize/2 < -gridW/2 - 0.01 || x + tileSize/2 > gridW/2 + 0.01) continue;
+                  if (z - tileSize/2 < -gridD/2 - 0.01 || z + tileSize/2 > gridD/2 + 0.01) continue;
+                  const tile = new THREE.Mesh(new THREE.BoxGeometry(tileSize, pThick, tileSize), pMat);
+                  tile.position.set(x, pYPos - pThick/2, z); group.add(tile);
+                }
+              }
+              pYPos -= pThick + 0.008;
+            }
+          });
+
+          // 상단 슬라브
+          const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.4 });
+          const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW + 0.1, 0.08, gridD + 0.1), slabMat);
+          slab.position.set(0, 0.29, 0); group.add(slab);
+
+        } else {
+          // 경량철골 없이 자재만 선택한 경우
+          let yPos = 0;
+          assembly.layers.forEach((layer) => {
+            const name = (layer.material.name || '').toLowerCase();
+            const nameEn = (layer.material.nameEn || '').toLowerCase();
+            const mat3D = getCeilingMaterial3D(layer.material);
+            const thick = (layer.thickness || 10) / 1000;
+
+            if (name.includes('루버') || nameEn.includes('louver')) {
+              const isAlu = name.includes('알루미늄') || nameEn.includes('aluminum');
+              const louverW = isAlu ? 0.018 : 0.035;
+              const louverH = isAlu ? 0.06 : 0.045;
+              const spacing = isAlu ? 0.05 : 0.065;
+              const count = Math.floor(gridW / spacing);
+              for (let i = 0; i <= count; i++) {
+                const x = -gridW/2 + i * spacing + louverW/2;
+                const louver = new THREE.Mesh(new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), mat3D);
+                louver.position.set(x, yPos - louverH/2, 0); group.add(louver);
+              }
+              yPos -= louverH + 0.01;
+            } else if (name.includes('뿜칠') || name.includes('질석') || nameEn.includes('spray') || nameEn.includes('perlite')) {
+              const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.5 });
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), slabMat);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+              spray.position.set(0, yPos - thick/2, 0); group.add(spray);
+              yPos -= thick + 0.002;
+            } else if (name.includes('페인트') || nameEn.includes('paint')) {
+              const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.5 });
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), slabMat);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), mat3D);
+              paint.position.set(0, yPos - 0.0015, 0); group.add(paint);
+              yPos -= 0.005;
+            } else if (name.includes('노출콘크리트') || nameEn.includes('exposed_concrete')) {
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), mat3D);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              yPos -= 0.005;
+            } else {
+              const panel = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+              panel.position.set(0, yPos - thick/2, 0); group.add(panel);
+              yPos -= thick + 0.005;
+            }
+          });
+        }
+
+        scene.add(group);
+        camera.position.set(2.2, 1.2, 2.2);
+        camera.lookAt(0, 0.05, 0);
+
+        const resource = { renderer, scene, animationId: null };
+        threeResources.push(resource);
+        function animate() {
+          resource.animationId = requestAnimationFrame(animate);
+          group.rotation.y += 0.003;
+          renderer.render(scene, camera);
+        }
+        animate();
+        return;
+      }
 
       // 창호일 경우 프레임+유리 합체 렌더링
       if (isWindow && assembly.layers.length > 0) {
@@ -1314,7 +1590,7 @@
         }
 
         scene.add(group);
-        camera.position.set(0, 0.5, 2.5);
+        camera.position.set(0.6, 0.2, 4.0);
         camera.lookAt(0, 0, 0);
 
         function animate() {

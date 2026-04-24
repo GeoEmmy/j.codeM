@@ -10,10 +10,18 @@ class CarbonCalculator {
     // thickness: mm 단위
     // area: m² 단위
     // 결과: kg CO2eq
-    
+
+    const unit = String(material.unit || '').toLowerCase();
+
+    // m² 단위 자재 (천장, 창호 등): GWP × 면적
+    if (unit.includes('m²') || unit.includes('m2')) {
+      return material.gwp * area;
+    }
+
+    // m³ 단위 자재: GWP × 부피
     const thicknessInMeters = thickness / 1000; // mm를 m로 변환
     const volume = thicknessInMeters * area; // m³
-    
+
     return material.gwp * volume;
   }
 
@@ -256,7 +264,7 @@ function getStructureTypeName(type) {
     floor: '바닥 구조',
     external: '외벽 구조',
     internal: '내벽 구조',
-    ceiling: '천장 마감'
+    ceiling: '천장'
   };
   return names[type] || type;
 }
