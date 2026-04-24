@@ -502,6 +502,12 @@
       gap: 8px;
       height: 248px;
     }
+    .bar-chart.has-negative {
+      align-items: stretch;
+    }
+    .bar-chart.has-negative .bar-item {
+      justify-content: flex-end;
+    }
 
     .charts-row.full-width .bar-chart {
       gap: 15px;
@@ -553,6 +559,23 @@
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      position: relative;
+    }
+    .bar-label:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(45,52,54,0.92);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 100;
+      pointer-events: none;
     }
 
     .charts-row.five-cols .bar-label {
@@ -976,22 +999,45 @@
         return bPerM2 - aPerM2;
       });
 
-      const maxCarbonPerM2 = Math.max(...sorted.map(a => a.totalCarbon / a.area));
+      const carbonValues = sorted.map(a => a.totalCarbon / a.area);
+      const maxVal = Math.max(...carbonValues.map(v => Math.abs(v)));
+      const hasNegative = carbonValues.some(v => v < 0);
+      const maxPositive = Math.max(0, ...carbonValues);
+      const minNegative = Math.min(0, ...carbonValues);
+      const totalRange = maxPositive + Math.abs(minNegative);
+      // 양수 영역이 차지할 비율
+      const posRatio = totalRange > 0 ? maxPositive / totalRange : 1;
+      const posHeight = hasNegative ? chartHeight * posRatio : chartHeight;
+      const negHeight = hasNegative ? chartHeight * (1 - posRatio) : 0;
+
+      if (hasNegative) chartContainer.classList.add('has-negative');
+      else chartContainer.classList.remove('has-negative');
 
       chartContainer.innerHTML = sorted.map(assembly => {
         const carbonPerM2 = assembly.totalCarbon / assembly.area;
-        const heightPx = Math.max(1, (carbonPerM2 / maxCarbonPerM2) * chartHeight);
-        // 전체 차트는 각 어셈블리의 구조타입 색상 사용
         const barColors = colorKey === 'all' ? structureColors[assembly.structureType] || colors : colors;
 
-        return `
-          <div class="bar-item">
+        if (carbonPerM2 >= 0) {
+          const heightPx = maxPositive > 0 ? Math.max(1, (carbonPerM2 / maxPositive) * posHeight) : 1;
+          return `
+          <div class="bar-item" style="${hasNegative ? 'padding-bottom: ' + negHeight + 'px;' : ''}">
             <div class="bar" style="height: ${heightPx}px; background: linear-gradient(to top, ${barColors[0]}, ${barColors[1]})" onclick="showDetail(${assembly.id})">
               <div class="value-label">${formatNumber(carbonPerM2, 0)}</div>
             </div>
-            <div class="bar-label">${escapeHtml(assembly.name)}</div>
+            <div class="bar-label" title="${escapeHtml(assembly.name)}">${escapeHtml(assembly.name)}</div>
           </div>
-        `;
+          `;
+        } else {
+          const absPx = Math.max(1, (Math.abs(carbonPerM2) / Math.abs(minNegative)) * negHeight);
+          return `
+          <div class="bar-item" style="justify-content: flex-start !important; padding-bottom: 0;">
+            <div style="flex: 0 0 ${posHeight + 18}px; display:flex; align-items:flex-end;"><div class="bar-label" title="${escapeHtml(assembly.name)}" style="width:100%;">${escapeHtml(assembly.name)}</div></div>
+            <div class="bar" style="height: ${absPx}px; background: linear-gradient(to bottom, ${barColors[0]}, ${barColors[1]}); border-radius: 0 0 10px 10px;" onclick="showDetail(${assembly.id})">
+              <div class="value-label" style="top: auto; bottom: -20px;">${formatNumber(carbonPerM2, 0)}</div>
+            </div>
+          </div>
+          `;
+        }
       }).join('');
     }
 
@@ -1223,58 +1269,49 @@
       // 모든 레이어를 담을 그룹 생성
       const group = new THREE.Group();
 
-      // 창호일 경우 프레임+유리 형태로 렌더링
-      if (isWindow) {
-        // 선택한 자재에서 프레임과 유리 찾기
-        const frameMaterialLayer = assembly.layers.find(l => l.material.categoryName === '프레임');
-        const glassMaterialLayer = assembly.layers.find(l => l.material.categoryName === '유리');
+      // 창호일 경우 프레임+유리 합체 렌더링
+      if (isWindow && assembly.layers.length > 0) {
+        const layer = assembly.layers[0];
+        const name = (layer.material.name || '').toLowerCase();
+        const frameT = 0.06;
+        const frameD = 0.08;
+        const winW = 1.0;
+        const winH = 1.4;
 
-        // 프레임 재질
-        const frameColor = frameMaterialLayer ? frameMaterialLayer.material.color : '#636e72';
-        const frameMat = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(frameColor),
-          roughness: 0.5,
-          metalness: 0.3
-        });
+        const isFrameless = name.includes('접합') || name.includes('강화');
 
-        // 유리 재질
-        const glassColor = glassMaterialLayer ? glassMaterialLayer.material.color : '#87CEEB';
+        // 유리 색상
+        let glassColor = '#87CEEB', glassOpacity = 0.4;
+        if (name.includes('삼중') || name.includes('triple')) { glassColor = '#4a90d9'; glassOpacity = 0.5; }
+        else if (name.includes('복층') || name.includes('double')) { glassColor = '#7ec8e3'; glassOpacity = 0.45; }
+        else if (name.includes('강화')) { glassColor = '#55c9a6'; glassOpacity = 0.5; }
+        else if (name.includes('접합')) { glassColor = '#9b8ec4'; glassOpacity = 0.5; }
+
         const glassMat = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(glassColor),
-          transparent: true,
-          opacity: 0.4,
-          roughness: 0.1,
-          metalness: 0.1
+          color: new THREE.Color(glassColor), transparent: true, opacity: glassOpacity, roughness: 0.05, metalness: 0.1
         });
 
-        const frameT = 0.06;  // 프레임 두께
-        const frameD = 0.08;  // 프레임 깊이
-        const winW = 1.0;     // 창 너비
-        const winH = 1.4;     // 창 높이
+        if (!isFrameless) {
+          let frameColor = '#636e72';
+          if (name.includes('알루미늄') || name.includes('aluminum')) frameColor = '#b2bec3';
+          else if (name.includes('pvc')) frameColor = '#dfe6e9';
+          else if (name.includes('wood') || name.includes('목재')) frameColor = '#b8860b';
 
-        // 왼쪽 프레임
-        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
-        frameLeft.position.x = -winW/2 + frameT/2;
-        group.add(frameLeft);
+          const frameMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(frameColor), roughness: 0.5, metalness: 0.3
+          });
 
-        // 오른쪽 프레임
-        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
-        frameRight.position.x = winW/2 - frameT/2;
-        group.add(frameRight);
+          group.add(new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat)).position.x = -winW/2 + frameT/2;
+          group.add(new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat)).position.x = winW/2 - frameT/2;
+          const ft = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+          ft.position.set(0, winH/2 - frameT/2, 0); group.add(ft);
+          const fb = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+          fb.position.set(0, -winH/2 + frameT/2, 0); group.add(fb);
 
-        // 상단 프레임
-        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
-        frameTop.position.set(0, winH/2 - frameT/2, 0);
-        group.add(frameTop);
-
-        // 하단 프레임
-        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
-        frameBottom.position.set(0, -winH/2 + frameT/2, 0);
-        group.add(frameBottom);
-
-        // 유리
-        const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
-        group.add(glass);
+          group.add(new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat));
+        } else {
+          group.add(new THREE.Mesh(new THREE.BoxGeometry(winW, winH, 0.015), glassMat));
+        }
 
         scene.add(group);
         camera.position.set(0, 0.5, 2.5);
@@ -1456,6 +1493,7 @@
       if (confirm('이 어셈블리를 삭제하시겠습니까?')) {
         calculator.removeAssembly(assemblyId);
         init();
+
       }
     }
 

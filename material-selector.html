@@ -301,8 +301,8 @@
       position: relative;
       width: 100%;
       max-width: 1800px;
-      margin: 40px auto;
-      padding: 60px 80px 100px;
+      margin: 40px auto 0;
+      padding: 60px 80px 60px;
       background: transparent;
       border-radius: 25px;
       overflow: visible;
@@ -462,9 +462,10 @@
       min-width: 70px;  /* 최소 크기 보장 */
       min-height: 70px; /* 최소 크기 보장 */
       flex-shrink: 0; /* 타일이 절대 축소되지 않도록 */
-      background-size: cover;
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
+      background-color: #ffffff;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -584,6 +585,19 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      position: relative;
+    }
+
+    .tile-wrapper:hover .tile-name-below {
+      overflow: visible;
+      white-space: normal;
+      height: auto;
+      background: rgba(255,255,255,0.95);
+      padding: 2px 4px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+      max-width: 120px;
     }
 
     /* GWP 뱃지 (항상 표시) */
@@ -613,11 +627,16 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
 
-    .level-1 .level-indicator { background: #d63031; }  /* 맨 위 - 10,000 이상 (빨강) */
-    .level-2 .level-indicator { background: #fdcb6e; }  /* 1,000 이상 (주황) */
-    .level-3 .level-indicator { background: #74b9ff; }  /* 100 이상 (하늘색) */
-    .level-4 .level-indicator { background: #55efc4; }  /* 0 이상 (민트) */
-    .level-5 .level-indicator { background: #00b894; }  /* 맨 아래 - 0 미만 (녹색) */
+    /* 출처별 동그라미 색상 */
+    .source-ice .level-indicator { background: #e74c3c; }         /* ICE v3 - 빨강 */
+    .source-ec3 .level-indicator { background: #3498db; }         /* EC3 - 파랑 */
+    .source-epd-kr .level-indicator { background: #2ecc71; }      /* 국내 EPD - 초록 */
+    .source-okobaudat .level-indicator { background: #e67e22; }   /* Ökobaudat - 주황 */
+    .source-2050 .level-indicator { background: #9b59b6; }        /* 2050 Materials - 보라 */
+    .source-epic .level-indicator { background: #1abc9c; }        /* EPiC - 틸 */
+    .source-epd .level-indicator { background: #f1c40f; }         /* 기타 EPD - 노랑 */
+    .source-academic .level-indicator { background: #34495e; }    /* 학술논문 - 남색 */
+    .source-other .level-indicator { background: #95a5a6; }       /* 기타 - 회색 */
 
     /* 카테고리 필터 메뉴 */
     .material-filters {
@@ -739,7 +758,7 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
-      background-size: cover;
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15),
@@ -1203,7 +1222,7 @@
         내벽
       </a>
       <a href="?type=ceiling" class="nav-btn" data-type="ceiling">
-        천장마감
+        천장
       </a>
       <a href="?type=window" class="nav-btn" data-type="window">
         창호
@@ -1238,9 +1257,6 @@
         <button class="filter-btn" onclick="filterMaterials('마감재')" data-filter="마감재">
           마감재
         </button>
-        <button class="filter-btn" onclick="filterMaterials('방수재')" data-filter="방수재">
-          방수재
-        </button>
       </div>
 
       <!-- 피라미드 배경 위에 자재 타일 배치 -->
@@ -1249,6 +1265,16 @@
         <div class="pyramid-tiles" id="pyramidTiles">
           <!-- 자재 타일들이 여기에 동적으로 생성됨 -->
         </div>
+      </div>
+      <div class="source-legend" style="display:flex; justify-content:center; gap:14px; padding:0 0 32px 0; font-size:11px; color:#636e72; flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e74c3c;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>ICE v3</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#3498db;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EC3</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>국내 EPD</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e67e22;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Ökobaudat</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#9b59b6;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>2050 Materials</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#1abc9c;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPiC</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#f1c40f;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPD</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#34495e;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>학술논문</span>
       </div>
     </main>
 
@@ -1280,8 +1306,7 @@
         <input
           type="text"
           id="assemblyName"
-          placeholder="floor 01"
-          value="001"
+          placeholder=""
         >
       <label for="assemblyArea" style="display: block; margin-bottom: 5px; color: #636e72; font-size: 13px;">
         적용면적(m²)
@@ -1321,6 +1346,10 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const structureType = urlParams.get('type') || 'floor';
+
+    const STRUCTURE_NAME_KR = {
+      floor: '바닥', external: '외벽', internal: '내벽', ceiling: '천장', window: '창호'
+    };
 
     let selectedLayers = [];
     let currentFilter = 'all';
@@ -1384,11 +1413,46 @@
       'default': 'https://picsum.photos/id/50/100/100'
     };
 
+    // 출처 → CSS 클래스 매핑
+    function getSourceClass(source) {
+      const s = (source || '').toLowerCase();
+      if (s.includes('ice')) return 'source-ice';
+      if (s.includes('ec3')) return 'source-ec3';
+      if (s.includes('환경성적') || s.includes('국내epd') || s.includes('국가lci')) return 'source-epd-kr';
+      if (s.includes('okobaudat') || s.includes('okoboudat')) return 'source-okobaudat';
+      if (s.includes('2050')) return 'source-2050';
+      if (s.includes('epic')) return 'source-epic';
+      if (s.includes('epd')) return 'source-epd';
+      if (s.includes('학술') || s.includes('논문')) return 'source-academic';
+      return 'source-other';
+    }
+
+    // nameEn → 확장자 캐시 (png/jpg 자동 탐색)
+    const _imgExtCache = {};
+    function probeImageExt(nameEn) {
+      if (_imgExtCache[nameEn]) return;
+      _imgExtCache[nameEn] = 'png'; // 기본값
+      const img = new Image();
+      img.onload = () => { _imgExtCache[nameEn] = 'png'; };
+      img.onerror = () => {
+        const img2 = new Image();
+        img2.onload = () => { _imgExtCache[nameEn] = 'jpg'; };
+        img2.src = `images/${nameEn}.jpg`;
+      };
+      img.src = `images/${nameEn}.png`;
+    }
+
     // 자재명으로 이미지 URL 찾기
     function getMaterialImageUrl(material) {
+      // 1순위: nameEn이 있으면 images/{nameEn}.png 또는 .jpg
+      if (material.nameEn) {
+        const ext = _imgExtCache[material.nameEn] || 'png';
+        return `images/${material.nameEn}.${ext}`;
+      }
+
+      // 2순위: 키워드 매칭 (폴백)
       const name = material.name.toLowerCase();
 
-      // 키워드 매칭
       for (const [keyword, url] of Object.entries(MATERIAL_IMAGE_MAP)) {
         if (name.includes(keyword) ||
             name.includes(keyword.replace(/[aeiou]/g, '')) ||
@@ -1674,58 +1738,694 @@
       const isWindow = (structureType === 'window');
       const isWall = (structureType === 'external' || structureType === 'internal');
 
-      // 창호일 경우 프레임+유리 형태로 렌더링
+      // 창호일 경우 렌더링 (프레임+유리 합체)
       if (isWindow) {
-        // 선택한 자재에서 프레임과 유리 찾기
-        const frameMaterialLayer = selectedLayers.find(l => l.material.categoryName === '프레임');
-        const glassMaterialLayer = selectedLayers.find(l => l.material.categoryName === '유리');
+        const winW = 1.0;
+        const winH = 1.4;
+        const frameT = 0.06;
+        const frameD = 0.08;
 
-        // 프레임 재질 - 자재의 color 필드 사용
-        const frameColor = frameMaterialLayer ? frameMaterialLayer.material.color : '#636e72';
-        const frameMat = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(frameColor),
-          roughness: 0.5,
-          metalness: 0.3
+        selectedLayers.forEach((layer) => {
+          const name = (layer.material.name || '').toLowerCase();
+
+          // 프레임 없는 자재: 접합유리, 강화유리
+          const isFrameless = name.includes('접합') || name.includes('강화') ||
+                              name.includes('laminated') || name.includes('tempered');
+
+          // 유리 색상 (유리 종류별 미묘한 차이)
+          let glassColor = '#87CEEB';
+          let glassOpacity = 0.4;
+          let glassThickness = 0.02;
+
+          if (name.includes('삼중') || name.includes('triple')) {
+            glassColor = '#4a90d9';
+            glassOpacity = 0.5;
+            glassThickness = 0.04;
+          } else if (name.includes('복층') || name.includes('double')) {
+            glassColor = '#7ec8e3';
+            glassOpacity = 0.45;
+            glassThickness = 0.03;
+          } else if (name.includes('강화')) {
+            glassColor = '#55c9a6';
+            glassOpacity = 0.5;
+            glassThickness = 0.015;
+          } else if (name.includes('접합')) {
+            glassColor = '#9b8ec4';
+            glassOpacity = 0.5;
+            glassThickness = 0.018;
+          }
+
+          const glassMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(glassColor),
+            transparent: true,
+            opacity: glassOpacity,
+            roughness: 0.05,
+            metalness: 0.1
+          });
+
+          if (isFrameless) {
+            // 유리판만 + 포인트 피팅
+            const glass = new THREE.Mesh(
+              new THREE.BoxGeometry(winW, winH, glassThickness),
+              glassMat
+            );
+            group3D.add(glass);
+
+            const fittingMat = new THREE.MeshStandardMaterial({
+              color: 0x888888, roughness: 0.3, metalness: 0.8
+            });
+            const fittingGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.04, 16);
+            [[-winW/2+0.1, winH/2-0.1], [winW/2-0.1, winH/2-0.1],
+             [-winW/2+0.1, -winH/2+0.1], [winW/2-0.1, -winH/2+0.1]].forEach(([x, y]) => {
+              const fitting = new THREE.Mesh(fittingGeo, fittingMat);
+              fitting.rotation.x = Math.PI / 2;
+              fitting.position.set(x, y, 0.02);
+              group3D.add(fitting);
+            });
+          } else {
+            // 프레임+유리 세트
+            let frameColor = '#636e72'; // 기본 스틸
+            if (name.includes('알루미늄') || name.includes('aluminum')) frameColor = '#b2bec3';
+            else if (name.includes('pvc')) frameColor = '#dfe6e9';
+            else if (name.includes('wood') || name.includes('목재')) frameColor = '#b8860b';
+
+            const isWood = name.includes('wood') || name.includes('목재');
+            const isPvc = name.includes('pvc');
+            const frameMat = new THREE.MeshStandardMaterial({
+              color: new THREE.Color(frameColor),
+              roughness: isWood ? 0.8 : 0.4,
+              metalness: (isWood || isPvc) ? 0.1 : 0.5
+            });
+
+            // 프레임 4면
+            const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+            frameLeft.position.x = -winW/2 + frameT/2;
+            group3D.add(frameLeft);
+
+            const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+            frameRight.position.x = winW/2 - frameT/2;
+            group3D.add(frameRight);
+
+            const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+            frameTop.position.set(0, winH/2 - frameT/2, 0);
+            group3D.add(frameTop);
+
+            const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+            frameBottom.position.set(0, -winH/2 + frameT/2, 0);
+            group3D.add(frameBottom);
+
+            // 유리
+            const glass = new THREE.Mesh(
+              new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, glassThickness),
+              glassMat
+            );
+            group3D.add(glass);
+          }
         });
 
-        // 유리 재질 - 자재의 color 필드 사용
-        const glassColor = glassMaterialLayer ? glassMaterialLayer.material.color : '#87CEEB';
-        const glassMat = new THREE.MeshStandardMaterial({
-          color: new THREE.Color(glassColor),
-          transparent: true,
-          opacity: 0.4,
-          roughness: 0.1,
-          metalness: 0.1
+        scene3D.add(group3D);
+        return;
+      }
+
+      // 프로시저럴 텍스처 생성 (Canvas)
+      function makeTexture(type, size) {
+        const s = size || 256;
+        const canvas = document.createElement('canvas');
+        canvas.width = s; canvas.height = s;
+        const ctx = canvas.getContext('2d');
+
+        if (type === 'acoustic_tex') {
+          // 흡음텍스: 미세 구멍 패턴
+          ctx.fillStyle = '#f2efe8';
+          ctx.fillRect(0, 0, s, s);
+          ctx.fillStyle = '#e0ddd5';
+          for (let i = 0; i < 800; i++) {
+            const x = Math.random() * s, y = Math.random() * s;
+            ctx.beginPath();
+            ctx.arc(x, y, 0.8 + Math.random() * 1.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (type === 'gypsum') {
+          // 석고보드/텍스: 미세한 결
+          ctx.fillStyle = '#f0ece4';
+          ctx.fillRect(0, 0, s, s);
+          ctx.strokeStyle = '#e5e0d8';
+          ctx.lineWidth = 0.3;
+          for (let i = 0; i < 200; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * s, Math.random() * s);
+            ctx.lineTo(Math.random() * s, Math.random() * s);
+            ctx.stroke();
+          }
+        } else if (type === 'wood') {
+          // 나무결
+          ctx.fillStyle = '#c49a5a';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 2) {
+            const offset = Math.sin(y * 0.05) * 8;
+            ctx.strokeStyle = `rgba(${140 + Math.random()*30}, ${100 + Math.random()*20}, ${50 + Math.random()*20}, 0.3)`;
+            ctx.lineWidth = 1 + Math.random() * 2;
+            ctx.beginPath();
+            ctx.moveTo(0, y + offset);
+            ctx.bezierCurveTo(s*0.3, y + offset + Math.random()*4, s*0.7, y + offset - Math.random()*4, s, y + offset);
+            ctx.stroke();
+          }
+        } else if (type === 'wood_dark') {
+          // 어두운 나무결 (루버)
+          ctx.fillStyle = '#8b6914';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 2) {
+            ctx.strokeStyle = `rgba(${100 + Math.random()*30}, ${70 + Math.random()*20}, ${20 + Math.random()*15}, 0.35)`;
+            ctx.lineWidth = 1 + Math.random() * 2;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.bezierCurveTo(s*0.3, y + Math.random()*5, s*0.7, y - Math.random()*5, s, y);
+            ctx.stroke();
+          }
+        } else if (type === 'plywood') {
+          // 합판 (선명한 나무결 + 옹이)
+          ctx.fillStyle = '#d2ad6e';
+          ctx.fillRect(0, 0, s, s);
+          // 굵은 나무결
+          for (let y = 0; y < s; y += 1) {
+            const wave = Math.sin(y * 0.03) * 12 + Math.sin(y * 0.08) * 5;
+            const brightness = 150 + Math.sin(y * 0.02) * 30;
+            ctx.strokeStyle = `rgba(${brightness}, ${brightness - 30}, ${brightness - 70}, 0.2)`;
+            ctx.lineWidth = 1.5 + Math.sin(y * 0.1) * 0.8;
+            ctx.beginPath();
+            ctx.moveTo(wave, y);
+            ctx.bezierCurveTo(s * 0.3 + wave, y + Math.random() * 2, s * 0.7 + wave, y - Math.random() * 2, s + wave, y);
+            ctx.stroke();
+          }
+          // 옹이 (1~2개)
+          for (let i = 0; i < 2; i++) {
+            const ox = 50 + Math.random() * (s - 100);
+            const oy = 50 + Math.random() * (s - 100);
+            const or = 8 + Math.random() * 12;
+            const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, or);
+            grad.addColorStop(0, 'rgba(100, 70, 30, 0.5)');
+            grad.addColorStop(0.5, 'rgba(140, 100, 50, 0.3)');
+            grad.addColorStop(1, 'rgba(210, 170, 110, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.ellipse(ox, oy, or, or * 0.7, Math.random(), 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (type === 'mdf') {
+          // MDF 균일 질감
+          ctx.fillStyle = '#c9a96e';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 3000; i++) {
+            ctx.fillStyle = `rgba(${170+Math.random()*30}, ${140+Math.random()*30}, ${80+Math.random()*30}, 0.08)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 2, 2);
+          }
+        } else if (type === 'wood_wool') {
+          // 목모보드: 뚜렷한 목재 섬유 + 시멘트 바인더
+          ctx.fillStyle = '#bfa05c';
+          ctx.fillRect(0, 0, s, s);
+          // 시멘트 바인더 얼룩
+          for (let i = 0; i < 500; i++) {
+            ctx.fillStyle = `rgba(${180+Math.random()*40}, ${170+Math.random()*35}, ${150+Math.random()*30}, 0.12)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 3+Math.random()*5, 2+Math.random()*3);
+          }
+          // 굵은 목재 섬유 (커다란 나무 실 느낌)
+          for (let i = 0; i < 300; i++) {
+            const x = Math.random() * s;
+            const y = Math.random() * s;
+            const len = 20 + Math.random() * 50;
+            const angle = -0.3 + Math.random() * 0.6; // 거의 수평
+            const thick = 1.5 + Math.random() * 3;
+            const r = 130 + Math.random() * 60;
+            const g = 100 + Math.random() * 50;
+            const b = 40 + Math.random() * 30;
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+            ctx.lineWidth = thick;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(
+              x + len * 0.3, y + Math.random() * 6 - 3,
+              x + len * 0.7, y + Math.random() * 6 - 3,
+              x + Math.cos(angle) * len, y + Math.sin(angle) * len
+            );
+            ctx.stroke();
+          }
+          // 그림자 깊이감
+          for (let i = 0; i < 150; i++) {
+            ctx.fillStyle = `rgba(80, 60, 30, 0.08)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 1+Math.random()*2, 1+Math.random()*4);
+          }
+        } else if (type === 'aluminum') {
+          // 알루미늄: 브러시드 메탈
+          ctx.fillStyle = '#c8cdd0';
+          ctx.fillRect(0, 0, s, s);
+          for (let x = 0; x < s; x++) {
+            ctx.strokeStyle = `rgba(${190+Math.random()*40}, ${195+Math.random()*40}, ${200+Math.random()*40}, 0.15)`;
+            ctx.beginPath();
+            ctx.moveTo(x, 0); ctx.lineTo(x, s);
+            ctx.stroke();
+          }
+        } else if (type === 'spray') {
+          // 뿜칠: 거친 랜덤 질감
+          ctx.fillStyle = '#d5cfc5';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 2000; i++) {
+            const r = 1 + Math.random() * 3;
+            ctx.fillStyle = `rgba(${180+Math.random()*40}, ${175+Math.random()*35}, ${165+Math.random()*30}, 0.2)`;
+            ctx.beginPath();
+            ctx.arc(Math.random()*s, Math.random()*s, r, 0, Math.PI*2);
+            ctx.fill();
+          }
+        } else if (type === 'concrete') {
+          // 노출콘크리트
+          ctx.fillStyle = '#b0aca6';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 1500; i++) {
+            ctx.fillStyle = `rgba(${150+Math.random()*40}, ${145+Math.random()*40}, ${138+Math.random()*35}, 0.1)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 1+Math.random()*3, 1+Math.random()*3);
+          }
+          // 거푸집 자국 (수평선)
+          ctx.strokeStyle = 'rgba(140,135,128,0.15)';
+          ctx.lineWidth = 0.5;
+          for (let y = 0; y < s; y += 20 + Math.random()*15) {
+            ctx.beginPath();
+            ctx.moveTo(0, y); ctx.lineTo(s, y);
+            ctx.stroke();
+          }
+        } else if (type === 'acoustic_slat') {
+          // 흡음패널: 나무 바탕에 촘촘한 슬릿
+          ctx.fillStyle = '#b08050';
+          ctx.fillRect(0, 0, s, s);
+          // 나무결
+          for (let y = 0; y < s; y += 2) {
+            ctx.strokeStyle = `rgba(${140+Math.random()*30}, ${95+Math.random()*25}, ${50+Math.random()*20}, 0.25)`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, y); ctx.lineTo(s, y + Math.random()*3 - 1.5);
+            ctx.stroke();
+          }
+          // 슬릿 (검은 세로줄, 촘촘하게)
+          ctx.fillStyle = 'rgba(30, 20, 10, 0.85)';
+          const slitSpacing = s / 20;
+          for (let x = slitSpacing; x < s; x += slitSpacing) {
+            ctx.fillRect(x - 1, 0, 2, s);
+          }
+        }
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        return tex;
+      }
+
+      // 천장 자재별 3D 재질 생성 (텍스처 포함)
+      function getCeilingMaterial3D(material) {
+        const name = (material.name || '').toLowerCase();
+        const nameEn = (material.nameEn || '').toLowerCase();
+
+        // 알루미늄 천장 / 루버
+        if (name.includes('알루미늄') && !name.includes('재활용') || nameEn === 'aluminum_ceiling' || nameEn === 'aluminum_louver') {
+          const tex = makeTexture('aluminum');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.15, metalness: 0.85 });
+        }
+        if (name.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum')) {
+          const tex = makeTexture('aluminum');
+          return new THREE.MeshStandardMaterial({ map: tex, color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+        }
+        // 흡음텍스
+        if (name.includes('흡음텍스') || nameEn === 'acoustic_tex') {
+          const tex = makeTexture('acoustic_tex');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+        }
+        // 석고텍스
+        if (name.includes('석고텍스') || nameEn === 'gypsum_tex') {
+          const tex = makeTexture('gypsum');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 });
+        }
+        // 석고보드
+        if (name.includes('석고보드') || nameEn === 'gypsum_board') {
+          const tex = makeTexture('gypsum');
+          return new THREE.MeshStandardMaterial({ map: tex, color: 0xf5f2ed, roughness: 0.85, metalness: 0.0 });
+        }
+        // 페인트
+        if (name.includes('페인트') || nameEn === 'paint') {
+          return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 });
+        }
+        // 목모보드
+        if (name.includes('목모') || nameEn === 'wood_wool_board') {
+          const tex = makeTexture('wood_wool');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+        }
+        // 목재패널
+        if (name.includes('목재패널') || nameEn === 'wood_panel') {
+          const tex = makeTexture('wood');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0.05 });
+        }
+        // 흡음목재루버
+        if ((name.includes('루버') && name.includes('목재')) || nameEn === 'wood_louver') {
+          const tex = makeTexture('wood_dark');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0.05 });
+        }
+        // SMC/FRP
+        if (name.includes('smc') || nameEn === 'pvc_ceiling') {
+          return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.25, metalness: 0.05 });
+        }
+        // 폴리카보네이트
+        if (name.includes('폴리카보네이트') || nameEn === 'polycarbonate') {
+          return new THREE.MeshStandardMaterial({
+            color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7
+          });
+        }
+        // 합판
+        if (name.includes('합판') || nameEn === 'plywood') {
+          const tex = makeTexture('plywood');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+        }
+        // MDF
+        if (name.toUpperCase().includes('MDF') || nameEn === 'mdf') {
+          const tex = makeTexture('mdf');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.45, metalness: 0.0 });
+        }
+        // 천장지
+        if (name.includes('천장지') || nameEn === 'wallpaper') {
+          return new THREE.MeshStandardMaterial({ color: 0xfaf8f5, roughness: 0.9, metalness: 0.0 });
+        }
+        // 질석계뿜칠
+        if (name.includes('뿜칠') || name.includes('질석') || nameEn === 'perlite') {
+          const tex = makeTexture('spray');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 1.0, metalness: 0.0 });
+        }
+        // 흡음패널 (나무 + 슬릿)
+        if (name.includes('흡음패널') || nameEn === 'acoustic_panel') {
+          const tex = makeTexture('acoustic_slat');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0.05 });
+        }
+        // 노출콘크리트방진도장
+        if (name.includes('노출콘크리트') || nameEn === 'exposed_concrete') {
+          const tex = makeTexture('concrete');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+        }
+        // 기본값
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color(material.color || '#636e72'), roughness: 0.7, metalness: 0.1
+        });
+      }
+
+      // 천장 경량철골천장틀 전용 3D
+      const isCeiling = (structureType === 'ceiling');
+      const hasCeilingFrame = isCeiling && selectedLayers.some(l =>
+        (l.material.name || '').includes('경량철골') || (l.material.nameEn || '').includes('light_steel_ceiling')
+      );
+
+      if (hasCeilingFrame) {
+        const gridW = 2.0;
+        const gridD = 1.3;
+
+        // T-bar 재질 (아연도금 강재)
+        const tBarMat = new THREE.MeshStandardMaterial({
+          color: 0xd0d0d0, roughness: 0.3, metalness: 0.7
         });
 
-        const frameT = 0.06;  // 프레임 두께
-        const frameD = 0.08;  // 프레임 깊이
-        const winW = 1.0;     // 창 너비
-        const winH = 1.4;     // 창 높이
+        // 행거 와이어 재질
+        const wireMat = new THREE.MeshStandardMaterial({
+          color: 0x999999, roughness: 0.4, metalness: 0.6
+        });
 
-        // 왼쪽 프레임
-        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
-        frameLeft.position.x = -winW/2 + frameT/2;
-        group3D.add(frameLeft);
+        // 메인런너 (길이방향, 600mm 간격) - T자 단면
+        const mainRunnerSpacing = 0.6;
+        const mainCount = Math.floor(gridD / mainRunnerSpacing);
+        for (let i = 0; i <= mainCount; i++) {
+          const z = -gridD/2 + i * mainRunnerSpacing;
+          // T자 세로 부분 (웹)
+          const web = new THREE.Mesh(
+            new THREE.BoxGeometry(gridW, 0.03, 0.002),
+            tBarMat
+          );
+          web.position.set(0, -0.015, z);
+          group3D.add(web);
+          // T자 가로 부분 (플랜지, 하단)
+          const flange = new THREE.Mesh(
+            new THREE.BoxGeometry(gridW, 0.002, 0.024),
+            tBarMat
+          );
+          flange.position.set(0, -0.031, z);
+          group3D.add(flange);
+        }
 
-        // 오른쪽 프레임
-        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
-        frameRight.position.x = winW/2 - frameT/2;
-        group3D.add(frameRight);
+        // 크로스티 (직교방향, 600mm 간격) - T자 단면
+        const crossSpacing = 0.6;
+        const crossCount = Math.floor(gridW / crossSpacing);
+        for (let i = 0; i <= crossCount; i++) {
+          const x = -gridW/2 + i * crossSpacing;
+          const web = new THREE.Mesh(
+            new THREE.BoxGeometry(0.002, 0.025, gridD),
+            tBarMat
+          );
+          web.position.set(x, -0.0125, 0);
+          group3D.add(web);
+          const flange = new THREE.Mesh(
+            new THREE.BoxGeometry(0.024, 0.002, gridD),
+            tBarMat
+          );
+          flange.position.set(x, -0.026, 0);
+          group3D.add(flange);
+        }
 
-        // 상단 프레임
-        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
-        frameTop.position.set(0, winH/2 - frameT/2, 0);
-        group3D.add(frameTop);
+        // 행거 와이어 (메인런너 교차점에서 위로)
+        for (let i = 0; i <= mainCount; i += 2) {
+          const z = -gridD/2 + i * mainRunnerSpacing;
+          for (let j = 0; j <= crossCount; j += 2) {
+            const x = -gridW/2 + j * crossSpacing;
+            const wire = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.002, 0.002, 0.25, 6),
+              wireMat
+            );
+            wire.position.set(x, 0.125, z);
+            group3D.add(wire);
+            // 상단 앵커 (천장 슬라브 고정점)
+            const anchor = new THREE.Mesh(
+              new THREE.BoxGeometry(0.03, 0.005, 0.03),
+              wireMat
+            );
+            anchor.position.set(x, 0.252, z);
+            group3D.add(anchor);
+          }
+        }
 
-        // 하단 프레임
-        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
-        frameBottom.position.set(0, -winH/2 + frameT/2, 0);
-        group3D.add(frameBottom);
+        // 천장 패널 (경량철골 위에 자재 겹쳐 쌓기)
+        const panelLayers = selectedLayers.filter(l =>
+          !(l.material.name || '').includes('경량철골')
+        );
+        let pYPos = -0.033;
+        const tileGap = 0.008;
+        const tileSize = mainRunnerSpacing - tileGap;
 
-        // 유리
-        const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
-        group3D.add(glass);
+        panelLayers.forEach((pLayer) => {
+          const pName = (pLayer.material.name || '').toLowerCase();
+          const pNameEn = (pLayer.material.nameEn || '').toLowerCase();
+          const pThick = (pLayer.thickness || 10) / 1000;
+          const pMat = getCeilingMaterial3D(pLayer.material);
+
+          // 루버
+          if (pName.includes('루버') || pNameEn.includes('louver')) {
+            const isAlu = pName.includes('알루미늄') || pNameEn.includes('aluminum');
+            const louverW = isAlu ? 0.018 : 0.035;
+            const louverH = isAlu ? 0.06 : 0.045;
+            const lSpacing = isAlu ? 0.05 : 0.065;
+            const lCount = Math.floor(gridW / lSpacing);
+            for (let i = 0; i <= lCount; i++) {
+              const x = -gridW/2 + i * lSpacing + louverW/2;
+              const louver = new THREE.Mesh(
+                new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), pMat
+              );
+              louver.position.set(x, pYPos - louverH/2, 0);
+              group3D.add(louver);
+            }
+            pYPos -= louverH + 0.005;
+          }
+          // 뿜칠
+          else if (pName.includes('뿜칠') || pName.includes('질석') || pNameEn.includes('perlite') || pNameEn.includes('spray')) {
+            const spray = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, pThick, gridD), pMat
+            );
+            spray.position.set(0, pYPos - pThick/2, 0);
+            group3D.add(spray);
+            pYPos -= pThick + 0.003;
+          }
+          // 페인트 (얇은 막)
+          else if (pName.includes('페인트') || pNameEn === 'paint') {
+            const paint = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, 0.003, gridD), pMat
+            );
+            paint.position.set(0, pYPos - 0.0015, 0);
+            group3D.add(paint);
+            pYPos -= 0.005;
+          }
+          // 한 판형 (석고보드, 천장지, MDF, 합판, 흡음패널)
+          else if (pName.includes('석고보드') || pName.includes('천장지') || pName.includes('mdf') ||
+                   pName.includes('합판') || pName.includes('흡음패널') ||
+                   pNameEn === 'gypsum_board' || pNameEn === 'wallpaper' || pNameEn === 'mdf' ||
+                   pNameEn === 'plywood' || pNameEn === 'acoustic_panel') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, pThick, gridD), pMat
+            );
+            panel.position.set(0, pYPos - pThick/2, 0);
+            group3D.add(panel);
+            pYPos -= pThick + 0.005;
+          }
+          // 타일형 (텍스, 목모보드, SMC, 알루미늄천장 등) — 600×600 그리드
+          else {
+            const colCount = Math.floor(gridW / mainRunnerSpacing);
+            for (let row = 0; row <= mainCount; row++) {
+              for (let col = 0; col <= colCount; col++) {
+                const x = -gridW/2 + col * mainRunnerSpacing + mainRunnerSpacing/2;
+                const z = -gridD/2 + row * mainRunnerSpacing + mainRunnerSpacing/2;
+                if (x - tileSize/2 < -gridW/2 - 0.01 || x + tileSize/2 > gridW/2 + 0.01) continue;
+                if (z - tileSize/2 < -gridD/2 - 0.01 || z + tileSize/2 > gridD/2 + 0.01) continue;
+                const tile = new THREE.Mesh(
+                  new THREE.BoxGeometry(tileSize, pThick, tileSize), pMat
+                );
+                tile.position.set(x, pYPos - pThick/2, z);
+                group3D.add(tile);
+              }
+            }
+            pYPos -= pThick + 0.008;
+          }
+        });
+
+        // 상단 슬라브 (콘크리트)
+        const slabMat = new THREE.MeshStandardMaterial({
+          color: 0xbcb8b0, roughness: 0.85, metalness: 0.0,
+          transparent: true, opacity: 0.4
+        });
+        const slab = new THREE.Mesh(
+          new THREE.BoxGeometry(gridW + 0.1, 0.08, gridD + 0.1),
+          slabMat
+        );
+        slab.position.set(0, 0.29, 0);
+        group3D.add(slab);
+
+        scene3D.add(group3D);
+        return;
+      }
+
+      // 천장 전용 렌더링 (경량철골 없이 자재만 선택한 경우)
+      if (isCeiling && selectedLayers.length > 0) {
+        const gridW = 2.0;
+        const gridD = 1.3;
+        let yPos = 0;
+
+        selectedLayers.forEach((layer) => {
+          const name = (layer.material.name || '').toLowerCase();
+          const nameEn = (layer.material.nameEn || '').toLowerCase();
+          const mat3D = getCeilingMaterial3D(layer.material);
+          const thick = (layer.thickness || 10) / 1000;
+
+          // 루버 (목재/알루미늄)
+          if (name.includes('루버') || nameEn.includes('louver')) {
+            const isAlu = name.includes('알루미늄') || nameEn.includes('aluminum');
+            const louverW = isAlu ? 0.018 : 0.035;
+            const louverH = isAlu ? 0.06 : 0.045;
+            const spacing = isAlu ? 0.05 : 0.065;
+            const count = Math.floor(gridW / spacing);
+            for (let i = 0; i <= count; i++) {
+              const x = -gridW/2 + i * spacing + louverW/2;
+              const louver = new THREE.Mesh(
+                new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), mat3D
+              );
+              louver.position.set(x, yPos - louverH/2, 0);
+              group3D.add(louver);
+            }
+            yPos -= louverH + 0.01;
+          }
+          // 폴리카보네이트 — 반투명 패널
+          else if (name.includes('폴리카보네이트') || nameEn.includes('polycarbonate')) {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            group3D.add(panel);
+            yPos -= thick + 0.005;
+          }
+          // 뿜칠 — 슬라브 하부에 직접 도포
+          else if (name.includes('뿜칠') || name.includes('질석') || nameEn.includes('spray') || nameEn.includes('perlite')) {
+            // 상단 슬라브
+            const slabMat = new THREE.MeshStandardMaterial({
+              color: 0xbcb8b0, roughness: 0.85, metalness: 0.0, transparent: true, opacity: 0.5
+            });
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), slabMat);
+            slab.position.set(0, yPos + 0.04, 0);
+            group3D.add(slab);
+            // 뿜칠 층
+            const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+            spray.position.set(0, yPos - thick/2, 0);
+            group3D.add(spray);
+            yPos -= thick + 0.002;
+          }
+          // 페인트 — 슬라브에 직접 도장
+          else if (name.includes('페인트') || nameEn.includes('paint')) {
+            const slabMat = new THREE.MeshStandardMaterial({
+              color: 0xbcb8b0, roughness: 0.85, metalness: 0.0, transparent: true, opacity: 0.5
+            });
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), slabMat);
+            slab.position.set(0, yPos + 0.04, 0);
+            group3D.add(slab);
+            const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), mat3D);
+            paint.position.set(0, yPos - 0.0015, 0);
+            group3D.add(paint);
+            yPos -= 0.005;
+          }
+          // 노출콘크리트방진도장
+          else if (name.includes('노출콘크리트') || nameEn.includes('exposed_concrete')) {
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), mat3D);
+            slab.position.set(0, yPos + 0.04, 0);
+            group3D.add(slab);
+            yPos -= 0.005;
+          }
+          // 그리드 없는 자재 (석고보드, 천장지, MDF, 합판 등) — 한 판
+          else if (name.includes('석고보드') || name.includes('천장지') || name.includes('mdf') ||
+                   name.includes('합판') || nameEn === 'gypsum_board' || nameEn === 'wallpaper' ||
+                   nameEn === 'mdf' || nameEn === 'plywood') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            panel.castShadow = true;
+            panel.receiveShadow = true;
+            group3D.add(panel);
+            yPos -= thick + 0.005;
+          }
+          // 흡음패널 — 한 판 (슬릿 텍스처로 표현)
+          else if (name.includes('흡음패널') || nameEn === 'acoustic_panel') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            group3D.add(panel);
+            yPos -= thick + 0.005;
+          }
+          // 타일형 자재 (텍스, 목모보드 등) — 600x600 그리드
+          else {
+            const tileSize = 0.592;
+            const tileGap = 0.008;
+            const spacing = tileSize + tileGap;
+            const colCount = Math.floor(gridW / spacing);
+            const rowCount = Math.floor(gridD / spacing);
+            for (let row = 0; row < rowCount; row++) {
+              for (let col = 0; col < colCount; col++) {
+                const x = -gridW/2 + col * spacing + spacing/2 + tileGap;
+                const z = -gridD/2 + row * spacing + spacing/2 + tileGap;
+                const tile = new THREE.Mesh(
+                  new THREE.BoxGeometry(tileSize, thick, tileSize), mat3D
+                );
+                tile.position.set(x, yPos - thick/2, z);
+                tile.castShadow = true;
+                tile.receiveShadow = true;
+                group3D.add(tile);
+              }
+            }
+            yPos -= thick + 0.01;
+          }
+        });
 
         scene3D.add(group3D);
         return;
@@ -1856,24 +2556,32 @@
     function onWheel(e) {
       e.preventDefault();
       camera3D.position.z += e.deltaY * 0.01;
-      camera3D.position.z = Math.max(2, Math.min(8, camera3D.position.z));
+      camera3D.position.z = Math.max(0.5, Math.min(10, camera3D.position.z));
     }
 
     // 카테고리 필터 렌더링
     function renderCategoryFilters() {
       const filterContainer = document.querySelector('.material-filters');
 
-      // 창호 타입일 경우 프레임/유리 필터로 변경
-      if (structureType === 'window') {
+      // 천장: 전체/구조재/마감재
+      if (structureType === 'ceiling') {
         filterContainer.innerHTML = `
           <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
             전체
           </button>
-          <button class="filter-btn" onclick="filterMaterials('프레임')" data-filter="프레임">
-            프레임
+          <button class="filter-btn" onclick="filterMaterials('구조재')" data-filter="구조재">
+            구조재
           </button>
-          <button class="filter-btn" onclick="filterMaterials('유리')" data-filter="유리">
-            유리
+          <button class="filter-btn" onclick="filterMaterials('마감재')" data-filter="마감재">
+            마감재
+          </button>
+        `;
+      }
+      // 창호: 전체만
+      if (structureType === 'window') {
+        filterContainer.innerHTML = `
+          <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
+            전체
           </button>
         `;
       }
@@ -1884,10 +2592,17 @@
     function init() {
       materials = KOREAN_EPD[structureType]?.materials || [];
 
+      // 이미지 확장자 미리 탐색 (png/jpg)
+      materials.forEach(m => { if (m.nameEn) probeImageExt(m.nameEn); });
+
+      // 어셈블리 이름 디폴트값 설정
+      const krName = STRUCTURE_NAME_KR[structureType] || structureType;
+      document.getElementById('assemblyName').value = krName + '01';
+
       // 네비게이션 활성화 상태 설정
       updateNavigation();
 
-      // 카테고리 필터 렌더링 (창호일 경우 프레임/유리로 변경)
+      // 카테고리 필터 렌더링
       renderCategoryFilters();
 
       // 필터 버튼 가시성 업데이트
@@ -1902,7 +2617,7 @@
     // 구조 타입에 따라 필터 버튼 표시/숨김
     function updateFilterButtons() {
       const hideFilters = {
-        ceiling: ['구조재', '단열재', '방수재']
+        ceiling: ['단열재', '방수재']
       };
 
       const filtersToHide = hideFilters[structureType] || [];
@@ -1962,86 +2677,53 @@
       // 자재가 없어도 빈 피라미드 구조 유지 (return 하지 않음)
       const showEmptyMessage = filtered.length === 0;
 
-      // 5개 그룹으로 분류
-      const groups = [[], [], [], [], []]; // 5개 그룹
-
-      filtered.forEach(material => {
-        const gwp = material.gwp;
-        let group;
-
-        if (gwp >= 10000) {
-          group = 0; // 그룹 1: 10,000 이상 (1~2행)
-        } else if (gwp >= 1000) {
-          group = 1; // 그룹 2: 1,000 이상 (3~5행)
-        } else if (gwp >= 100) {
-          group = 2; // 그룹 3: 100 이상 (6~7행)
-        } else if (gwp >= 0) {
-          group = 3; // 그룹 4: 0 이상 (8~9행)
-        } else {
-          group = 4; // 그룹 5: 음수 (10~11행)
-        }
-
-        groups[group].push(material);
-      });
-
-      // 각 그룹의 행 배정
-      const groupRowConfigs = [
-        { rows: [1, 2], level: 1 },           // 그룹 1: 1~2행 (빨강)
-        { rows: [3, 4, 5], level: 2 },        // 그룹 2: 3~5행 (주황)
-        { rows: [6, 7], level: 3 },           // 그룹 3: 6~7행 (하늘색)
-        { rows: [8, 9], level: 4 },           // 그룹 4: 8~9행 (민트)
-        { rows: [10, 11], level: 5 }          // 그룹 5: 10~11행 (녹색)
-      ];
-
       // 11개 행으로 나누기 (슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16)
       const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 11개 행
 
+      // m² 단위 여부 (천장, 창호)
+      const isM2Unit = (structureType === 'ceiling' || structureType === 'window');
+
       let html = '';
 
-      // 각 그룹 처리
-      groups.forEach((groupMaterials, groupIndex) => {
-        const config = groupRowConfigs[groupIndex];
-        const rowIndices = config.rows.map(r => r - 1); // 행 번호를 인덱스로 변환 (1-based → 0-based)
-        const level = config.level;
-        const isLastGroup = groupIndex === groups.length - 1;
+      if (isM2Unit) {
+        // === 천장/창호: 순서대로 배치 (Level 그룹 없음) ===
+        let materialIndex = 0;
+        rowSlotCounts.forEach((slotCount, rowIndex) => {
+          const rowNumber = rowIndex + 1;
+          // 11행 중 위치에 따라 색상 레벨 부여 (그라데이션)
+          let level;
+          if (rowNumber <= 2) level = 1;
+          else if (rowNumber <= 5) level = 2;
+          else if (rowNumber <= 7) level = 3;
+          else if (rowNumber <= 9) level = 4;
+          else level = 5;
 
-        let materialIndex = 0; // 이 그룹 내에서의 자재 인덱스
-
-        // 그룹의 각 행 생성
-        rowIndices.forEach((rowIndex, rowIndexInGroup) => {
-          const rowNumber = rowIndex + 1; // 다시 1-based로
-          const slotCount = rowSlotCounts[rowIndex]; // 해당 행의 슬롯 개수
-          const isLastRowInGroup = rowIndexInGroup === rowIndices.length - 1;
-
-          // 슬롯 개수만큼 타일 생성
           const tiles = [];
           for (let i = 0; i < slotCount; i++) {
-            const material = groupMaterials[materialIndex];
-
+            const material = filtered[materialIndex];
             if (material) {
-              // 자재가 있으면 타일 생성
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
+              const gwpDisplay = material.gwp < 10 ? material.gwp.toFixed(1) : formatNumber(Math.abs(material.gwp), 0);
 
               tiles.push(`
                 <div class="tile-wrapper">
-                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level}"
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
                        style="background-image: url('${escapeHtml(imageUrl)}')"
                        tabindex="0"
                        role="button"
-                       aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kg CO₂eq"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${gwpDisplay} kgCO₂e/m²"
                        onclick="selectMaterial('${escapeHtml(material.id)}')"
                        onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
                        data-id="${escapeHtml(material.id)}">
-                    <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
+                    <div class="gwp-badge">${gwpDisplay}</div>
                     <div class="level-indicator"></div>
                   </div>
                   <div class="tile-name-below">${escapeHtml(material.name)}</div>
                 </div>
               `);
-              materialIndex++; // 자재를 사용했으므로 인덱스 증가
+              materialIndex++;
             } else {
-              // 자재가 없으면 빈 슬롯
               tiles.push(`
                 <div class="tile-wrapper">
                   <div class="material-tile empty-slot level-${level}">
@@ -2053,18 +2735,77 @@
             }
           }
 
-          // 마지막 그룹이 아닌 경우, 그룹의 마지막 행에만 구분선 추가
-          const showBorder = isLastRowInGroup && !isLastGroup;
-          const carbonLabels = ['10,000 kgCO₂e/m³', '1,000 kgCO₂e/m³', '100 kgCO₂e/m³', '0 kgCO₂e/m³'];
-          const carbonLabel = showBorder ? `<span class="carbon-label">${carbonLabels[groupIndex]}</span>` : '';
+          // 레벨 경계에서 구분선 추가 (R2, R5, R7, R9가 각 레벨의 마지막 행)
+          const levelLastRows = [2, 5, 7, 9];
+          const isLevelEnd = levelLastRows.includes(rowNumber);
+          const groupEndClass = isLevelEnd ? 'group-end' : '';
+
+          html += `
+            <div class="pyramid-row level-${level} row-${rowNumber} ${groupEndClass}">
+              ${tiles.join('')}
+            </div>
+          `;
+        });
+      } else {
+        // === 바닥/외벽/내벽: GWP 내림차순 순서대로 피라미드 슬롯에 배치 ===
+        filtered.sort((a, b) => b.gwp - a.gwp);
+
+        // 레벨 경계 행 (그룹 구분선 표시용)
+        const groupBoundaryRows = [2, 5, 7, 9]; // Row 2,5,7,9 뒤에 구분선
+        const carbonLabels = { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
+
+        let materialIndex = 0;
+        for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
+          const rowNumber = rowIndex + 1;
+          const slotCount = rowSlotCounts[rowIndex];
+          const level = rowNumber <= 2 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5;
+
+          const tiles = [];
+          for (let i = 0; i < slotCount; i++) {
+            const material = filtered[materialIndex];
+            if (material) {
+              const isSelected = selectedLayers.some(l => l.material.id === material.id);
+              const imageUrl = getMaterialImageUrl(material);
+
+              tiles.push(`
+                <div class="tile-wrapper">
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
+                       style="background-image: url('${escapeHtml(imageUrl)}')"
+                       tabindex="0"
+                       role="button"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kgCO₂e/m³"
+                       onclick="selectMaterial('${escapeHtml(material.id)}')"
+                       onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                       data-id="${escapeHtml(material.id)}">
+                    <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
+                    <div class="level-indicator"></div>
+                  </div>
+                  <div class="tile-name-below">${escapeHtml(material.name)}</div>
+                </div>
+              `);
+              materialIndex++;
+            } else {
+              tiles.push(`
+                <div class="tile-wrapper">
+                  <div class="material-tile empty-slot level-${level}">
+                    <div class="empty-slot-label">-</div>
+                  </div>
+                  <div class="tile-name-below"></div>
+                </div>
+              `);
+            }
+          }
+
+          const showBorder = groupBoundaryRows.includes(rowNumber);
+          const carbonLabel = showBorder ? `<span class="carbon-label">${carbonLabels[rowNumber]}</span>` : '';
           html += `
             <div class="pyramid-row level-${level} row-${rowNumber} ${showBorder ? 'group-end' : ''}">
               ${tiles.join('')}
               ${carbonLabel}
             </div>
           `;
-        });
-      });
+        }
+      }
 
       container.innerHTML = html;
 
@@ -2101,24 +2842,16 @@
       const material = materials.find(m => m.id === materialId);
       if (!material) return;
 
-      // 창호일 경우 프레임/유리 각각 하나씩만 선택 가능
+      // 디폴트 두께: 자재 DB에 있으면 사용, 없으면 100mm
+      const defaultThickness = material.thickness || 100;
+
+      // 창호일 경우 1개만 선택 (교체)
       if (structureType === 'window') {
-        const category = material.category;
-        const existingIndex = selectedLayers.findIndex(l => l.material.category === category);
-        if (existingIndex !== -1) {
-          // 같은 카테고리의 기존 자재를 교체
-          selectedLayers[existingIndex] = { material, thickness: 100, id: Date.now() };
-        } else {
-          selectedLayers.push({
-            material: material,
-            thickness: 100,
-            id: Date.now()
-          });
-        }
+        selectedLayers = [{ material, thickness: defaultThickness, id: Date.now() }];
       } else {
         selectedLayers.push({
           material: material,
-          thickness: 100,
+          thickness: defaultThickness,
           id: Date.now()
         });
       }
@@ -2145,13 +2878,14 @@
 
       container.innerHTML = selectedLayers.map((layer, index) => {
         const carbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, 1);
+        const matUnit = String(layer.material.unit || '').toLowerCase();
+        const isM2 = matUnit.includes('m²') || matUnit.includes('m2');
 
-        return `
-          <div class="layer-item">
-            <div class="layer-header">
-              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}</span>
-              <button class="remove-btn" onclick="removeLayer(${layer.id})">✕</button>
+        const thicknessHtml = isM2 ? `
+            <div class="thickness-input">
+              <label>면적 단위 (m²)</label>
             </div>
+        ` : `
             <div class="thickness-input">
               <label>두께:</label>
               <input
@@ -2163,6 +2897,15 @@
               >
               <span>mm</span>
             </div>
+        `;
+
+        return `
+          <div class="layer-item">
+            <div class="layer-header">
+              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}</span>
+              <button class="remove-btn" onclick="removeLayer(${layer.id})">✕</button>
+            </div>
+            ${thicknessHtml}
             <div class="carbon-info">
               탄소배출: ${formatNumber(carbon, 2)} kg CO₂eq/m²
             </div>
