@@ -636,6 +636,7 @@
     .source-2050 .level-indicator { background: #9b59b6; }        /* 2050 Materials - 보라 */
     .source-epic .level-indicator { background: #1abc9c; }        /* EPiC - 틸 */
     .source-epd .level-indicator { background: #f1c40f; }         /* 기타 EPD - 노랑 */
+    .source-lci .level-indicator { background: #16a085; }          /* 국가 LCI DB - 틸그린 */
     .source-academic .level-indicator { background: #34495e; }    /* 학술논문 - 남색 */
     .source-other .level-indicator { background: #95a5a6; }       /* 기타 - 회색 */
 
@@ -1097,6 +1098,58 @@
       font-size: 12px;
     }
 
+    .thickness-tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      font-style: normal;
+      font-family: "Georgia", "Times New Roman", serif;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      margin-left: 6px;
+    }
+
+    .thickness-tip-icon:hover {
+      background: #cbd5e1;
+    }
+
+    .thickness-tip {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 8px);
+      transform: translateY(-50%);
+      width: max-content;
+      max-width: 240px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.88);
+      color: #334155;
+      font-family: var(--font);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 1.5;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .thickness-tip-icon:hover .thickness-tip {
+      display: block;
+    }
+
     .layer-item .carbon-info {
       margin-top: 10px;
       padding-top: 10px;
@@ -1274,6 +1327,7 @@
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>국내 EPD</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e67e22;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Ökobaudat</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#9b59b6;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>2050 Materials</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#16a085;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>국가 LCI DB</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#1abc9c;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPiC</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#f1c40f;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPD</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#34495e;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>학술논문</span>
@@ -1420,7 +1474,8 @@
       const s = (source || '').toLowerCase();
       if (s.includes('ice')) return 'source-ice';
       if (s.includes('ec3')) return 'source-ec3';
-      if (s.includes('환경성적') || s.includes('국내epd') || s.includes('국가lci')) return 'source-epd-kr';
+      if (s.includes('국가 lci') || s.includes('국가lci')) return 'source-lci';
+      if (s.includes('환경성적') || s.includes('국내epd') || s.includes('국내 epd')) return 'source-epd-kr';
       if (s.includes('okobaudat') || s.includes('okoboudat')) return 'source-okobaudat';
       if (s.includes('2050')) return 'source-2050';
       if (s.includes('epic')) return 'source-epic';
@@ -2274,19 +2329,27 @@
             group3D.add(panel);
             pYPos -= pThick + 0.005;
           }
-          // 타일형 (텍스, 목모보드, SMC, 알루미늄천장 등) — 600×600 그리드
+          // 타일형 (텍스, 목모보드, SMC, 알루미늄천장 등) — 600×600 그리드 (중앙 정렬, 가장자리 클리핑)
           else {
-            const colCount = Math.floor(gridW / mainRunnerSpacing);
-            for (let row = 0; row <= mainCount; row++) {
-              for (let col = 0; col <= colCount; col++) {
-                const x = -gridW/2 + col * mainRunnerSpacing + mainRunnerSpacing/2;
-                const z = -gridD/2 + row * mainRunnerSpacing + mainRunnerSpacing/2;
-                if (x - tileSize/2 < -gridW/2 - 0.01 || x + tileSize/2 > gridW/2 + 0.01) continue;
-                if (z - tileSize/2 < -gridD/2 - 0.01 || z + tileSize/2 > gridD/2 + 0.01) continue;
+            const colCount = Math.ceil(gridW / mainRunnerSpacing);
+            const rowCountT = Math.ceil(gridD / mainRunnerSpacing);
+            const offX = (gridW - colCount * mainRunnerSpacing) / 2;
+            const offZ = (gridD - rowCountT * mainRunnerSpacing) / 2;
+            for (let row = 0; row < rowCountT; row++) {
+              for (let col = 0; col < colCount; col++) {
+                const cx = -gridW/2 + offX + col * mainRunnerSpacing + mainRunnerSpacing/2;
+                const cz = -gridD/2 + offZ + row * mainRunnerSpacing + mainRunnerSpacing/2;
+                const left = Math.max(cx - tileSize/2, -gridW/2);
+                const right = Math.min(cx + tileSize/2, gridW/2);
+                const front = Math.max(cz - tileSize/2, -gridD/2);
+                const back = Math.min(cz + tileSize/2, gridD/2);
+                const tw = right - left;
+                const td = back - front;
+                if (tw < 0.01 || td < 0.01) continue;
                 const tile = new THREE.Mesh(
-                  new THREE.BoxGeometry(tileSize, pThick, tileSize), pMat
+                  new THREE.BoxGeometry(tw, pThick, td), pMat
                 );
-                tile.position.set(x, pYPos - pThick/2, z);
+                tile.position.set((left + right)/2, pYPos - pThick/2, (front + back)/2);
                 group3D.add(tile);
               }
             }
@@ -2405,21 +2468,30 @@
             group3D.add(panel);
             yPos -= thick + 0.005;
           }
-          // 타일형 자재 (텍스, 목모보드 등) — 600x600 그리드
+          // 타일형 자재 (텍스, 목모보드 등) — 600x600 그리드 (중앙 정렬, 가장자리 클리핑)
           else {
             const tileSize = 0.592;
             const tileGap = 0.008;
             const spacing = tileSize + tileGap;
-            const colCount = Math.floor(gridW / spacing);
-            const rowCount = Math.floor(gridD / spacing);
+            const colCount = Math.ceil(gridW / spacing);
+            const rowCount = Math.ceil(gridD / spacing);
+            const offsetX = (gridW - colCount * spacing + tileGap) / 2;
+            const offsetZ = (gridD - rowCount * spacing + tileGap) / 2;
             for (let row = 0; row < rowCount; row++) {
               for (let col = 0; col < colCount; col++) {
-                const x = -gridW/2 + col * spacing + spacing/2 + tileGap;
-                const z = -gridD/2 + row * spacing + spacing/2 + tileGap;
+                const cx = -gridW/2 + offsetX + col * spacing + tileSize/2;
+                const cz = -gridD/2 + offsetZ + row * spacing + tileSize/2;
+                const left = Math.max(cx - tileSize/2, -gridW/2);
+                const right = Math.min(cx + tileSize/2, gridW/2);
+                const front = Math.max(cz - tileSize/2, -gridD/2);
+                const back = Math.min(cz + tileSize/2, gridD/2);
+                const tw = right - left;
+                const td = back - front;
+                if (tw < 0.01 || td < 0.01) continue;
                 const tile = new THREE.Mesh(
-                  new THREE.BoxGeometry(tileSize, thick, tileSize), mat3D
+                  new THREE.BoxGeometry(tw, thick, td), mat3D
                 );
-                tile.position.set(x, yPos - thick/2, z);
+                tile.position.set((left + right)/2, yPos - thick/2, (front + back)/2);
                 tile.castShadow = true;
                 tile.receiveShadow = true;
                 group3D.add(tile);
@@ -2436,6 +2508,100 @@
       let pos = 0;
 
       selectedLayers.forEach((layer, index) => {
+        // 철근/재활용철근은 3D 표현 제외
+        const matName = (layer.material.name || '').toLowerCase();
+        if (matName.includes('철근')) return;
+
+        // 철재 하지틀 / 목재틀 — 격자형 프레임 3D
+        if (matName.includes('철재') && matName.includes('하지틀') || matName === '목재틀') {
+          const isSteel = matName.includes('철재');
+          const frameW = 2.0, frameD = 1.3;
+          const barSize = isSteel ? 0.04 : 0.04;   // 각파이프/각재 단면
+          const barH = isSteel ? 0.05 : 0.04;      // 높이
+          const legH = isSteel ? 0.04 : 0.035;     // 다리 높이
+          const legSize = isSteel ? 0.035 : 0.04;  // 다리 단면
+          const longCount = 4;  // 장변 방향 부재 수
+          const shortCount = 3; // 단변 방향 부재 수
+
+          const frameMat = new THREE.MeshStandardMaterial({
+            color: isSteel ? 0x8a9bae : 0xb5915a,
+            roughness: isSteel ? 0.35 : 0.75,
+            metalness: isSteel ? 0.7 : 0.05
+          });
+
+          const frameGroup = new THREE.Group();
+
+          // 격자 간격
+          const longSpacing = 0.35;
+          const shortSpacing = 0.55;
+          const longCount2 = Math.floor((frameD - barSize * 2) / longSpacing);
+          const shortCount2 = Math.floor((frameW - barSize * 2) / shortSpacing);
+          const longStart = -(longCount2 - 1) * longSpacing / 2;
+          const shortStart = -(shortCount2 - 1) * shortSpacing / 2;
+
+          // 다리 (아래쪽)
+          const legPositions = [];
+          for (let ix = 0; ix <= 2; ix++) {
+            for (let iz = 0; iz <= 2; iz++) {
+              const x = -frameW/2 + barSize/2 + ix * (frameW - barSize) / 2;
+              const z = -frameD/2 + barSize/2 + iz * (frameD - barSize) / 2;
+              legPositions.push([x, z]);
+            }
+          }
+          legPositions.forEach(([x, z]) => {
+            const leg = new THREE.Mesh(
+              new THREE.BoxGeometry(legSize, legH, legSize), frameMat
+            );
+            leg.position.set(x, pos + legH/2, z);
+            leg.castShadow = true;
+            frameGroup.add(leg);
+          });
+
+          // 격자 프레임 (다리 위)
+          const barY = pos + legH + barH / 2;
+
+          // 장변 방향 부재 (X방향)
+          for (let i = 0; i < longCount2; i++) {
+            const z = longStart + i * longSpacing;
+            const bar = new THREE.Mesh(
+              new THREE.BoxGeometry(frameW, barH, barSize), frameMat
+            );
+            bar.position.set(0, barY, z);
+            bar.castShadow = true;
+            frameGroup.add(bar);
+          }
+
+          // 단변 방향 부재 (Z방향)
+          for (let i = 0; i < shortCount2; i++) {
+            const x = shortStart + i * shortSpacing;
+            const bar = new THREE.Mesh(
+              new THREE.BoxGeometry(barSize, barH, frameD), frameMat
+            );
+            bar.position.set(x, barY, 0);
+            bar.castShadow = true;
+            frameGroup.add(bar);
+          }
+
+          // 외곽 프레임
+          const edgeBars = [
+            { geo: [frameW, barH, barSize], pos: [0, barY, -frameD/2 + barSize/2] },
+            { geo: [frameW, barH, barSize], pos: [0, barY, frameD/2 - barSize/2] },
+            { geo: [barSize, barH, frameD], pos: [-frameW/2 + barSize/2, barY, 0] },
+            { geo: [barSize, barH, frameD], pos: [frameW/2 - barSize/2, barY, 0] },
+          ];
+          edgeBars.forEach(e => {
+            const bar = new THREE.Mesh(new THREE.BoxGeometry(...e.geo), frameMat);
+            bar.position.set(...e.pos);
+            bar.castShadow = true;
+            frameGroup.add(bar);
+          });
+
+          group3D.add(frameGroup);
+          // 다음 레이어는 격자 상단에 맞닿음
+          pos += legH + barH;
+          return;
+        }
+
         const thickness = layer.thickness / 1000; // mm를 m로 변환
         let geometry, mesh;
 
@@ -2706,7 +2872,7 @@
             if (material) {
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
-              const gwpDisplay = material.gwp < 10 ? material.gwp.toFixed(1) : formatNumber(Math.abs(material.gwp), 0);
+              const gwpDisplay = material.gwp < 10 ? material.gwp.toFixed(1) : (material.gwp < 0 ? '-' + formatNumber(Math.abs(material.gwp), 0) : formatNumber(material.gwp, 0));
 
               tiles.push(`
                 <div class="tile-wrapper">
@@ -2747,14 +2913,33 @@
           `;
         });
       } else {
-        // === 바닥/외벽/내벽: GWP 내림차순 순서대로 피라미드 슬롯에 배치 ===
-        filtered.sort((a, b) => b.gwp - a.gwp);
+        // === 바닥/외벽/내벽: GWP 레벨별로 분리 후 각 레벨 내 내림차순 배치 ===
+
+        // 레벨별 GWP 경계
+        const levelBounds = [
+          { level: 1, min: 10000, rows: [1, 2] },       // Row 1-2: 3슬롯
+          { level: 2, min: 1000,  rows: [3, 4, 5] },    // Row 3-5: 13슬롯
+          { level: 3, min: 100,   rows: [6, 7] },       // Row 6-7: 15슬롯
+          { level: 4, min: 0,     rows: [8, 9] },       // Row 8-9: 22슬롯
+          { level: 5, min: -Infinity, rows: [10, 11] },  // Row 10-11: 30슬롯
+        ];
 
         // 레벨 경계 행 (그룹 구분선 표시용)
-        const groupBoundaryRows = [2, 5, 7, 9]; // Row 2,5,7,9 뒤에 구분선
+        const groupBoundaryRows = [2, 5, 7, 9];
         const carbonLabels = { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
 
-        let materialIndex = 0;
+        // 자재를 레벨별로 분류
+        const levelMaterials = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+        filtered.forEach(m => {
+          if (m.gwp >= 10000) levelMaterials[1].push(m);
+          else if (m.gwp >= 1000) levelMaterials[2].push(m);
+          else if (m.gwp >= 100) levelMaterials[3].push(m);
+          else if (m.gwp >= 0) levelMaterials[4].push(m);
+          else levelMaterials[5].push(m);
+        });
+        // 각 레벨 내 GWP 내림차순 정렬
+        Object.values(levelMaterials).forEach(arr => arr.sort((a, b) => b.gwp - a.gwp));
+
         for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
           const rowNumber = rowIndex + 1;
           const slotCount = rowSlotCounts[rowIndex];
@@ -2762,7 +2947,7 @@
 
           const tiles = [];
           for (let i = 0; i < slotCount; i++) {
-            const material = filtered[materialIndex];
+            const material = levelMaterials[level].shift();
             if (material) {
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
@@ -2777,13 +2962,12 @@
                        onclick="selectMaterial('${escapeHtml(material.id)}')"
                        onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
                        data-id="${escapeHtml(material.id)}">
-                    <div class="gwp-badge">${formatNumber(Math.abs(material.gwp), 0)}</div>
+                    <div class="gwp-badge">${material.gwp < 0 ? '-' + formatNumber(Math.abs(material.gwp), 0) : formatNumber(material.gwp, 0)}</div>
                     <div class="level-indicator"></div>
                   </div>
                   <div class="tile-name-below">${escapeHtml(material.name)}</div>
                 </div>
               `);
-              materialIndex++;
             } else {
               tiles.push(`
                 <div class="tile-wrapper" style="visibility:hidden;">
@@ -2879,11 +3063,13 @@
         const matUnit = String(layer.material.unit || '').toLowerCase();
         const isM2 = matUnit.includes('m²') || matUnit.includes('m2');
 
+        const isFixed = layer.material.hideThickness === true;
+
         const thicknessHtml = isM2 ? `
             <div class="thickness-input">
               <label>면적 단위 (m²)</label>
             </div>
-        ` : `
+        ` : isFixed ? '' : `
             <div class="thickness-input">
               <label>두께:</label>
               <input
@@ -2894,13 +3080,16 @@
                 onchange="updateThickness(${layer.id}, this.value)"
               >
               <span>mm</span>
+
             </div>
         `;
 
         return `
           <div class="layer-item">
             <div class="layer-header">
-              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}</span>
+              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}${layer.material.tip ? `<span class="thickness-tip-icon">i
+                <div class="thickness-tip">${escapeHtml(layer.material.tip)}</div>
+              </span>` : ''}</span>
               <button class="remove-btn" onclick="removeLayer(${layer.id})">✕</button>
             </div>
             ${thicknessHtml}
