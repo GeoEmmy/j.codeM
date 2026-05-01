@@ -2757,6 +2757,38 @@
           });
         }
 
+        // 부직포 텍스처 (짙은 회색, 섬유질감)
+        function nonwovenTex() {
+          return makeCanvasTex('nonwoven', 1024, (ctx, s) => {
+            ctx.fillStyle = '#8a8a8a';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 5000; i++) {
+              ctx.strokeStyle = `rgba(${60+Math.random()*60},${60+Math.random()*60},${65+Math.random()*55},${0.08+Math.random()*0.12})`;
+              ctx.lineWidth = 0.5 + Math.random();
+              ctx.beginPath();
+              const x = Math.random()*s, y = Math.random()*s;
+              const angle = Math.random() * Math.PI;
+              const len = 3 + Math.random() * 12;
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+              ctx.stroke();
+            }
+          });
+        }
+
+        // 노란색 단열재 단면 텍스처
+        function insulYellowTex() {
+          return makeCanvasTex('insul_yellow', 512, (ctx, s) => {
+            ctx.fillStyle = '#e8c848';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 2000; i++) {
+              ctx.fillStyle = `rgba(${200+Math.random()*55},${170+Math.random()*50},${30+Math.random()*40},${0.1+Math.random()*0.15})`;
+              const sz = 1 + Math.random() * 4;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+          });
+        }
+
         // 퍼라이트 텍스처 (짙은 회색 + 다공질)
         function perliteTex() {
           return makeCanvasTex('perlite', 1024, (ctx, s) => {
@@ -3097,8 +3129,8 @@
             return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 });
           }
           if (n.includes('경질우레탄') || nameEn.includes('rigid_urethane')) {
-            const tex = foilTex(); tex.repeat.set(2,2);
-            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.25, metalness: 0.35 });
+            const tex = nonwovenTex(); tex.repeat.set(2,2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 });
           }
           if (n.includes('pf보드') || nameEn.includes('phenolic')) {
             const tex = foilTex(); tex.repeat.set(2,2);
@@ -3168,8 +3200,8 @@
           if (n.includes('이중바닥') || nameEn.includes('raised'))
             return 'raised';
           // 단열 보드형 — 직사각 보드
-          if (n.includes('단열') || n.includes('보온판') || n.includes('pf보드') || n.includes('암면') || n.includes('그라스울') || n.includes('진공') || n.includes('퍼라이트') || n.includes('볏짚')
-              || nameEn.includes('insulation') || nameEn.includes('xps') || nameEn === 'eps' || nameEn.includes('phenolic') || nameEn.includes('rock_wool') || nameEn.includes('glass_wool') || nameEn.includes('vacuum') || nameEn.includes('perlite') || nameEn.includes('straw'))
+          if (n.includes('단열') || n.includes('보온판') || n.includes('pf보드') || n.includes('경질우레탄') || n.includes('암면') || n.includes('그라스울') || n.includes('진공') || n.includes('퍼라이트') || n.includes('볏짚')
+              || nameEn.includes('insulation') || nameEn.includes('xps') || nameEn === 'eps' || nameEn.includes('phenolic') || nameEn.includes('rigid_urethane') || nameEn.includes('rock_wool') || nameEn.includes('glass_wool') || nameEn.includes('vacuum') || nameEn.includes('perlite') || nameEn.includes('straw'))
             return 'board';
           // 구조재형 — 한 판 (콘크리트, CLT, 합판, 대나무)
           if (n.includes('콘크리트') || nameEn.includes('concrete') || nameEn === 'clt' || n.includes('합판') || nameEn === 'plywood' || n.includes('대나무') || nameEn.includes('bamboo'))
@@ -3207,9 +3239,14 @@
             if (n.includes('대리석') || n.includes('화강') || n.includes('샌드스톤') || n.includes('라임스톤') || n.includes('석재') ||
                 ne.includes('marble') || ne.includes('granite') || ne.includes('sandstone') || ne.includes('limestone'))
               return 'stone';
+            // 단열재 (PF보드, 경질우레탄 등) — solid (면별 재질)
+            if (n.includes('pf보드') || n.includes('경질우레탄') || n.includes('단열') || n.includes('보온판') || n.includes('볏짚') ||
+                ne.includes('phenolic') || ne.includes('rigid_urethane') || ne.includes('insulation') || ne === 'xps' || ne === 'eps' ||
+                ne.includes('wool') || ne.includes('cork_insulation') || ne.includes('straw') || ne.includes('cellulose') || ne.includes('hemp'))
+              return 'solid';
             // 패널형 (GRC, UHPC, HPL, 섬유시멘트패널, 시멘트판넬, 시멘트보드)
             if ((n.includes('패널') || n.includes('판넬') || n.includes('보드')) &&
-                !n.includes('코르크') && !n.includes('미네랄울') && !n.includes('단열') && !n.includes('보온'))
+                !n.includes('코르크') && !n.includes('미네랄울'))
               return 'panel';
             // 아연판 — 세로 이음새
             if (n.includes('아연') && !n.includes('용융'))
@@ -3427,8 +3464,17 @@
             layerMeshes.push(mesh);
           } else {
             // solid, coat, insulation 등 — 한 판 + 에지
+            const isPFOrUrethane = n.includes('pf보드') || n.includes('경질우레탄') ||
+              ne.includes('phenolic') || ne.includes('rigid_urethane');
             geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
-            mesh = new THREE.Mesh(geometry, floorMat);
+            if (isPFOrUrethane) {
+              // 전후면(+X,-X): 은박/부직포(floorMat), 나머지 4면: 노란색 단열재
+              const sideTexW = insulYellowTex(); sideTexW.repeat.set(2,4);
+              const sideMat = new THREE.MeshStandardMaterial({ map: sideTexW, roughness: 0.85, metalness: 0.0 });
+              mesh = new THREE.Mesh(geometry, [floorMat, floorMat, sideMat, sideMat, sideMat, sideMat]);
+            } else {
+              mesh = new THREE.Mesh(geometry, floorMat);
+            }
             mesh.position.x = pos + thickness / 2;
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -3564,8 +3610,20 @@
         }
         // 단열재 — 한 판 (그리드 없음)
         else if (pattern === 'board') {
-          geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
-          mesh = new THREE.Mesh(geometry, floorMat);
+          const isPFOrUrethane = matName.includes('pf보드') || matName.includes('경질우레탄') ||
+            nameEn.includes('phenolic') || nameEn.includes('rigid_urethane');
+          if (isPFOrUrethane) {
+            // 상하면: 은박/부직포(floorMat), 측면 4면: 노란색 단열재
+            const sideTexY = insulYellowTex(); sideTexY.repeat.set(4,1);
+            const sideMat = new THREE.MeshStandardMaterial({ map: sideTexY, roughness: 0.85, metalness: 0.0 });
+            // BoxGeometry 면 순서: +X, -X, +Y, -Y, +Z, -Z
+            const mats = [sideMat, sideMat, floorMat, floorMat, sideMat, sideMat];
+            geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
+            mesh = new THREE.Mesh(geometry, mats);
+          } else {
+            geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
+            mesh = new THREE.Mesh(geometry, floorMat);
+          }
           mesh.position.y = pos + thickness / 2;
           mesh.castShadow = true;
           mesh.receiveShadow = true;
