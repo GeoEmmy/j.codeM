@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>자재 선택 - J.codE M</title>
+  <title>J.codE M - 자재 선택</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
@@ -401,7 +402,7 @@
       flex: 1;
       height: 1px;
       background: #b2bec3;
-      min-width: 80px;
+      min-width: var(--line-w, 80px);
     }
 
     /* 피라미드 기울기에 맞춰 라벨 위치 조정 (기본 11행) */
@@ -3471,6 +3472,8 @@
 
       if (isM2Unit) {
         // === 천장/창호: 순서대로 배치 (Level 그룹 없음) ===
+        const filteredSetM2 = new Set(filtered.map(m => m.id));
+        const allSorted = [...materials].sort((a, b) => b.gwp - a.gwp);
         let materialIndex = 0;
         rowSlotCounts.forEach((slotCount, rowIndex) => {
           const rowNumber = rowIndex + 1;
@@ -3484,14 +3487,15 @@
 
           const tiles = [];
           for (let i = 0; i < slotCount; i++) {
-            const material = filtered[materialIndex];
+            const material = allSorted[materialIndex];
             if (material) {
+              const isVisible = filteredSetM2.has(material.id);
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
               const gwpDisplay = material.gwp < 10 ? material.gwp.toFixed(1) : (material.gwp < 0 ? '-' + formatNumber(Math.abs(material.gwp), 0) : formatNumber(material.gwp, 0));
 
               tiles.push(`
-                <div class="tile-wrapper">
+                <div class="tile-wrapper"${!isVisible ? ' style="visibility:hidden;"' : ''}>
                   <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
                        style="background-image: url('${escapeHtml(imageUrl)}')"
                        tabindex="0"
@@ -3553,9 +3557,10 @@
           ? { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' }
           : { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
 
-        // 자재를 레벨별로 분류
+        // 전체 자재를 레벨별로 분류 (필터 무관하게 슬롯 유지)
+        const filteredSet = new Set(filtered.map(m => m.id));
         const levelMaterials = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-        filtered.forEach(m => {
+        materials.forEach(m => {
           if (m.gwp >= 10000) levelMaterials[1].push(m);
           else if (m.gwp >= 1000) levelMaterials[2].push(m);
           else if (m.gwp >= 100) levelMaterials[3].push(m);
@@ -3579,12 +3584,13 @@
           for (let i = 0; i < slotCount; i++) {
             const material = levelMaterials[level].shift();
             if (material) {
-              hasContent = true;
+              const isVisible = filteredSet.has(material.id);
+              if (isVisible) hasContent = true;
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
 
               tiles.push(`
-                <div class="tile-wrapper">
+                <div class="tile-wrapper"${!isVisible ? ' style="visibility:hidden;"' : ''}>
                   <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
                        style="background-image: url('${escapeHtml(imageUrl)}')"
                        tabindex="0"
@@ -3613,27 +3619,16 @@
           rowDataList.push({ rowNumber, slotCount, level, tiles, hasContent, isBoundary, carbonLabelText: isBoundary ? carbonLabels[rowNumber] : '' });
         }
 
-        // 2단계: 외벽만 빈 행의 구분선을 직전 유효 행으로 이관
-        if (structureType === 'external') {
-          for (let i = rowDataList.length - 1; i >= 0; i--) {
-            if (rowDataList[i].isBoundary && !rowDataList[i].hasContent) {
-              for (let j = i - 1; j >= 0; j--) {
-                if (rowDataList[j].hasContent) {
-                  rowDataList[j].isBoundary = true;
-                  rowDataList[j].carbonLabelText = rowDataList[i].carbonLabelText;
-                  break;
-                }
-              }
-            }
-          }
-        }
+        // 2단계: 구분선은 항상 고정 위치 유지 (이관 없음)
 
         // 3단계: 렌더링 (빈 행도 유지)
         for (const rd of rowDataList) {
           const rowMaxWidth = rd.slotCount * 85 + 15;
-          const carbonLabel = rd.isBoundary && rd.carbonLabelText ? `<span class="carbon-label" style="left:50%;transform:translateX(-50%);right:auto;bottom:0px">${rd.carbonLabelText}</span>` : '';
+          const labelLineWidth = (rd.level === 1 && structureType !== 'external') ? 50 : 80;
+          const carbonLabel = rd.isBoundary && rd.carbonLabelText ? `<span class="carbon-label" style="left:50%;transform:translateX(-50%);right:auto;bottom:0px;--line-w:${labelLineWidth}px">${rd.carbonLabelText}</span>` : '';
+          const tightBoundary = rd.isBoundary && rd.level === 1 && structureType !== 'external';
           html += `
-            <div class="pyramid-row level-${rd.level} row-${rd.rowNumber} ${rd.isBoundary ? 'group-end' : ''}" style="max-width:${rowMaxWidth}px">
+            <div class="pyramid-row level-${rd.level} row-${rd.rowNumber} ${rd.isBoundary ? 'group-end' : ''}" style="max-width:${rowMaxWidth}px${tightBoundary ? ';padding-bottom:15px;margin-bottom:5px' : ''}">
               ${rd.tiles.join('')}
               ${carbonLabel}
             </div>
