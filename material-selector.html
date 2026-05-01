@@ -2960,6 +2960,69 @@
         // 바닥 자재별 3D 재질 생성
         function getFloorMat3D(name, nameEn) {
           const n = name.toLowerCase();
+
+          // ===== 외벽 자재 — 천장/바닥 동일 물성 =====
+          // 알루미늄 (천장: tex, r:0.15, m:0.85)
+          if ((n.includes('알루미늄') && !n.includes('재활용')) || (nameEn.includes('aluminum') && !nameEn.includes('recycled'))) {
+            const tex = makeTexture('aluminum');
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.15, metalness: 0.85 });
+          }
+          // 재활용알루미늄 (천장: tex, color:0xa8adb0, r:0.25, m:0.75)
+          if (n.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum')) {
+            const tex = makeTexture('aluminum');
+            return new THREE.MeshStandardMaterial({ map: tex, color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+          }
+          // 동판
+          if (n.includes('동판') || nameEn.includes('copper')) {
+            return new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: 0.35, metalness: 0.85 });
+          }
+          // 아연판
+          if (n.includes('아연') && !n.includes('용융') || (nameEn.includes('zinc') && !nameEn.includes('galvanized'))) {
+            return new THREE.MeshStandardMaterial({ color: 0xa8afb5, roughness: 0.25, metalness: 0.75 });
+          }
+          // 용융아연도금 강판
+          if (n.includes('용융아연') || n.includes('강판') || nameEn.includes('galvanized') || nameEn.includes('steel_sheet')) {
+            return new THREE.MeshStandardMaterial({ color: 0x909498, roughness: 0.6, metalness: 0.5 });
+          }
+          // 폴리카보네이트 (천장: color:0x88c8e8, r:0.05, m:0.08, opacity:0.7)
+          if (n.includes('폴리카보네이트') || nameEn === 'polycarbonate') {
+            return new THREE.MeshStandardMaterial({
+              color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7
+            });
+          }
+          // 유리블록 (폴리카보네이트 기반, 연한 그린블루)
+          if (n.includes('유리블록') || nameEn.includes('glass_block')) {
+            return new THREE.MeshStandardMaterial({
+              color: 0x90d0c8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7
+            });
+          }
+          // 아크릴 (폴리카보네이트 유사)
+          if (n.includes('아크릴') || nameEn.includes('acrylic')) {
+            return new THREE.MeshStandardMaterial({
+              color: 0xd0e8f0, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7
+            });
+          }
+          // 시멘트판넬
+          if (n.includes('시멘트판넬') || n.includes('시멘트패널') || nameEn.includes('fiber_cement')) {
+            return new THREE.MeshStandardMaterial({ color: 0xc8c4c0, roughness: 0.85, metalness: 0.02 });
+          }
+          // 비닐사이딩
+          if (n.includes('비닐사이딩') || nameEn.includes('vinyl_siding')) {
+            return new THREE.MeshStandardMaterial({ color: 0xe8dcc8, roughness: 0.55, metalness: 0.0 });
+          }
+          // 페인트 (천장: color:0xffffff, r:0.35, m:0.0)
+          if (n.includes('페인트') || nameEn === 'paint') {
+            return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 });
+          }
+          // 세라믹타일 (바닥: color:0xf5f0e8, r:0.1, m:0.05)
+          if (n.includes('세라믹타일') || (n.includes('세라믹') && n.includes('타일'))) {
+            return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.1, metalness: 0.05 });
+          }
+          // 점토타일
+          if (n.includes('점토타일') || n.includes('점토') || nameEn.includes('clay_tile')) {
+            return new THREE.MeshStandardMaterial({ color: 0xc4703c, roughness: 0.92, metalness: 0.0 });
+          }
+
           // 콘크리트 계열
           if (n.includes('콘크리트') || nameEn.includes('concrete')) {
             const tex = concreteTex(); tex.repeat.set(2,2);
@@ -3121,20 +3184,259 @@
         const pattern = !isWall ? getFloorPattern(matName, nameEn) : null;
 
         if (isWall) {
-          // 벽체 (가로로 쌓임) — 기존 로직 유지
-          geometry = new THREE.BoxGeometry(thickness, 2, 1.3);
-          mesh = new THREE.Mesh(geometry, floorMat);
-          mesh.position.x = pos + thickness / 2;
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
+          const wallH = 2.0, wallW = 1.3;
+          const n = matName;
+          const ne = nameEn;
 
-          const edges = new THREE.EdgesGeometry(geometry);
-          const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2, opacity: 0.4, transparent: true }));
-          mesh.add(line);
+          // 외벽 자재 패턴 분류
+          function getWallPattern() {
+            // 유리블록 — 정사각 타일 (블록보다 먼저 체크)
+            if (n.includes('유리블록'))
+              return 'tile';
+            // 벽돌/블록형
+            if (n.includes('벽돌') || n.includes('블록') || n.includes('alc') || n.includes('대마콘크리트') ||
+                ne.includes('brick') || ne.includes('block') || ne.includes('alc') || ne.includes('hempcrete') || ne.includes('adobe'))
+              return 'brick';
+            // 타일형
+            if (n.includes('세라믹타일') || n.includes('점토타일') || n.includes('유리타일') || n.includes('모자이크'))
+              return 'tile';
+            // 사이딩 (가로줄)
+            if (n.includes('사이딩') || n.includes('테라코타'))
+              return 'siding';
+            // 석재형
+            if (n.includes('대리석') || n.includes('화강') || n.includes('샌드스톤') || n.includes('라임스톤') || n.includes('석재') ||
+                ne.includes('marble') || ne.includes('granite') || ne.includes('sandstone') || ne.includes('limestone'))
+              return 'stone';
+            // 패널형 (GRC, UHPC, HPL, 섬유시멘트패널, 시멘트판넬, 시멘트보드)
+            if ((n.includes('패널') || n.includes('판넬') || n.includes('보드')) &&
+                !n.includes('코르크') && !n.includes('미네랄울') && !n.includes('단열') && !n.includes('보온'))
+              return 'panel';
+            // 아연판 — 세로 이음새
+            if (n.includes('아연') && !n.includes('용융'))
+              return 'zincseam';
+            // 목재 세로 널빤지 (목재사이딩)
+            if (n.includes('목재사이딩'))
+              return 'woodboard';
+            // 금속 시트 (한 판 + 에지)
+            if (n.includes('알루미늄') || n.includes('동판') || n.includes('재활용알루미늄') ||
+                ne.includes('aluminum') || ne.includes('copper'))
+              return 'metalsheet';
+            // 도포형
+            if (n.includes('미장') || n.includes('페인트') || n.includes('모르타르') || n.includes('석회') ||
+                ne.includes('plaster') || ne.includes('paint') || ne.includes('mortar') || ne.includes('lime'))
+              return 'coat';
+            // 나머지 전부 solid (강판, 폴리카보네이트, 아크릴, 콘크리트, CLT, 합판, OSB, 코르크패널,
+            //   미네랄울샌드위치패널, 대나무, 단열재 등)
+            return 'solid';
+          }
 
-          pos += thickness;
-          group3D.add(mesh);
-          layerMeshes.push(mesh);
+          const wp = getWallPattern();
+
+          // 에지 와이어프레임 헬퍼
+          function addEdges(parentMesh, geo) {
+            const edges = new THREE.EdgesGeometry(geo);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2, opacity: 0.4, transparent: true }));
+            parentMesh.add(line);
+          }
+
+          if (wp === 'brick') {
+            // 벽돌/블록 — 러닝본드, 단변 균등분할
+            const brickGroup = new THREE.Group();
+            const bH = n.includes('블록') || n.includes('alc') || n.includes('대마') || ne.includes('block') || ne.includes('alc') || ne.includes('hempcrete') || ne.includes('adobe') ? 0.2 : 0.057;
+            const bW = bH < 0.1 ? 0.19 : 0.4;
+            const gap = 0.008;
+            const cols = Math.max(1, Math.round(wallW / (bW + gap)));
+            const actualBW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (bH + gap));
+            for (let r = 0; r < rows; r++) {
+              const offset = (r % 2 === 1) ? (actualBW + gap) / 2 : 0;
+              for (let c = -1; c <= cols; c++) {
+                const z = -wallW/2 + c * (actualBW + gap) + actualBW/2 + offset;
+                const y = -wallH/2 + r * (bH + gap) + bH/2;
+                if (z - actualBW/2 > wallW/2 || z + actualBW/2 < -wallW/2) continue;
+                if (y - bH/2 > wallH/2) continue;
+                const clipL = Math.max(z - actualBW/2, -wallW/2);
+                const clipR = Math.min(z + actualBW/2, wallW/2);
+                const clipB = Math.max(y - bH/2, -wallH/2);
+                const clipT = Math.min(y + bH/2, wallH/2);
+                const cw = clipR - clipL;
+                const ch = clipT - clipB;
+                if (cw < 0.01 || ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, cw);
+                const b = new THREE.Mesh(geo, floorMat);
+                b.position.set(pos + thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                b.castShadow = true;
+                brickGroup.add(b);
+              }
+            }
+            pos += thickness;
+            group3D.add(brickGroup);
+            layerMeshes.push(brickGroup);
+          } else if (wp === 'tile') {
+            // 타일 그리드 — 단변 균등분할
+            const tileGroup = new THREE.Group();
+            const isGlassBlock = n.includes('유리블록');
+            const tSize = n.includes('모자이크') ? 0.025 : isGlassBlock ? 0.19 : 0.3;
+            const gap = n.includes('모자이크') ? 0.003 : 0.005;
+            const cols = Math.max(1, Math.round(wallW / (tSize + gap)));
+            const actualTW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.max(1, Math.round(wallH / (isGlassBlock ? actualTW + gap : tSize + gap)));
+            const actualTH = (wallH - (rows - 1) * gap) / rows;
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const y = -wallH/2 + r * (actualTH + gap) + actualTH/2;
+                const z = -wallW/2 + c * (actualTW + gap) + actualTW/2;
+                const geo = new THREE.BoxGeometry(thickness, actualTH, actualTW);
+                const t = new THREE.Mesh(geo, floorMat);
+                t.position.set(pos + thickness/2, y, z);
+                t.castShadow = true;
+                tileGroup.add(t);
+              }
+            }
+            pos += thickness;
+            group3D.add(tileGroup);
+            layerMeshes.push(tileGroup);
+          } else if (wp === 'siding') {
+            // 사이딩 — 높이 균등분할
+            const sidingGroup = new THREE.Group();
+            const boardH = n.includes('테라코타') ? 0.3 : 0.18;
+            const gap = 0.005;
+            const rows = Math.max(1, Math.round(wallH / (boardH + gap)));
+            const actualBH = (wallH - (rows - 1) * gap) / rows;
+            for (let r = 0; r < rows; r++) {
+              const y = -wallH/2 + r * (actualBH + gap) + actualBH/2;
+              const geo = new THREE.BoxGeometry(thickness, actualBH, wallW);
+              const s = new THREE.Mesh(geo, floorMat);
+              s.position.set(pos + thickness/2, y, 0);
+              s.castShadow = true;
+              sidingGroup.add(s);
+            }
+            pos += thickness;
+            group3D.add(sidingGroup);
+            layerMeshes.push(sidingGroup);
+          } else if (wp === 'stone') {
+            // 석재 — 러닝본드 1/3 오프셋, 단변 균등분할
+            const stoneGroup = new THREE.Group();
+            const sH = 0.4, sW = 0.6, gap = 0.004;
+            const cols = Math.max(1, Math.round(wallW / (sW + gap)));
+            const actualSW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (sH + gap));
+            for (let r = 0; r < rows; r++) {
+              const offset = (r % 2 === 1) ? (actualSW + gap) / 3 : 0;
+              for (let c = -1; c <= cols; c++) {
+                const y = -wallH/2 + r * (sH + gap) + sH/2;
+                const z = -wallW/2 + c * (actualSW + gap) + actualSW/2 + offset;
+                const clipL = Math.max(z - actualSW/2, -wallW/2);
+                const clipR = Math.min(z + actualSW/2, wallW/2);
+                const clipB = Math.max(y - sH/2, -wallH/2);
+                const clipT = Math.min(y + sH/2, wallH/2);
+                const cw = clipR - clipL;
+                const ch = clipT - clipB;
+                if (cw < 0.01 || ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, cw);
+                const s = new THREE.Mesh(geo, floorMat);
+                s.position.set(pos + thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                s.castShadow = true;
+                stoneGroup.add(s);
+              }
+            }
+            pos += thickness;
+            group3D.add(stoneGroup);
+            layerMeshes.push(stoneGroup);
+          } else if (wp === 'panel') {
+            // 패널형 — 단변 균등분할
+            const panelGroup = new THREE.Group();
+            const pH = 1.0, pW = 0.6, gap = 0.006;
+            const cols = Math.max(1, Math.round(wallW / (pW + gap)));
+            const actualPW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (pH + gap));
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const y = -wallH/2 + r * (pH + gap) + pH/2;
+                const z = -wallW/2 + c * (actualPW + gap) + actualPW/2;
+                const clipB = Math.max(y - pH/2, -wallH/2);
+                const clipT = Math.min(y + pH/2, wallH/2);
+                const ch = clipT - clipB;
+                if (ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, actualPW);
+                const p = new THREE.Mesh(geo, floorMat);
+                p.position.set(pos + thickness/2, (clipB + clipT)/2, z);
+                p.castShadow = true;
+                panelGroup.add(p);
+              }
+            }
+            pos += thickness;
+            group3D.add(panelGroup);
+            layerMeshes.push(panelGroup);
+          } else if (wp === 'woodboard') {
+            // 목재 세로 널빤지 — 단변 균등분할
+            const woodGroup = new THREE.Group();
+            const bW = 0.15;
+            const gap = 0.004;
+            const cols = Math.max(1, Math.round(wallW / (bW + gap)));
+            const actualBW = (wallW - (cols - 1) * gap) / cols;
+            for (let c = 0; c < cols; c++) {
+              const z = -wallW/2 + c * (actualBW + gap) + actualBW/2;
+              const geo = new THREE.BoxGeometry(thickness, wallH, actualBW);
+              const b = new THREE.Mesh(geo, floorMat);
+              b.position.set(pos + thickness/2, 0, z);
+              b.castShadow = true;
+              woodGroup.add(b);
+            }
+            pos += thickness;
+            group3D.add(woodGroup);
+            layerMeshes.push(woodGroup);
+          } else if (wp === 'zincseam') {
+            // 아연판 — 징크패널 세로 이음새, 단변 균등분할
+            const zincGroup = new THREE.Group();
+            const seamW = 0.43;
+            const seamGap = 0.003;
+            const cols = Math.max(1, Math.round(wallW / (seamW + seamGap)));
+            const actualSeamW = (wallW - (cols - 1) * seamGap) / cols;
+            for (let c = 0; c < cols; c++) {
+              const z = -wallW/2 + c * (actualSeamW + seamGap) + actualSeamW/2;
+              const geo = new THREE.BoxGeometry(thickness, wallH, actualSeamW);
+              const panel = new THREE.Mesh(geo, floorMat);
+              panel.position.set(pos + thickness/2, 0, z);
+              panel.castShadow = true;
+              zincGroup.add(panel);
+              if (c < cols - 1) {
+                const seamZ = z + actualSeamW/2 + seamGap/2;
+                const seamGeo = new THREE.PlaneGeometry(wallH, thickness * 1.2);
+                const seamMat = new THREE.MeshBasicMaterial({ color: 0x606060, side: THREE.DoubleSide });
+                const seam = new THREE.Mesh(seamGeo, seamMat);
+                seam.rotation.z = Math.PI / 2;
+                seam.rotation.y = Math.PI / 2;
+                seam.position.set(pos + thickness/2, 0, seamZ);
+                zincGroup.add(seam);
+              }
+            }
+            pos += thickness;
+            group3D.add(zincGroup);
+            layerMeshes.push(zincGroup);
+          } else if (wp === 'metalsheet') {
+            // 금속 시트 — 한 판 + 에지
+            geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+            mesh = new THREE.Mesh(geometry, floorMat);
+            mesh.position.x = pos + thickness / 2;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            addEdges(mesh, geometry);
+            pos += thickness;
+            group3D.add(mesh);
+            layerMeshes.push(mesh);
+          } else {
+            // solid, coat, insulation 등 — 한 판 + 에지
+            geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+            mesh = new THREE.Mesh(geometry, floorMat);
+            mesh.position.x = pos + thickness / 2;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            addEdges(mesh, geometry);
+            pos += thickness;
+            group3D.add(mesh);
+            layerMeshes.push(mesh);
+          }
         }
         // 판재형 (마루, 데크) — 가로 널빤지 + 줄눈
         else if (pattern === 'plank') {
