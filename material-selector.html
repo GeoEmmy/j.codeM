@@ -391,26 +391,30 @@
       color: #636e72;
       white-space: nowrap;
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .carbon-label::before,
+    .carbon-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #b2bec3;
+      min-width: 80px;
     }
 
-    /* 피라미드 기울기에 맞춰 라벨 위치 조정 */
+    /* 피라미드 기울기에 맞춰 라벨 위치 조정 (기본 11행) */
     .pyramid-row.row-2 .carbon-label { right: -170px; }
     .pyramid-row.row-5 .carbon-label { right: -170px; }
     .pyramid-row.row-7 .carbon-label { right: -195px; }
     .pyramid-row.row-9 .carbon-label { right: -140px; }
+    /* 외벽 13행용 라벨 위치 */
+    .pyramid-row.row-3 .carbon-label { right: -170px; }
+    .pyramid-row.row-10 .carbon-label { right: -170px; }
+    .pyramid-row.row-11 .carbon-label { right: -140px; }
 
-    /* 11개 행의 너비 설정 - 슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16 */
-    .pyramid-row.row-1 { max-width: 100px; }     /* 1칸: 70px + 여유 */
-    .pyramid-row.row-2 { max-width: 185px; }     /* 2칸: 155px + 여유 */
-    .pyramid-row.row-3 { max-width: 270px; }     /* 3칸: 240px + 여유 */
-    .pyramid-row.row-4 { max-width: 355px; }     /* 4칸: 325px + 여유 */
-    .pyramid-row.row-5 { max-width: 525px; }     /* 6칸: 495px + 여유 */
-    .pyramid-row.row-6 { max-width: 610px; }     /* 7칸: 580px + 여유 */
-    .pyramid-row.row-7 { max-width: 695px; }     /* 8칸: 665px + 여유 */
-    .pyramid-row.row-8 { max-width: 865px; }     /* 10칸: 835px + 여유 */
-    .pyramid-row.row-9 { max-width: 1035px; }    /* 12칸: 1005px + 여유 */
-    .pyramid-row.row-10 { max-width: 1205px; }   /* 14칸: 1175px + 여유 */
-    .pyramid-row.row-11 { max-width: 1375px; }   /* 16칸: 1345px + 여유 */
+    /* 행 너비는 inline style로 슬롯 수에 따라 동적 설정 */
 
     /* 레벨별 색상은 유지 */
     .pyramid-row.level-1,
@@ -3455,8 +3459,10 @@
       // 자재가 없어도 빈 피라미드 구조 유지 (return 하지 않음)
       const showEmptyMessage = filtered.length === 0;
 
-      // 11개 행으로 나누기 (슬롯 개수: 1,2,3,4,6,7,8,10,12,14,16)
-      const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16]; // 11개 행
+      // 행 슬롯 구성: 외벽은 13행, 나머지는 11행
+      const rowSlotCounts = structureType === 'external'
+        ? [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 18]   // 11행
+        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];          // 11행
 
       // m² 단위 여부 (천장, 창호)
       const isM2Unit = (structureType === 'ceiling' || structureType === 'window');
@@ -3516,8 +3522,9 @@
           const isLevelEnd = levelLastRows.includes(rowNumber);
           const groupEndClass = isLevelEnd ? 'group-end' : '';
 
+          const rowMaxWidth = slotCount * 85 + 15;
           html += `
-            <div class="pyramid-row level-${level} row-${rowNumber} ${groupEndClass}">
+            <div class="pyramid-row level-${level} row-${rowNumber} ${groupEndClass}" style="max-width:${rowMaxWidth}px">
               ${tiles.join('')}
             </div>
           `;
@@ -3525,8 +3532,14 @@
       } else {
         // === 바닥/외벽/내벽: GWP 레벨별로 분리 후 각 레벨 내 내림차순 배치 ===
 
-        // 레벨별 GWP 경계
-        const levelBounds = [
+        // 레벨별 GWP 경계 (외벽: 13행, 나머지: 11행)
+        const levelBounds = structureType === 'external' ? [
+          { level: 1, min: 10000, rows: [1, 2, 3] },       // Row 1-3: 6슬롯
+          { level: 2, min: 1000,  rows: [4, 5] },          // Row 4-5: 10슬롯
+          { level: 3, min: 100,   rows: [6, 7, 8] },      // Row 6-8: 25슬롯
+          { level: 4, min: 0,     rows: [9] },            // Row 9: 12슬롯
+          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 34슬롯
+        ] : [
           { level: 1, min: 10000, rows: [1, 2] },       // Row 1-2: 3슬롯
           { level: 2, min: 1000,  rows: [3, 4, 5] },    // Row 3-5: 13슬롯
           { level: 3, min: 100,   rows: [6, 7] },       // Row 6-7: 15슬롯
@@ -3535,8 +3548,10 @@
         ];
 
         // 레벨 경계 행 (그룹 구분선 표시용)
-        const groupBoundaryRows = [2, 5, 7, 9];
-        const carbonLabels = { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
+        const groupBoundaryRows = structureType === 'external' ? [3, 5, 8, 9] : [2, 5, 7, 9];
+        const carbonLabels = structureType === 'external'
+          ? { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' }
+          : { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
 
         // 자재를 레벨별로 분류
         const levelMaterials = { 1: [], 2: [], 3: [], 4: [], 5: [] };
@@ -3550,15 +3565,21 @@
         // 각 레벨 내 GWP 내림차순 정렬
         Object.values(levelMaterials).forEach(arr => arr.sort((a, b) => b.gwp - a.gwp));
 
+        // 1단계: 행 데이터 수집
+        const rowDataList = [];
         for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
           const rowNumber = rowIndex + 1;
           const slotCount = rowSlotCounts[rowIndex];
-          const level = rowNumber <= 2 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5;
+          const level = structureType === 'external'
+            ? (rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5)
+            : (rowNumber <= 2 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5);
 
           const tiles = [];
+          let hasContent = false;
           for (let i = 0; i < slotCount; i++) {
             const material = levelMaterials[level].shift();
             if (material) {
+              hasContent = true;
               const isSelected = selectedLayers.some(l => l.material.id === material.id);
               const imageUrl = getMaterialImageUrl(material);
 
@@ -3588,11 +3609,32 @@
             }
           }
 
-          const showBorder = groupBoundaryRows.includes(rowNumber);
-          const carbonLabel = showBorder ? `<span class="carbon-label">${carbonLabels[rowNumber]}</span>` : '';
+          const isBoundary = groupBoundaryRows.includes(rowNumber);
+          rowDataList.push({ rowNumber, slotCount, level, tiles, hasContent, isBoundary, carbonLabelText: isBoundary ? carbonLabels[rowNumber] : '' });
+        }
+
+        // 2단계: 외벽만 빈 행의 구분선을 직전 유효 행으로 이관
+        if (structureType === 'external') {
+          for (let i = rowDataList.length - 1; i >= 0; i--) {
+            if (rowDataList[i].isBoundary && !rowDataList[i].hasContent) {
+              for (let j = i - 1; j >= 0; j--) {
+                if (rowDataList[j].hasContent) {
+                  rowDataList[j].isBoundary = true;
+                  rowDataList[j].carbonLabelText = rowDataList[i].carbonLabelText;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        // 3단계: 렌더링 (빈 행도 유지)
+        for (const rd of rowDataList) {
+          const rowMaxWidth = rd.slotCount * 85 + 15;
+          const carbonLabel = rd.isBoundary && rd.carbonLabelText ? `<span class="carbon-label" style="left:50%;transform:translateX(-50%);right:auto;bottom:0px">${rd.carbonLabelText}</span>` : '';
           html += `
-            <div class="pyramid-row level-${level} row-${rowNumber} ${showBorder ? 'group-end' : ''}">
-              ${tiles.join('')}
+            <div class="pyramid-row level-${rd.level} row-${rd.rowNumber} ${rd.isBoundary ? 'group-end' : ''}" style="max-width:${rowMaxWidth}px">
+              ${rd.tiles.join('')}
               ${carbonLabel}
             </div>
           `;
@@ -3780,10 +3822,16 @@
       // 위치 즉시 적용
       const explodeGapSave = 0.1;
       if (layerOriginalY.length === layerMeshes.length && layerMeshes.length > 1) {
-        const isW = layerMeshes[0] && layerMeshes[0].position && Math.abs(layerOriginalY[0]) > 0.01 && false;
+        const isWall = (structureType === 'external' || structureType === 'internal');
+        const isCeil = (structureType === 'ceiling');
+        const dir = isCeil ? -1 : 1;
         layerMeshes.forEach((mesh, i) => {
-          const offset = (i - (layerMeshes.length - 1) / 2) * explodeGapSave * explodeProgress;
-          mesh.position.y = layerOriginalY[i] + offset;
+          const offset = (i - (layerMeshes.length - 1) / 2) * explodeGapSave * explodeProgress * dir;
+          if (isWall) {
+            mesh.position.x = layerOriginalY[i] + offset;
+          } else {
+            mesh.position.y = layerOriginalY[i] + offset;
+          }
         });
       }
 
