@@ -4206,9 +4206,7 @@
       const showEmptyMessage = filtered.length === 0;
 
       // 행 슬롯 구성: 외벽은 13행, 나머지는 11행
-      const rowSlotCounts = structureType === 'external'
-        ? [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 18]   // 11행
-        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];          // 11행
+      const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];   // 11행 (외벽/내벽 공통)
 
       // m² 단위 여부 (천장, 창호)
       const isM2Unit = (structureType === 'ceiling' || structureType === 'window');
@@ -4282,25 +4280,17 @@
         // === 바닥/외벽/내벽: GWP 레벨별로 분리 후 각 레벨 내 내림차순 배치 ===
 
         // 레벨별 GWP 경계 (외벽: 13행, 나머지: 11행)
-        const levelBounds = structureType === 'external' ? [
+        const levelBounds = [
           { level: 1, min: 10000, rows: [1, 2, 3] },       // Row 1-3: 6슬롯
           { level: 2, min: 1000,  rows: [4, 5] },          // Row 4-5: 10슬롯
           { level: 3, min: 100,   rows: [6, 7, 8] },      // Row 6-8: 25슬롯
           { level: 4, min: 0,     rows: [9] },            // Row 9: 12슬롯
-          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 34슬롯
-        ] : [
-          { level: 1, min: 10000, rows: [1, 2] },       // Row 1-2: 3슬롯
-          { level: 2, min: 1000,  rows: [3, 4, 5] },    // Row 3-5: 13슬롯
-          { level: 3, min: 100,   rows: [6, 7] },       // Row 6-7: 15슬롯
-          { level: 4, min: 0,     rows: [8, 9] },       // Row 8-9: 22슬롯
-          { level: 5, min: -Infinity, rows: [10, 11] },  // Row 10-11: 30슬롯
+          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 32슬롯
         ];
 
         // 레벨 경계 행 (그룹 구분선 표시용)
-        const groupBoundaryRows = structureType === 'external' ? [3, 5, 8, 9] : [2, 5, 7, 9];
-        const carbonLabels = structureType === 'external'
-          ? { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' }
-          : { 2: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
+        const groupBoundaryRows = [3, 5, 8, 9];
+        const carbonLabels = { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
 
         // 전체 자재를 레벨별로 분류 (필터 무관하게 슬롯 유지)
         const filteredSet = new Set(filtered.map(m => m.id));
@@ -4320,9 +4310,7 @@
         for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
           const rowNumber = rowIndex + 1;
           const slotCount = rowSlotCounts[rowIndex];
-          const level = structureType === 'external'
-            ? (rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5)
-            : (rowNumber <= 2 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5);
+          const level = rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5;
 
           const tiles = [];
           let hasContent = false;

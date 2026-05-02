@@ -1,6 +1,6 @@
 /**
  * 한국 EPD 자재 데이터베이스
- * 자동 생성됨: 2026. 5. 2. 오후 1:26:04
+ * 자동 생성됨: 2026. 5. 2. 오후 2:38:27
  * 원본: materials01.xlsx
  */
 
@@ -40,7 +40,7 @@ const KOREAN_EPD = {
         "hideThickness": true
       },
       {
-        "id": "floor_04_인조대리석",
+        "id": "floor_03_인조대리석",
         "name": "인조대리석",
         "nameEn": "artificial_marble",
         "category": "finishing",
@@ -54,7 +54,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "floor_05_EPDM",
+        "id": "floor_04_EPDM",
         "name": "EPDM",
         "nameEn": "epdm",
         "category": "finishing",
@@ -68,7 +68,7 @@ const KOREAN_EPD = {
         "thickness": 8
       },
       {
-        "id": "floor_06_에폭시수지",
+        "id": "floor_05_에폭시수지",
         "name": "에폭시수지",
         "nameEn": "epoxy",
         "category": "finishing",
@@ -82,7 +82,7 @@ const KOREAN_EPD = {
         "thickness": 3
       },
       {
-        "id": "floor_07_재활용철근",
+        "id": "floor_06_재활용철근",
         "name": "재활용철근",
         "nameEn": "recycled rebar",
         "category": "structural",
@@ -98,7 +98,7 @@ const KOREAN_EPD = {
         "hideThickness": true
       },
       {
-        "id": "floor_08_고무바닥재",
+        "id": "floor_07_고무바닥재",
         "name": "고무바닥재",
         "nameEn": "rubber_flooring",
         "category": "finishing",
@@ -112,7 +112,7 @@ const KOREAN_EPD = {
         "thickness": 6
       },
       {
-        "id": "floor_09_우레탄방수",
+        "id": "floor_08_우레탄방수",
         "name": "우레탄방수",
         "nameEn": "urethan",
         "category": "finishing",
@@ -126,7 +126,7 @@ const KOREAN_EPD = {
         "thickness": 3
       },
       {
-        "id": "floor_10_재활용고무바닥재",
+        "id": "floor_09_재활용고무바닥재",
         "name": "재활용고무바닥재",
         "nameEn": "recycled_rubber",
         "category": "finishing",
@@ -140,7 +140,7 @@ const KOREAN_EPD = {
         "thickness": 8
       },
       {
-        "id": "floor_11_포세린타일",
+        "id": "floor_10_포세린타일",
         "name": "포세린타일",
         "nameEn": "porcelain_tile",
         "category": "finishing",
@@ -154,7 +154,7 @@ const KOREAN_EPD = {
         "thickness": 10
       },
       {
-        "id": "floor_12_이중바닥재",
+        "id": "floor_11_이중바닥재",
         "name": "이중바닥재",
         "nameEn": "raised_access_floor",
         "category": "finishing",
@@ -168,7 +168,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "floor_13_비닐시트",
+        "id": "floor_12_비닐시트",
         "name": "비닐시트",
         "nameEn": "vinyl_sheet",
         "category": "finishing",
@@ -182,7 +182,7 @@ const KOREAN_EPD = {
         "thickness": 2
       },
       {
-        "id": "floor_14_PVC타일",
+        "id": "floor_13_PVC타일",
         "name": "PVC타일",
         "nameEn": "pvc_tile",
         "category": "finishing",
@@ -196,7 +196,7 @@ const KOREAN_EPD = {
         "thickness": 3
       },
       {
-        "id": "floor_15_재활용플라스틱데크",
+        "id": "floor_14_재활용플라스틱데크",
         "name": "재활용플라스틱데크",
         "nameEn": "recycled_plastic_deck",
         "category": "finishing",
@@ -210,7 +210,7 @@ const KOREAN_EPD = {
         "thickness": 23.2
       },
       {
-        "id": "floor_17_바이오폴리우레탄바닥재",
+        "id": "floor_15_바이오폴리우레탄바닥재",
         "name": "바이오폴리우레탄바닥재",
         "nameEn": "bio_polyurethane_flooring",
         "category": "finishing",
@@ -224,7 +224,7 @@ const KOREAN_EPD = {
         "thickness": 6
       },
       {
-        "id": "floor_18_진공단열재",
+        "id": "floor_16_진공단열재",
         "name": "진공단열재",
         "nameEn": "vacuum_insulation_panel",
         "category": "insulation",
@@ -238,7 +238,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "floor_19_카펫타일",
+        "id": "floor_17_카펫타일",
         "name": "카펫타일",
         "nameEn": "carpet_tile",
         "category": "finishing",
@@ -252,7 +252,7 @@ const KOREAN_EPD = {
         "thickness": 7
       },
       {
-        "id": "floor_20_시멘트모르타르",
+        "id": "floor_18_시멘트모르타르",
         "name": "시멘트모르타르",
         "nameEn": "cement_mortar",
         "category": "finishing",
@@ -266,7 +266,7 @@ const KOREAN_EPD = {
         "thickness": 60
       },
       {
-        "id": "floor_21_액체방수",
+        "id": "floor_19_액체방수",
         "name": "액체방수",
         "nameEn": "liquid_waterproofing",
         "category": "finishing",
@@ -280,7 +280,7 @@ const KOREAN_EPD = {
         "thickness": 2
       },
       {
-        "id": "floor_22_압출법보온판",
+        "id": "floor_20_압출법보온판",
         "name": "압출법보온판",
         "nameEn": "xps",
         "category": "insulation",
@@ -294,7 +294,7 @@ const KOREAN_EPD = {
         "thickness": 250
       },
       {
-        "id": "floor_23_콘크리트",
+        "id": "floor_21_콘크리트",
         "name": "콘크리트",
         "nameEn": "concrete",
         "category": "structural",
@@ -308,7 +308,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "floor_24_대리석",
+        "id": "floor_22_대리석",
         "name": "대리석",
         "nameEn": "marble",
         "category": "finishing",
@@ -322,7 +322,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "floor_25_저탄소콘크리트",
+        "id": "floor_23_저탄소콘크리트",
         "name": "저탄소 콘크리트",
         "nameEn": "low_carbon_concrete",
         "category": "structural",
@@ -336,7 +336,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "floor_26_경질우레탄폼",
+        "id": "floor_24_경질우레탄폼",
         "name": "경질우레탄폼",
         "nameEn": "rigid_urethane_foam",
         "category": "insulation",
@@ -350,7 +350,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "floor_27_합성목재데크",
+        "id": "floor_25_합성목재데크",
         "name": "합성목재데크",
         "nameEn": "composite_wood_deck",
         "category": "finishing",
@@ -364,7 +364,7 @@ const KOREAN_EPD = {
         "thickness": 25
       },
       {
-        "id": "floor_28_세라믹타일",
+        "id": "floor_26_세라믹타일",
         "name": "세라믹타일",
         "nameEn": "ceramic_tile",
         "category": "finishing",
@@ -378,7 +378,7 @@ const KOREAN_EPD = {
         "thickness": 10
       },
       {
-        "id": "floor_29_화강석",
+        "id": "floor_27_화강석",
         "name": "화강석",
         "nameEn": "granite",
         "category": "finishing",
@@ -392,7 +392,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "floor_34_PF보드",
+        "id": "floor_28_PF보드",
         "name": "PF보드",
         "nameEn": "phenolic_foam_board",
         "category": "insulation",
@@ -406,7 +406,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "floor_35_퍼라이트",
+        "id": "floor_29_퍼라이트",
         "name": "퍼라이트",
         "nameEn": "perlite",
         "category": "insulation",
@@ -420,7 +420,7 @@ const KOREAN_EPD = {
         "thickness": 50
       },
       {
-        "id": "floor_36_비드법보온판",
+        "id": "floor_30_비드법보온판",
         "name": "비드법보온판",
         "nameEn": "eps",
         "category": "insulation",
@@ -434,7 +434,7 @@ const KOREAN_EPD = {
         "thickness": 250
       },
       {
-        "id": "floor_37_암면",
+        "id": "floor_31_암면",
         "name": "암면",
         "nameEn": "rock_wool",
         "category": "insulation",
@@ -448,7 +448,7 @@ const KOREAN_EPD = {
         "thickness": 250
       },
       {
-        "id": "floor_38_그라스울보온판",
+        "id": "floor_32_그라스울보온판",
         "name": "그라스울보온판",
         "nameEn": "glass_wool_board",
         "category": "insulation",
@@ -462,7 +462,7 @@ const KOREAN_EPD = {
         "thickness": 250
       },
       {
-        "id": "floor_39_대나무구조재",
+        "id": "floor_33_대나무구조재",
         "name": "대나무구조재",
         "nameEn": "bamboo_structural",
         "category": "structural",
@@ -476,7 +476,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "floor_40_재활용골재콘크리트",
+        "id": "floor_34_재활용골재콘크리트",
         "name": "재활용골재콘크리트",
         "nameEn": "recycled_aggregate_concrete",
         "category": "structural",
@@ -490,7 +490,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "floor_55_양모단열재",
+        "id": "floor_35_양모단열재",
         "name": "양모단열재",
         "nameEn": "wool_insulation",
         "category": "insulation",
@@ -504,7 +504,7 @@ const KOREAN_EPD = {
         "thickness": 300
       },
       {
-        "id": "floor_56_셀룰로오스단열재",
+        "id": "floor_36_셀룰로오스단열재",
         "name": "셀룰로오스단열재",
         "nameEn": "cellulose_insulation",
         "category": "insulation",
@@ -518,7 +518,7 @@ const KOREAN_EPD = {
         "thickness": 400
       },
       {
-        "id": "floor_57_목섬유단열재",
+        "id": "floor_37_목섬유단열재",
         "name": "목섬유단열재",
         "nameEn": "wood_fiber_insulation",
         "category": "insulation",
@@ -532,7 +532,7 @@ const KOREAN_EPD = {
         "thickness": 300
       },
       {
-        "id": "floor_58_헴프단열재",
+        "id": "floor_38_헴프단열재",
         "name": "헴프단열재",
         "nameEn": "hemp_insulation",
         "category": "insulation",
@@ -546,7 +546,7 @@ const KOREAN_EPD = {
         "thickness": 300
       },
       {
-        "id": "floor_59_코르크단열재",
+        "id": "floor_39_코르크단열재",
         "name": "코르크단열재",
         "nameEn": "cork_insulation",
         "category": "insulation",
@@ -560,7 +560,7 @@ const KOREAN_EPD = {
         "thickness": 300
       },
       {
-        "id": "floor_60_코르크바닥",
+        "id": "floor_40_코르크바닥",
         "name": "코르크바닥",
         "nameEn": "cork_flooring",
         "category": "finishing",
@@ -574,7 +574,7 @@ const KOREAN_EPD = {
         "thickness": 6
       },
       {
-        "id": "floor_61_볏짚단열패널",
+        "id": "floor_41_볏짚단열패널",
         "name": "볏짚단열패널",
         "nameEn": "straw_insulation_panel",
         "category": "insulation",
@@ -588,7 +588,7 @@ const KOREAN_EPD = {
         "thickness": 400
       },
       {
-        "id": "floor_62_천연목재데크",
+        "id": "floor_42_천연목재데크",
         "name": "천연목재데크",
         "nameEn": "natural_wood_deck",
         "category": "finishing",
@@ -602,7 +602,7 @@ const KOREAN_EPD = {
         "thickness": 25
       },
       {
-        "id": "floor_63_원목마루",
+        "id": "floor_43_원목마루",
         "name": "원목마루",
         "nameEn": "solid_wood_flooring",
         "category": "finishing",
@@ -616,7 +616,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "floor_64_clt",
+        "id": "floor_44_clt",
         "name": "clt",
         "nameEn": "clt",
         "category": "structural",
@@ -630,7 +630,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "floor_65_합판",
+        "id": "floor_45_합판",
         "name": "합판",
         "nameEn": "plywood",
         "category": "finishing",
@@ -644,7 +644,7 @@ const KOREAN_EPD = {
         "thickness": 12
       },
       {
-        "id": "floor_66_목재틀",
+        "id": "floor_46_목재틀",
         "name": "목재틀",
         "nameEn": "wood_subframe",
         "category": "finishing",
@@ -660,7 +660,7 @@ const KOREAN_EPD = {
         "hideThickness": true
       },
       {
-        "id": "floor_67_강화마루",
+        "id": "floor_47_강화마루",
         "name": "강화마루",
         "nameEn": "laminate_flooring",
         "category": "finishing",
@@ -1148,7 +1148,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "external_35_재활용유리타일",
+        "id": "external_34_재활용유리타일",
         "name": "재활용유리타일",
         "nameEn": "recycled_glass_tile",
         "category": "finishing",
@@ -1162,7 +1162,7 @@ const KOREAN_EPD = {
         "thickness": 10
       },
       {
-        "id": "external_36_유리모자이크타일",
+        "id": "external_35_유리모자이크타일",
         "name": "유리모자이크타일",
         "nameEn": "glass_mosaic_tile",
         "category": "finishing",
@@ -1176,7 +1176,7 @@ const KOREAN_EPD = {
         "thickness": 5
       },
       {
-        "id": "external_37_저탄소콘크리트",
+        "id": "external_36_저탄소콘크리트",
         "name": "저탄소 콘크리트",
         "nameEn": "low_carbon_concrete",
         "category": "structural",
@@ -1190,7 +1190,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "external_38_경질우레탄폼",
+        "id": "external_37_경질우레탄폼",
         "name": "경질우레탄폼",
         "nameEn": "rigid_urethane_foam",
         "category": "insulation",
@@ -1204,7 +1204,7 @@ const KOREAN_EPD = {
         "thickness": 90
       },
       {
-        "id": "external_39_점토미장",
+        "id": "external_38_점토미장",
         "name": "점토미장",
         "nameEn": "clay_plaster",
         "category": "finishing",
@@ -1218,7 +1218,7 @@ const KOREAN_EPD = {
         "thickness": 20
       },
       {
-        "id": "external_40_샌드스톤",
+        "id": "external_39_샌드스톤",
         "name": "샌드스톤",
         "nameEn": "sandstone",
         "category": "finishing",
@@ -1232,7 +1232,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "external_41_화강석",
+        "id": "external_40_화강석",
         "name": "화강석",
         "nameEn": "granite",
         "category": "finishing",
@@ -1246,7 +1246,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "external_42_라임스톤",
+        "id": "external_41_라임스톤",
         "name": "라임스톤",
         "nameEn": "limestone",
         "category": "finishing",
@@ -1260,7 +1260,7 @@ const KOREAN_EPD = {
         "thickness": 30
       },
       {
-        "id": "external_43_PF보드",
+        "id": "external_42_PF보드",
         "name": "PF보드",
         "nameEn": "phenolic_foam_board",
         "category": "insulation",
@@ -1274,7 +1274,7 @@ const KOREAN_EPD = {
         "thickness": 90
       },
       {
-        "id": "external_44_비드법보온판",
+        "id": "external_43_비드법보온판",
         "name": "비드법보온판",
         "nameEn": "eps",
         "category": "insulation",
@@ -1288,7 +1288,7 @@ const KOREAN_EPD = {
         "thickness": 90
       },
       {
-        "id": "external_45_그라스울보온판",
+        "id": "external_44_그라스울보온판",
         "name": "그라스울보온판",
         "nameEn": "glass_wool_board",
         "category": "insulation",
@@ -1302,7 +1302,7 @@ const KOREAN_EPD = {
         "thickness": 110
       },
       {
-        "id": "external_46_재사용벽돌",
+        "id": "external_45_재사용벽돌",
         "name": "재사용벽돌",
         "nameEn": "reclaimed_brick",
         "category": "structural",
@@ -1316,7 +1316,7 @@ const KOREAN_EPD = {
         "thickness": 57
       },
       {
-        "id": "external_47_흙벽돌",
+        "id": "external_46_흙벽돌",
         "name": "흙벽돌",
         "nameEn": "adobe_brick",
         "category": "structural",
@@ -1330,7 +1330,7 @@ const KOREAN_EPD = {
         "thickness": 190
       },
       {
-        "id": "external_48_재활용골재콘크리트",
+        "id": "external_47_재활용골재콘크리트",
         "name": "재활용골재콘크리트",
         "nameEn": "recycled_aggregate_concrete",
         "category": "structural",
@@ -1344,7 +1344,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "external_49_대나무구조재",
+        "id": "external_48_대나무구조재",
         "name": "대나무구조재",
         "nameEn": "bamboo_structural",
         "category": "structural",
@@ -1358,7 +1358,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "external_50_대마콘크리트블럭",
+        "id": "external_49_대마콘크리트블럭",
         "name": "대마콘크리트블럭",
         "nameEn": "hempcrete",
         "category": "structural",
@@ -1372,7 +1372,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "external_51_양모단열재",
+        "id": "external_50_양모단열재",
         "name": "양모단열재",
         "nameEn": "wool_insulation",
         "category": "insulation",
@@ -1386,7 +1386,7 @@ const KOREAN_EPD = {
         "thickness": 130
       },
       {
-        "id": "external_52_셀룰로오스단열재",
+        "id": "external_51_셀룰로오스단열재",
         "name": "셀룰로오스단열재",
         "nameEn": "cellulose_insulation",
         "category": "insulation",
@@ -1400,7 +1400,7 @@ const KOREAN_EPD = {
         "thickness": 130
       },
       {
-        "id": "external_53_헴프단열재",
+        "id": "external_52_헴프단열재",
         "name": "헴프단열재",
         "nameEn": "hemp_insulation",
         "category": "insulation",
@@ -1414,7 +1414,7 @@ const KOREAN_EPD = {
         "thickness": 130
       },
       {
-        "id": "external_54_목섬유단열재",
+        "id": "external_53_목섬유단열재",
         "name": "목섬유단열재",
         "nameEn": "wood_fiber_insulation",
         "category": "insulation",
@@ -1428,7 +1428,7 @@ const KOREAN_EPD = {
         "thickness": 110
       },
       {
-        "id": "external_56_코르크단열재",
+        "id": "external_54_코르크단열재",
         "name": "코르크단열재",
         "nameEn": "cork_insulation",
         "category": "insulation",
@@ -1443,7 +1443,7 @@ const KOREAN_EPD = {
         "tip": "바이오제닉 -1.08 × 120 = -130"
       },
       {
-        "id": "external_57_코르크패널",
+        "id": "external_55_코르크패널",
         "name": "코르크패널",
         "nameEn": "cork_flooring",
         "category": "finishing",
@@ -1457,7 +1457,7 @@ const KOREAN_EPD = {
         "thickness": 6
       },
       {
-        "id": "external_58_볏짚단열패널",
+        "id": "external_56_볏짚단열패널",
         "name": "볏짚단열패널",
         "nameEn": "straw_insulation_panel",
         "category": "insulation",
@@ -1471,7 +1471,7 @@ const KOREAN_EPD = {
         "thickness": 150
       },
       {
-        "id": "external_59_목재사이딩",
+        "id": "external_57_목재사이딩",
         "name": "목재사이딩",
         "nameEn": "wood_siding",
         "category": "finishing",
@@ -1485,7 +1485,7 @@ const KOREAN_EPD = {
         "thickness": 18
       },
       {
-        "id": "external_60_clt",
+        "id": "external_58_clt",
         "name": "clt",
         "nameEn": "clt",
         "category": "structural",
@@ -1499,7 +1499,7 @@ const KOREAN_EPD = {
         "thickness": 100
       },
       {
-        "id": "external_61_합판",
+        "id": "external_59_합판",
         "name": "합판",
         "nameEn": "plywood",
         "category": "finishing",
@@ -1513,7 +1513,7 @@ const KOREAN_EPD = {
         "thickness": 12
       },
       {
-        "id": "external_62_목재틀",
+        "id": "external_60_목재틀",
         "name": "목재틀",
         "nameEn": "wood_subframe",
         "category": "finishing",
@@ -1529,7 +1529,7 @@ const KOREAN_EPD = {
         "hideThickness": true
       },
       {
-        "id": "external_63_OSB",
+        "id": "external_61_OSB",
         "name": "OSB",
         "nameEn": "osb",
         "category": "structural",
@@ -2377,7 +2377,7 @@ const KOREAN_EPD = {
         "thickness": 90
       },
       {
-        "id": "internal_71_석회칠",
+        "id": "internal_60_석회칠",
         "name": "석회칠",
         "nameEn": "limewash",
         "category": "finishing",
@@ -2391,7 +2391,7 @@ const KOREAN_EPD = {
         "thickness": 1
       },
       {
-        "id": "internal_72_석회미장",
+        "id": "internal_61_석회미장",
         "name": "석회미장",
         "nameEn": "lime_plaster",
         "category": "finishing",
@@ -2405,7 +2405,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_73_셀룰로오스단열",
+        "id": "internal_62_셀룰로오스단열",
         "name": "셀룰로오스단열",
         "nameEn": "cellulose_insulation",
         "category": "insulation",
@@ -2419,7 +2419,7 @@ const KOREAN_EPD = {
         "thickness": 100
       },
       {
-        "id": "internal_74_양모단열재",
+        "id": "internal_63_양모단열재",
         "name": "양모단열재",
         "nameEn": "wool_insulation",
         "category": "insulation",
@@ -2433,7 +2433,7 @@ const KOREAN_EPD = {
         "thickness": 100
       },
       {
-        "id": "internal_75_볏짚단열",
+        "id": "internal_64_볏짚단열",
         "name": "볏짚단열",
         "nameEn": "straw_insulation",
         "category": "insulation",
@@ -2447,7 +2447,7 @@ const KOREAN_EPD = {
         "thickness": 100
       },
       {
-        "id": "internal_76_헴프크리트",
+        "id": "internal_65_헴프크리트",
         "name": "헴프크리트",
         "nameEn": "hempcrete",
         "category": "structural",
@@ -2461,7 +2461,7 @@ const KOREAN_EPD = {
         "thickness": 200
       },
       {
-        "id": "internal_77_천연고무바닥",
+        "id": "internal_66_천연고무바닥",
         "name": "천연고무바닥",
         "nameEn": "natural_rubber_flooring",
         "category": "finishing",
@@ -2475,7 +2475,7 @@ const KOREAN_EPD = {
         "thickness": 3
       },
       {
-        "id": "internal_78_코르크바닥",
+        "id": "internal_67_코르크바닥",
         "name": "코르크바닥",
         "nameEn": "cork_flooring",
         "category": "finishing",
@@ -2489,7 +2489,7 @@ const KOREAN_EPD = {
         "thickness": 6
       },
       {
-        "id": "internal_79_MDF",
+        "id": "internal_68_MDF",
         "name": "MDF",
         "nameEn": "mdf",
         "category": "finishing",
@@ -2503,7 +2503,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_80_에코보드",
+        "id": "internal_69_에코보드",
         "name": "에코보드",
         "nameEn": "eco_board",
         "category": "finishing",
@@ -2517,7 +2517,7 @@ const KOREAN_EPD = {
         "thickness": 18
       },
       {
-        "id": "internal_81_대나무마루",
+        "id": "internal_70_대나무마루",
         "name": "대나무마루",
         "nameEn": "bamboo_flooring",
         "category": "finishing",
@@ -2531,7 +2531,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_82_대나무패널",
+        "id": "internal_71_대나무패널",
         "name": "대나무패널",
         "nameEn": "bamboo_panel",
         "category": "finishing",
@@ -2545,7 +2545,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_83_대나무보드",
+        "id": "internal_72_대나무보드",
         "name": "대나무보드",
         "nameEn": "bamboo_board",
         "category": "finishing",
@@ -2559,7 +2559,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_84_리놀륨",
+        "id": "internal_73_리놀륨",
         "name": "리놀륨",
         "nameEn": "linoleum",
         "category": "finishing",
@@ -2573,7 +2573,7 @@ const KOREAN_EPD = {
         "thickness": 2.5
       },
       {
-        "id": "internal_85_목모보드",
+        "id": "internal_74_목모보드",
         "name": "목모보드",
         "nameEn": "wood_wool_board",
         "category": "finishing",
@@ -2587,7 +2587,7 @@ const KOREAN_EPD = {
         "thickness": 25
       },
       {
-        "id": "internal_86_원목마루",
+        "id": "internal_75_원목마루",
         "name": "원목마루",
         "nameEn": "solid_wood_flooring",
         "category": "finishing",
@@ -2601,7 +2601,7 @@ const KOREAN_EPD = {
         "thickness": 15
       },
       {
-        "id": "internal_87_천연리놀륨",
+        "id": "internal_76_천연리놀륨",
         "name": "천연리놀륨",
         "nameEn": "natural_linoleum",
         "category": "finishing",
@@ -2615,7 +2615,7 @@ const KOREAN_EPD = {
         "thickness": 2.5
       },
       {
-        "id": "internal_88_삼나무판",
+        "id": "internal_77_삼나무판",
         "name": "삼나무판",
         "nameEn": "cedar_board",
         "category": "finishing",
@@ -2629,7 +2629,7 @@ const KOREAN_EPD = {
         "thickness": 18
       },
       {
-        "id": "internal_89_적삼목판",
+        "id": "internal_78_적삼목판",
         "name": "적삼목판",
         "nameEn": "western_red_cedar_board",
         "category": "finishing",
@@ -2643,7 +2643,7 @@ const KOREAN_EPD = {
         "thickness": 18
       },
       {
-        "id": "internal_90_집성목",
+        "id": "internal_79_집성목",
         "name": "집성목",
         "nameEn": "glulam",
         "category": "structural",
@@ -2657,7 +2657,7 @@ const KOREAN_EPD = {
         "thickness": 40
       },
       {
-        "id": "internal_91_LVL",
+        "id": "internal_80_LVL",
         "name": "LVL",
         "nameEn": "lvl",
         "category": "structural",
@@ -2671,7 +2671,7 @@ const KOREAN_EPD = {
         "thickness": 45
       },
       {
-        "id": "internal_92_CLT",
+        "id": "internal_81_CLT",
         "name": "CLT",
         "nameEn": "clt",
         "category": "structural",
@@ -2685,7 +2685,7 @@ const KOREAN_EPD = {
         "thickness": 100
       },
       {
-        "id": "internal_93_합판",
+        "id": "internal_82_합판",
         "name": "합판",
         "nameEn": "plywood",
         "category": "finishing",
@@ -2699,7 +2699,7 @@ const KOREAN_EPD = {
         "thickness": 12
       },
       {
-        "id": "internal_94_볏짚단열패널",
+        "id": "internal_83_볏짚단열패널",
         "name": "볏짚단열패널",
         "nameEn": "straw_insulation_panel",
         "category": "insulation",
