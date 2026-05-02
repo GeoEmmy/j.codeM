@@ -1,6 +1,6 @@
 /**
  * 한국 EPD 자재 데이터베이스
- * 자동 생성됨: 2026. 5. 1. 오후 10:00:46
+ * 자동 생성됨: 2026. 5. 2. 오후 1:26:04
  * 원본: materials01.xlsx
  */
 
@@ -889,7 +889,7 @@ const KOREAN_EPD = {
         "categoryName": "마감재",
         "gwp": 1566.66,
         "unit": "kgCO2e/m²",
-        "density": 1000,
+        "density": 1500,
         "color": "#636e72",
         "source": "okoboudat",
         "description": "",
@@ -1040,7 +1040,7 @@ const KOREAN_EPD = {
         "name": "시멘트모르타르",
         "nameEn": "cement_mortar",
         "category": "finishing",
-        "categoryName": "구조재",
+        "categoryName": "마감재",
         "gwp": 422.11,
         "unit": "kgCO2e/m³",
         "density": 1800,
@@ -1061,7 +1061,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "국내EPD",
         "description": "2개 제품 평균",
-        "thickness": 250
+        "thickness": 110
       },
       {
         "id": "external_28_석회미장",
@@ -1081,8 +1081,8 @@ const KOREAN_EPD = {
         "id": "external_29_점토벽돌",
         "name": "점토벽돌",
         "nameEn": "clay_brick",
-        "category": "structural",
-        "categoryName": "구조재",
+        "category": "finishing",
+        "categoryName": "마감재",
         "gwp": 380,
         "unit": "kgCO2e/m³",
         "density": 1800,
@@ -1201,7 +1201,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "국내EPD",
         "description": "8개 제품 평균",
-        "thickness": 200
+        "thickness": 90
       },
       {
         "id": "external_39_점토미장",
@@ -1271,7 +1271,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "국내EPD",
         "description": "LX Z:IN PF Board/kg",
-        "thickness": 200
+        "thickness": 90
       },
       {
         "id": "external_44_비드법보온판",
@@ -1285,7 +1285,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "국가 LCI DB",
         "description": "국가LCIDB",
-        "thickness": 250
+        "thickness": 90
       },
       {
         "id": "external_45_그라스울보온판",
@@ -1299,7 +1299,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "국가 LCI DB",
         "description": "",
-        "thickness": 250
+        "thickness": 110
       },
       {
         "id": "external_46_재사용벽돌",
@@ -1383,7 +1383,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "ICE v3",
         "description": "-2.16 × 25 = -54",
-        "thickness": 300
+        "thickness": 130
       },
       {
         "id": "external_52_셀룰로오스단열재",
@@ -1397,7 +1397,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "EC3",
         "description": "Cellulose Insulation",
-        "thickness": 400
+        "thickness": 130
       },
       {
         "id": "external_53_헴프단열재",
@@ -1411,7 +1411,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "EC3",
         "description": "바이오제닉 -2.175 × 40 = -87",
-        "thickness": 300
+        "thickness": 130
       },
       {
         "id": "external_54_목섬유단열재",
@@ -1425,22 +1425,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "EC3",
         "description": "바이오제닉 -1.74 × 50 = -87",
-        "thickness": 300
-      },
-      {
-        "id": "external_55_헴프단열재",
-        "name": "헴프단열재",
-        "nameEn": "hemp_insulation",
-        "category": "insulation",
-        "categoryName": "단열재",
-        "gwp": -87,
-        "unit": "kgCO2e/m³",
-        "density": 40,
-        "color": "#636e72",
-        "source": "EC3",
-        "description": "바이오제닉 -87",
-        "thickness": 300,
-        "tip": "바이오제닉 -2.175 × 40 = -87"
+        "thickness": 110
       },
       {
         "id": "external_56_코르크단열재",
@@ -1454,7 +1439,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "ICE v3",
         "description": "",
-        "thickness": 300,
+        "thickness": 150,
         "tip": "바이오제닉 -1.08 × 120 = -130"
       },
       {
@@ -1483,7 +1468,7 @@ const KOREAN_EPD = {
         "color": "#636e72",
         "source": "EC3",
         "description": "(EcoCocon Straw Modules) -",
-        "thickness": 400
+        "thickness": 150
       },
       {
         "id": "external_59_목재사이딩",

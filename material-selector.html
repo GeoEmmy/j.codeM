@@ -1632,7 +1632,7 @@
       if (layerOriginalY.length === layerMeshes.length && layerMeshes.length > 1) {
         const isWall = (structureType === 'external' || structureType === 'internal');
         const isCeil = (structureType === 'ceiling');
-        const dir = isCeil ? -1 : 1; // 천장은 아래로 쌓이므로 반대 방향으로 벌림
+        const dir = isCeil ? -1 : isWall ? -1 : 1; // 천장/외벽은 반대 방향으로 벌림
         layerMeshes.forEach((mesh, i) => {
           const offset = (i - (layerMeshes.length - 1) / 2) * explodeGap * explodeProgress * dir;
           if (isWall) {
@@ -2530,7 +2530,21 @@
         return;
       }
 
-      let pos = 0;
+      // 외벽: 우→좌 적층 (외부마감 +X, 내부 -X) — 총 두께를 먼저 계산
+      let wallTotalThickness = 0;
+      if (isWall) {
+        selectedLayers.forEach(l => {
+          const mn = (l.material.name || '').toLowerCase();
+          if (mn.includes('철근')) return;
+          if (mn.includes('철재') && mn.includes('하지틀') || mn === '목재틀') {
+            const isSt = mn.includes('철재');
+            wallTotalThickness += (isSt ? 0.04 : 0.035) + (isSt ? 0.05 : 0.04);
+          } else {
+            wallTotalThickness += l.thickness / 1000;
+          }
+        });
+      }
+      let pos = isWall ? wallTotalThickness : 0;
       let layerCount = 0;
 
       selectedLayers.forEach((layer, index) => {
@@ -2543,91 +2557,143 @@
         // 철재 하지틀 / 목재틀 — 격자형 프레임 3D
         if (matName.includes('철재') && matName.includes('하지틀') || matName === '목재틀') {
           const isSteel = matName.includes('철재');
-          const frameW = 2.0, frameD = 1.3;
-          const barSize = isSteel ? 0.04 : 0.04;   // 각파이프/각재 단면
-          const barH = isSteel ? 0.05 : 0.04;      // 높이
-          const legH = isSteel ? 0.04 : 0.035;     // 다리 높이
-          const legSize = isSteel ? 0.035 : 0.04;  // 다리 단면
-          const longCount = 4;  // 장변 방향 부재 수
-          const shortCount = 3; // 단변 방향 부재 수
-
           const frameMat = new THREE.MeshStandardMaterial({
             color: isSteel ? 0x8a9bae : 0xb5915a,
             roughness: isSteel ? 0.35 : 0.75,
             metalness: isSteel ? 0.7 : 0.05
           });
-
           const frameGroup = new THREE.Group();
 
-          // 격자 간격
-          const longSpacing = 0.35;
-          const shortSpacing = 0.55;
-          const longCount2 = Math.floor((frameD - barSize * 2) / longSpacing);
-          const shortCount2 = Math.floor((frameW - barSize * 2) / shortSpacing);
-          const longStart = -(longCount2 - 1) * longSpacing / 2;
-          const shortStart = -(shortCount2 - 1) * shortSpacing / 2;
+          if (isWall) {
+            // === 벽체용 프레임 (세운 격자) ===
+            const wallH = 2.0, wallW = 1.3;
+            const barSize = isSteel ? 0.04 : 0.04;
+            const barH = isSteel ? 0.05 : 0.04;     // 벽 두께 방향 깊이
+            const legDepth = isSteel ? 0.04 : 0.035; // 다리 = 벽면에서 바깥으로
+            const legSize = isSteel ? 0.035 : 0.04;
 
-          // 다리 (아래쪽)
-          const legPositions = [];
-          for (let ix = 0; ix <= 2; ix++) {
-            for (let iz = 0; iz <= 2; iz++) {
-              const x = -frameW/2 + barSize/2 + ix * (frameW - barSize) / 2;
-              const z = -frameD/2 + barSize/2 + iz * (frameD - barSize) / 2;
-              legPositions.push([x, z]);
+            // 단변(wallW=1.3m) 균등 분할 장방형 그리드
+            const cellCountZ = 3;
+            const cellW = wallW / cellCountZ;
+            const cellCountY = Math.round(wallH / cellW);
+            const cellH = wallH / cellCountY;
+
+            // 다리 (X방향, 교차점마다) — 벽면에서 바깥으로
+            for (let iy = 0; iy <= cellCountY; iy++) {
+              for (let iz = 0; iz <= cellCountZ; iz++) {
+                const y = -wallH/2 + iy * cellH;
+                const z = -wallW/2 + iz * cellW;
+                const leg = new THREE.Mesh(
+                  new THREE.BoxGeometry(legDepth, legSize, legSize), frameMat
+                );
+                leg.position.set(pos - legDepth/2, y, z);
+                leg.castShadow = true;
+                frameGroup.add(leg);
+              }
             }
+
+            const barX = pos - legDepth - barH / 2;
+
+            // 수직 부재 (Y방향, 단변 분할선)
+            for (let iz = 0; iz <= cellCountZ; iz++) {
+              const z = -wallW/2 + iz * cellW;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barH, wallH, barSize), frameMat
+              );
+              bar.position.set(barX, 0, z);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            // 수평 부재 (Z방향, 높이 분할선)
+            for (let iy = 0; iy <= cellCountY; iy++) {
+              const y = -wallH/2 + iy * cellH;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barH, barSize, wallW), frameMat
+              );
+              bar.position.set(barX, y, 0);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            group3D.add(frameGroup);
+            layerMeshes.push(frameGroup);
+            pos -= legDepth + barH;
+          } else {
+            // === 바닥용 프레임 (수평 격자) ===
+            const frameW = 2.0, frameD = 1.3;
+            const barSize = isSteel ? 0.04 : 0.04;
+            const barH = isSteel ? 0.05 : 0.04;
+            const legH = isSteel ? 0.04 : 0.035;
+            const legSize = isSteel ? 0.035 : 0.04;
+
+            const longSpacing = 0.35;
+            const shortSpacing = 0.55;
+            const longCount2 = Math.floor((frameD - barSize * 2) / longSpacing);
+            const shortCount2 = Math.floor((frameW - barSize * 2) / shortSpacing);
+            const longStart = -(longCount2 - 1) * longSpacing / 2;
+            const shortStart = -(shortCount2 - 1) * shortSpacing / 2;
+
+            // 다리
+            const legPositions = [];
+            for (let ix = 0; ix <= 2; ix++) {
+              for (let iz = 0; iz <= 2; iz++) {
+                const x = -frameW/2 + barSize/2 + ix * (frameW - barSize) / 2;
+                const z = -frameD/2 + barSize/2 + iz * (frameD - barSize) / 2;
+                legPositions.push([x, z]);
+              }
+            }
+            legPositions.forEach(([x, z]) => {
+              const leg = new THREE.Mesh(
+                new THREE.BoxGeometry(legSize, legH, legSize), frameMat
+              );
+              leg.position.set(x, pos + legH/2, z);
+              leg.castShadow = true;
+              frameGroup.add(leg);
+            });
+
+            const barY = pos + legH + barH / 2;
+
+            // 장변 방향 부재 (X방향)
+            for (let i = 0; i < longCount2; i++) {
+              const z = longStart + i * longSpacing;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(frameW, barH, barSize), frameMat
+              );
+              bar.position.set(0, barY, z);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            // 단변 방향 부재 (Z방향)
+            for (let i = 0; i < shortCount2; i++) {
+              const x = shortStart + i * shortSpacing;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barSize, barH, frameD), frameMat
+              );
+              bar.position.set(x, barY, 0);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            // 외곽 프레임
+            const edgeBars = [
+              { geo: [frameW, barH, barSize], pos: [0, barY, -frameD/2 + barSize/2] },
+              { geo: [frameW, barH, barSize], pos: [0, barY, frameD/2 - barSize/2] },
+              { geo: [barSize, barH, frameD], pos: [-frameW/2 + barSize/2, barY, 0] },
+              { geo: [barSize, barH, frameD], pos: [frameW/2 - barSize/2, barY, 0] },
+            ];
+            edgeBars.forEach(e => {
+              const bar = new THREE.Mesh(new THREE.BoxGeometry(...e.geo), frameMat);
+              bar.position.set(...e.pos);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            });
+
+            group3D.add(frameGroup);
+            layerMeshes.push(frameGroup);
+            pos += legH + barH;
           }
-          legPositions.forEach(([x, z]) => {
-            const leg = new THREE.Mesh(
-              new THREE.BoxGeometry(legSize, legH, legSize), frameMat
-            );
-            leg.position.set(x, pos + legH/2, z);
-            leg.castShadow = true;
-            frameGroup.add(leg);
-          });
-
-          // 격자 프레임 (다리 위)
-          const barY = pos + legH + barH / 2;
-
-          // 장변 방향 부재 (X방향)
-          for (let i = 0; i < longCount2; i++) {
-            const z = longStart + i * longSpacing;
-            const bar = new THREE.Mesh(
-              new THREE.BoxGeometry(frameW, barH, barSize), frameMat
-            );
-            bar.position.set(0, barY, z);
-            bar.castShadow = true;
-            frameGroup.add(bar);
-          }
-
-          // 단변 방향 부재 (Z방향)
-          for (let i = 0; i < shortCount2; i++) {
-            const x = shortStart + i * shortSpacing;
-            const bar = new THREE.Mesh(
-              new THREE.BoxGeometry(barSize, barH, frameD), frameMat
-            );
-            bar.position.set(x, barY, 0);
-            bar.castShadow = true;
-            frameGroup.add(bar);
-          }
-
-          // 외곽 프레임
-          const edgeBars = [
-            { geo: [frameW, barH, barSize], pos: [0, barY, -frameD/2 + barSize/2] },
-            { geo: [frameW, barH, barSize], pos: [0, barY, frameD/2 - barSize/2] },
-            { geo: [barSize, barH, frameD], pos: [-frameW/2 + barSize/2, barY, 0] },
-            { geo: [barSize, barH, frameD], pos: [frameW/2 - barSize/2, barY, 0] },
-          ];
-          edgeBars.forEach(e => {
-            const bar = new THREE.Mesh(new THREE.BoxGeometry(...e.geo), frameMat);
-            bar.position.set(...e.pos);
-            bar.castShadow = true;
-            frameGroup.add(bar);
-          });
-
-          group3D.add(frameGroup);
-          layerMeshes.push(frameGroup);
-          // 다음 레이어는 격자 상단에 맞닿음
-          pos += legH + barH;
           return;
         }
 
@@ -3010,7 +3076,7 @@
           }
           // 아연판
           if (n.includes('아연') && !n.includes('용융') || (nameEn.includes('zinc') && !nameEn.includes('galvanized'))) {
-            return new THREE.MeshStandardMaterial({ color: 0xa8afb5, roughness: 0.25, metalness: 0.75 });
+            return new THREE.MeshStandardMaterial({ color: 0x9a9fa5, roughness: 0.6, metalness: 0.45 });
           }
           // 용융아연도금 강판
           if (n.includes('용융아연') || n.includes('강판') || nameEn.includes('galvanized') || nameEn.includes('steel_sheet')) {
@@ -3037,6 +3103,224 @@
           // 시멘트판넬
           if (n.includes('시멘트판넬') || n.includes('시멘트패널') || nameEn.includes('fiber_cement')) {
             return new THREE.MeshStandardMaterial({ color: 0xc8c4c0, roughness: 0.85, metalness: 0.02 });
+          }
+          // 대마콘크리트블럭 — 대마 섬유 질감
+          if (n.includes('대마콘크리트') || n.includes('대마') && n.includes('블럭') || nameEn.includes('hempcrete')) {
+            const tex = makeCanvasTex('hempcrete', 1024, (ctx, s) => {
+              ctx.fillStyle = '#c2a878';
+              ctx.fillRect(0, 0, s, s);
+              // 굵은 대마 섬유 다발
+              for (let i = 0; i < 1500; i++) {
+                const angle = Math.random() * Math.PI;
+                const len = 8 + Math.random() * 25;
+                const x = Math.random() * s, y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${70+Math.random()*40},${55+Math.random()*35},${25+Math.random()*25},${0.3+Math.random()*0.35})`;
+                ctx.lineWidth = 1 + Math.random() * 2.5;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+                ctx.stroke();
+              }
+              // 가는 섬유
+              for (let i = 0; i < 3000; i++) {
+                const angle = Math.random() * Math.PI;
+                const len = 4 + Math.random() * 12;
+                const x = Math.random() * s, y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${90+Math.random()*50},${75+Math.random()*40},${40+Math.random()*30},${0.2+Math.random()*0.25})`;
+                ctx.lineWidth = 0.5 + Math.random() * 1;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+                ctx.stroke();
+              }
+              // 대마씨/알갱이 반점 (밝고 어두운 혼합)
+              for (let i = 0; i < 1200; i++) {
+                const bright = Math.random() > 0.5;
+                ctx.fillStyle = bright
+                  ? `rgba(${190+Math.random()*50},${170+Math.random()*40},${120+Math.random()*40},${0.3+Math.random()*0.3})`
+                  : `rgba(${80+Math.random()*40},${65+Math.random()*30},${35+Math.random()*25},${0.25+Math.random()*0.25})`;
+                const sz = 1.5 + Math.random() * 4;
+                ctx.beginPath();
+                ctx.ellipse(Math.random()*s, Math.random()*s, sz, sz*0.7, Math.random()*Math.PI, 0, Math.PI*2);
+                ctx.fill();
+              }
+            });
+            tex.repeat.set(2,2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+          }
+          // 흙벽돌 — 흙 질감
+          if (n.includes('흙벽돌') || nameEn.includes('adobe')) {
+            return new THREE.MeshStandardMaterial({ color: 0xb09070, roughness: 0.95, metalness: 0.0 });
+          }
+          // 재사용벽돌 — 오래된 파벽돌
+          if (n.includes('재사용벽돌') || nameEn.includes('reused_brick')) {
+            return new THREE.MeshStandardMaterial({ color: 0x9e6b4a, roughness: 0.95, metalness: 0.0 });
+          }
+          // 라임스톤 — 석회암 텍스처
+          if (n.includes('라임스톤') || nameEn.includes('limestone')) {
+            const tex = makeCanvasTex('limestone', 1024, (ctx, s) => {
+              ctx.fillStyle = '#e0d8c8';
+              ctx.fillRect(0, 0, s, s);
+              // 부드러운 줄무늬 (석회암 특유)
+              for (let i = 0; i < 25; i++) {
+                const y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${190+Math.random()*30},${180+Math.random()*25},${160+Math.random()*25},${0.12+Math.random()*0.15})`;
+                ctx.lineWidth = 2 + Math.random() * 5;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                for (let x = 0; x < s; x += 30) ctx.lineTo(x, y + (Math.random()-0.5)*4);
+                ctx.stroke();
+              }
+              // 화석/조개 반점
+              for (let i = 0; i < 80; i++) {
+                ctx.fillStyle = `rgba(${200+Math.random()*40},${190+Math.random()*35},${170+Math.random()*30},${0.2+Math.random()*0.2})`;
+                ctx.beginPath();
+                ctx.ellipse(Math.random()*s, Math.random()*s, 2+Math.random()*6, 1+Math.random()*4, Math.random()*Math.PI, 0, Math.PI*2);
+                ctx.fill();
+              }
+              // 미세 입자
+              for (let i = 0; i < 1500; i++) {
+                ctx.fillStyle = `rgba(${195+Math.random()*40},${185+Math.random()*35},${165+Math.random()*30},${0.08+Math.random()*0.1})`;
+                const sz = 1 + Math.random() * 2;
+                ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+              }
+            });
+            tex.repeat.set(1,1);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.03 });
+          }
+          // 샌드스톤 — 사암 텍스처
+          if (n.includes('샌드스톤') || nameEn.includes('sandstone')) {
+            const tex = makeCanvasTex('sandstone', 1024, (ctx, s) => {
+              ctx.fillStyle = '#d4b896';
+              ctx.fillRect(0, 0, s, s);
+              // 수평 층리 무늬
+              for (let i = 0; i < 40; i++) {
+                const y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${160+Math.random()*40},${130+Math.random()*30},${90+Math.random()*30},${0.15+Math.random()*0.2})`;
+                ctx.lineWidth = 1 + Math.random() * 3;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                for (let x = 0; x < s; x += 20) ctx.lineTo(x, y + (Math.random()-0.5)*6);
+                ctx.stroke();
+              }
+              // 미세 입자
+              for (let i = 0; i < 3000; i++) {
+                ctx.fillStyle = `rgba(${180+Math.random()*50},${150+Math.random()*40},${100+Math.random()*40},${0.1+Math.random()*0.15})`;
+                const sz = 1 + Math.random() * 3;
+                ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+              }
+            });
+            tex.repeat.set(1,1);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0.02 });
+          }
+          // 재활용유리타일 — 반투명 연한 그린
+          if (n.includes('재활용유리타일') || n.includes('재활용유리') || nameEn.includes('recycled_glass_tile')) {
+            return new THREE.MeshStandardMaterial({
+              color: 0x88c8a0, roughness: 0.1, metalness: 0.08, transparent: true, opacity: 0.7
+            });
+          }
+          // 유리모자이크타일 — 반투명 연한 블루
+          if (n.includes('유리모자이크') || nameEn.includes('glass_mosaic')) {
+            return new THREE.MeshStandardMaterial({
+              color: 0x80b8d8, roughness: 0.08, metalness: 0.08, transparent: true, opacity: 0.7
+            });
+          }
+          // ALC블록 — 매트한 아이보리
+          if (n.includes('alc') || nameEn.includes('alc')) {
+            return new THREE.MeshStandardMaterial({ color: 0xf0e8d4, roughness: 0.9, metalness: 0.0 });
+          }
+          // 석회미장 — 매트한 아이보리
+          if (n.includes('석회미장') || n.includes('석회') && n.includes('미장') || nameEn.includes('lime_plaster')) {
+            return new THREE.MeshStandardMaterial({ color: 0xf2ead6, roughness: 0.92, metalness: 0.0 });
+          }
+          // OSB — 나무 칩/스트랜드 패턴
+          if (nameEn === 'osb' || n === 'osb') {
+            const tex = makeCanvasTex('osb', 1024, (ctx, s) => {
+              // 황갈색 바탕
+              ctx.fillStyle = '#c8a050';
+              ctx.fillRect(0, 0, s, s);
+              // 큰 나무 스트랜드 조각 (불규칙 방향)
+              for (let i = 0; i < 400; i++) {
+                const x = Math.random() * s;
+                const y = Math.random() * s;
+                const angle = Math.random() * Math.PI;
+                const len = 20 + Math.random() * 60;
+                const w = 4 + Math.random() * 12;
+                const r = 160 + Math.random() * 60;
+                const g = 130 + Math.random() * 50;
+                const b = 50 + Math.random() * 40;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                ctx.fillStyle = `rgba(${r},${g},${b},${0.6 + Math.random() * 0.35})`;
+                ctx.fillRect(-len/2, -w/2, len, w);
+                // 칩 내부 나뭇결
+                ctx.strokeStyle = `rgba(${r-30},${g-25},${b-15},0.3)`;
+                ctx.lineWidth = 0.5;
+                for (let j = 0; j < 3; j++) {
+                  const ly = -w/2 + Math.random() * w;
+                  ctx.beginPath();
+                  ctx.moveTo(-len/2, ly);
+                  ctx.lineTo(len/2, ly + (Math.random()-0.5)*3);
+                  ctx.stroke();
+                }
+                ctx.restore();
+              }
+              // 작은 칩 조각
+              for (let i = 0; i < 600; i++) {
+                const x = Math.random() * s;
+                const y = Math.random() * s;
+                const angle = Math.random() * Math.PI;
+                const len = 8 + Math.random() * 25;
+                const w = 2 + Math.random() * 6;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                ctx.fillStyle = `rgba(${140+Math.random()*80},${110+Math.random()*60},${40+Math.random()*40},${0.4+Math.random()*0.3})`;
+                ctx.fillRect(-len/2, -w/2, len, w);
+                ctx.restore();
+              }
+              // 틈새 어두운 라인
+              for (let i = 0; i < 200; i++) {
+                ctx.strokeStyle = `rgba(${80+Math.random()*30},${60+Math.random()*25},${20+Math.random()*20},${0.15+Math.random()*0.15})`;
+                ctx.lineWidth = 0.5 + Math.random();
+                const x = Math.random() * s, y = Math.random() * s;
+                const angle = Math.random() * Math.PI;
+                const len = 5 + Math.random() * 15;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+                ctx.stroke();
+              }
+            });
+            tex.repeat.set(1,1);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0.0 });
+          }
+          // 목재사이딩 — 목재 결 텍스처
+          if (n.includes('목재사이딩') || nameEn.includes('wood_siding')) {
+            const tex = makeCanvasTex('wood_siding', 1024, (ctx, s) => {
+              ctx.fillStyle = '#b08858';
+              ctx.fillRect(0, 0, s, s);
+              // 나뭇결 (가로 방향)
+              for (let i = 0; i < 60; i++) {
+                const y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${120+Math.random()*40},${85+Math.random()*30},${45+Math.random()*25},${0.2+Math.random()*0.25})`;
+                ctx.lineWidth = 1 + Math.random() * 3;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                for (let x = 0; x < s; x += 15) ctx.lineTo(x, y + (Math.random()-0.5)*5);
+                ctx.stroke();
+              }
+              // 옹이/마디
+              for (let i = 0; i < 5; i++) {
+                ctx.fillStyle = `rgba(${90+Math.random()*30},${60+Math.random()*25},${30+Math.random()*20},${0.2+Math.random()*0.15})`;
+                ctx.beginPath();
+                ctx.ellipse(Math.random()*s, Math.random()*s, 5+Math.random()*10, 3+Math.random()*6, Math.random()*Math.PI, 0, Math.PI*2);
+                ctx.fill();
+              }
+            });
+            tex.repeat.set(1,2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 });
           }
           // 비닐사이딩
           if (n.includes('비닐사이딩') || nameEn.includes('vinyl_siding')) {
@@ -3239,6 +3523,9 @@
             if (n.includes('대리석') || n.includes('화강') || n.includes('샌드스톤') || n.includes('라임스톤') || n.includes('석재') ||
                 ne.includes('marble') || ne.includes('granite') || ne.includes('sandstone') || ne.includes('limestone'))
               return 'stone';
+            // 미네랄울샌드위치패널 — 전용 패턴
+            if (n.includes('미네랄울샌드위치') || ne === 'sandwich_panel')
+              return 'sandwich';
             // 단열재 (PF보드, 경질우레탄 등) — solid (면별 재질)
             if (n.includes('pf보드') || n.includes('경질우레탄') || n.includes('단열') || n.includes('보온판') || n.includes('볏짚') ||
                 ne.includes('phenolic') || ne.includes('rigid_urethane') || ne.includes('insulation') || ne === 'xps' || ne === 'eps' ||
@@ -3251,9 +3538,9 @@
             // 아연판 — 세로 이음새
             if (n.includes('아연') && !n.includes('용융'))
               return 'zincseam';
-            // 목재 세로 널빤지 (목재사이딩)
+            // 목재사이딩 — 사이딩(가로줄) 패턴
             if (n.includes('목재사이딩'))
-              return 'woodboard';
+              return 'siding';
             // 금속 시트 (한 판 + 에지)
             if (n.includes('알루미늄') || n.includes('동판') || n.includes('재활용알루미늄') ||
                 ne.includes('aluminum') || ne.includes('copper'))
@@ -3301,12 +3588,12 @@
                 if (cw < 0.01 || ch < 0.01) continue;
                 const geo = new THREE.BoxGeometry(thickness, ch, cw);
                 const b = new THREE.Mesh(geo, floorMat);
-                b.position.set(pos + thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                b.position.set(pos - thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
                 b.castShadow = true;
                 brickGroup.add(b);
               }
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(brickGroup);
             layerMeshes.push(brickGroup);
           } else if (wp === 'tile') {
@@ -3325,30 +3612,64 @@
                 const z = -wallW/2 + c * (actualTW + gap) + actualTW/2;
                 const geo = new THREE.BoxGeometry(thickness, actualTH, actualTW);
                 const t = new THREE.Mesh(geo, floorMat);
-                t.position.set(pos + thickness/2, y, z);
+                t.position.set(pos - thickness/2, y, z);
                 t.castShadow = true;
                 tileGroup.add(t);
               }
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(tileGroup);
             layerMeshes.push(tileGroup);
           } else if (wp === 'siding') {
-            // 사이딩 — 높이 균등분할
+            // 사이딩 — 높이 균등분할, 단면 대각선 (사다리꼴)
             const sidingGroup = new THREE.Group();
             const boardH = n.includes('테라코타') ? 0.3 : 0.18;
             const gap = 0.005;
             const rows = Math.max(1, Math.round(wallH / (boardH + gap)));
             const actualBH = (wallH - (rows - 1) * gap) / rows;
+            const t = thickness;
+            const tiltOff = t * 0.7; // 하단이 상단보다 70% 두께만큼 돌출
             for (let r = 0; r < rows; r++) {
-              const y = -wallH/2 + r * (actualBH + gap) + actualBH/2;
-              const geo = new THREE.BoxGeometry(thickness, actualBH, wallW);
+              const y = -wallH/2 + r * (actualBH + gap);
+              const hw = wallW / 2;
+              const x0 = pos;                // 뒷면 (벽쪽)
+              const x1 = pos - t - tiltOff;  // 하단 앞면 (더 돌출, 두꺼운쪽)
+              const x2 = pos - t;            // 상단 앞면 (얇은쪽)
+              // 사다리꼴 단면 x 전폭 wallW — BufferGeometry
+              const geo = new THREE.BufferGeometry();
+              // 8개 꼭짓점: 하단뒤, 하단앞, 상단앞(돌출), 상단뒤 × z양쪽
+              const verts = new Float32Array([
+                x0, y, -hw,             // 0: 하단뒤좌
+                x1, y, -hw,             // 1: 하단앞좌
+                x2, y+actualBH, -hw,    // 2: 상단앞좌
+                x0, y+actualBH, -hw,    // 3: 상단뒤좌
+                x0, y, hw,              // 4: 하단뒤우
+                x1, y, hw,              // 5: 하단앞우
+                x2, y+actualBH, hw,     // 6: 상단앞우
+                x0, y+actualBH, hw,     // 7: 상단뒤우
+              ]);
+              const indices = [
+                // 앞면 (기울어진 면)
+                1,5,6, 1,6,2,
+                // 뒷면
+                4,0,3, 4,3,7,
+                // 상면
+                3,2,6, 3,6,7,
+                // 하면
+                0,4,5, 0,5,1,
+                // 좌측면
+                0,1,2, 0,2,3,
+                // 우측면
+                5,4,7, 5,7,6,
+              ];
+              geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+              geo.setIndex(indices);
+              geo.computeVertexNormals();
               const s = new THREE.Mesh(geo, floorMat);
-              s.position.set(pos + thickness/2, y, 0);
               s.castShadow = true;
               sidingGroup.add(s);
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(sidingGroup);
             layerMeshes.push(sidingGroup);
           } else if (wp === 'stone') {
@@ -3372,12 +3693,12 @@
                 if (cw < 0.01 || ch < 0.01) continue;
                 const geo = new THREE.BoxGeometry(thickness, ch, cw);
                 const s = new THREE.Mesh(geo, floorMat);
-                s.position.set(pos + thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                s.position.set(pos - thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
                 s.castShadow = true;
                 stoneGroup.add(s);
               }
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(stoneGroup);
             layerMeshes.push(stoneGroup);
           } else if (wp === 'panel') {
@@ -3397,12 +3718,12 @@
                 if (ch < 0.01) continue;
                 const geo = new THREE.BoxGeometry(thickness, ch, actualPW);
                 const p = new THREE.Mesh(geo, floorMat);
-                p.position.set(pos + thickness/2, (clipB + clipT)/2, z);
+                p.position.set(pos - thickness/2, (clipB + clipT)/2, z);
                 p.castShadow = true;
                 panelGroup.add(p);
               }
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(panelGroup);
             layerMeshes.push(panelGroup);
           } else if (wp === 'woodboard') {
@@ -3416,11 +3737,11 @@
               const z = -wallW/2 + c * (actualBW + gap) + actualBW/2;
               const geo = new THREE.BoxGeometry(thickness, wallH, actualBW);
               const b = new THREE.Mesh(geo, floorMat);
-              b.position.set(pos + thickness/2, 0, z);
+              b.position.set(pos - thickness/2, 0, z);
               b.castShadow = true;
               woodGroup.add(b);
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(woodGroup);
             layerMeshes.push(woodGroup);
           } else if (wp === 'zincseam') {
@@ -3434,7 +3755,7 @@
               const z = -wallW/2 + c * (actualSeamW + seamGap) + actualSeamW/2;
               const geo = new THREE.BoxGeometry(thickness, wallH, actualSeamW);
               const panel = new THREE.Mesh(geo, floorMat);
-              panel.position.set(pos + thickness/2, 0, z);
+              panel.position.set(pos - thickness/2, 0, z);
               panel.castShadow = true;
               zincGroup.add(panel);
               if (c < cols - 1) {
@@ -3444,22 +3765,86 @@
                 const seam = new THREE.Mesh(seamGeo, seamMat);
                 seam.rotation.z = Math.PI / 2;
                 seam.rotation.y = Math.PI / 2;
-                seam.position.set(pos + thickness/2, 0, seamZ);
+                seam.position.set(pos - thickness/2, 0, seamZ);
                 zincGroup.add(seam);
               }
             }
-            pos += thickness;
+            pos -= thickness;
             group3D.add(zincGroup);
             layerMeshes.push(zincGroup);
+          } else if (wp === 'sandwich') {
+            // 미네랄울샌드위치패널 — 외판 + 단열재 + 내판
+            const sandGroup = new THREE.Group();
+            const skinT = 0.003; // 내외판 3mm
+            const coreT = thickness - skinT * 2; // 중간 단열재
+            const seamW = 0.15; // 매지 간격
+            const seamT = 0.001; // 매지 두께
+            // 금속판 재질 (아이보리 매트)
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xf0ead8, roughness: 0.65, metalness: 0.35 });
+            // 황토색 단열재 재질
+            const coreMat = new THREE.MeshStandardMaterial({ color: 0xd4a850, roughness: 0.9, metalness: 0.0 });
+            // 매지 재질
+            const seamMat = new THREE.MeshBasicMaterial({ color: 0x404040, side: THREE.DoubleSide });
+
+            // 외판 (바깥, +X 쪽)
+            const outerSkin = new THREE.Mesh(
+              new THREE.BoxGeometry(skinT, wallH, wallW), skinMat
+            );
+            outerSkin.position.set(pos - skinT/2, 0, 0);
+            outerSkin.castShadow = true;
+            sandGroup.add(outerSkin);
+
+            // 외판 세로 매지
+            const cols = Math.floor(wallW / seamW);
+            for (let c = 1; c < cols; c++) {
+              const z = -wallW/2 + c * seamW;
+              const sg = new THREE.PlaneGeometry(wallH, skinT * 2);
+              const sm = new THREE.Mesh(sg, seamMat);
+              sm.rotation.z = Math.PI / 2;
+              sm.rotation.y = Math.PI / 2;
+              sm.position.set(pos - skinT/2, 0, z);
+              sandGroup.add(sm);
+            }
+
+            // 중간 단열재
+            const core = new THREE.Mesh(
+              new THREE.BoxGeometry(coreT, wallH, wallW), coreMat
+            );
+            core.position.set(pos - skinT - coreT/2, 0, 0);
+            core.castShadow = true;
+            sandGroup.add(core);
+
+            // 내판 (안쪽, -X 쪽)
+            const innerSkin = new THREE.Mesh(
+              new THREE.BoxGeometry(skinT, wallH, wallW), skinMat
+            );
+            innerSkin.position.set(pos - skinT - coreT - skinT/2, 0, 0);
+            innerSkin.castShadow = true;
+            sandGroup.add(innerSkin);
+
+            // 내판 세로 매지
+            for (let c = 1; c < cols; c++) {
+              const z = -wallW/2 + c * seamW;
+              const sg = new THREE.PlaneGeometry(wallH, skinT * 2);
+              const sm = new THREE.Mesh(sg, seamMat);
+              sm.rotation.z = Math.PI / 2;
+              sm.rotation.y = Math.PI / 2;
+              sm.position.set(pos - skinT - coreT - skinT/2, 0, z);
+              sandGroup.add(sm);
+            }
+
+            pos -= thickness;
+            group3D.add(sandGroup);
+            layerMeshes.push(sandGroup);
           } else if (wp === 'metalsheet') {
             // 금속 시트 — 한 판 + 에지
             geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
             mesh = new THREE.Mesh(geometry, floorMat);
-            mesh.position.x = pos + thickness / 2;
+            mesh.position.x = pos - thickness / 2;
             mesh.castShadow = true;
             mesh.receiveShadow = true;
             addEdges(mesh, geometry);
-            pos += thickness;
+            pos -= thickness;
             group3D.add(mesh);
             layerMeshes.push(mesh);
           } else {
@@ -3475,11 +3860,11 @@
             } else {
               mesh = new THREE.Mesh(geometry, floorMat);
             }
-            mesh.position.x = pos + thickness / 2;
+            mesh.position.x = pos - thickness / 2;
             mesh.castShadow = true;
             mesh.receiveShadow = true;
             addEdges(mesh, geometry);
-            pos += thickness;
+            pos -= thickness;
             group3D.add(mesh);
             layerMeshes.push(mesh);
           }
@@ -3655,7 +4040,7 @@
       });
 
       // 전체 중심 맞추기
-      const totalSize = pos;
+      const totalSize = isWall ? wallTotalThickness : pos;
       layerMeshes.forEach(mesh => {
         if (isWall) {
           mesh.position.x -= totalSize / 2;
