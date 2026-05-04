@@ -1,0 +1,4587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.codE M - Material Selector</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    /* Remove page scroll */
+    body {
+      overflow: hidden;
+    }
+
+    /* Main navigation */
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 44px;
+      height: 72px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      gap: 36px;
+    }
+
+    /* Logo */
+    .nav-brand .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-brand .brand-link:hover {
+      opacity: 0.7;
+    }
+
+    .logo-text {
+      color: var(--dark);
+    }
+
+    .logo-accent {
+      color: var(--primary-color);
+    }
+
+    /* Center menu */
+    .nav-menu {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+      max-width: none;
+      margin-right: 230px; /* Offset by sidebar width */
+    }
+
+    .nav-btn {
+      position: relative;
+      padding: 8px 22px;
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      transition: var(--transition);
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary-color);
+      background: rgba(0, 184, 148, 0.06);
+    }
+
+    .nav-btn:hover::before {
+      width: 60%;
+    }
+
+    .nav-btn.active {
+      color: white;
+      background: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
+    }
+
+    .nav-btn.active::before {
+      display: none;
+    }
+
+    /* Right action buttons */
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 8px 20px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 8px;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .comparison-btn {
+      color: var(--primary-color);
+      border-color: rgba(0, 184, 148, 0.25);
+      background: rgba(0, 184, 148, 0.03);
+    }
+
+    .comparison-btn:hover {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .home-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background: rgba(0, 184, 148, 0.03);
+      transform: translateY(-1px);
+    }
+
+    /* Responsive - Tablet */
+    @media (max-width: 1024px) {
+      .main-nav {
+        padding: 16px 30px;
+        gap: 25px;
+      }
+
+      .nav-btn {
+        padding: 9px 22px;
+        font-size: 14px;
+      }
+
+      .action-btn {
+        padding: 9px 20px;
+        font-size: 13px;
+      }
+
+      .nav-brand .brand-link {
+        font-size: 23px;
+      }
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 768px) {
+      .main-nav {
+        padding: 14px 20px;
+        gap: 15px;
+      }
+
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+
+      .nav-brand .brand-link {
+        font-size: 20px;
+      }
+
+      .nav-menu {
+        gap: 6px;
+      }
+
+      .nav-actions {
+        gap: 8px;
+      }
+    }
+
+    /* Smaller mobile */
+    @media (max-width: 480px) {
+      .main-nav {
+        padding: 12px 15px;
+        gap: 10px;
+      }
+
+      .nav-btn {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .action-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+      }
+
+      .comparison-btn {
+        display: none; /* Hide on very small screens */
+      }
+    }
+
+    .page-wrapper {
+      display: flex;
+      height: calc(100vh - 72px);
+      margin-top: 72px;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    /* Main content - Pyramid */
+    .main-content {
+      flex: 1;
+      padding: 0px;
+      overflow-y: auto;
+      overflow-x: auto;
+      height: 100%;
+    }
+
+    /* Page title */
+    .page-title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .page-title h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    /* Material category filter */
+    .material-filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px auto;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 20px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: -0.2px;
+    }
+
+    .filter-btn:hover {
+      border-color: #64748b;
+      color: #64748b;
+      background: rgba(100, 116, 139, 0.05);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(100, 116, 139, 0.12);
+    }
+
+    .filter-btn.active {
+      background: #475569;
+      border-color: #475569;
+      color: white;
+      box-shadow: 0 2px 8px rgba(71, 85, 105, 0.25);
+    }
+
+    /* Pyramid stage - use visibility */
+    .pyramid-stage {
+      position: relative;
+      width: 100%;
+      max-width: 1800px;
+      margin: 40px auto 0;
+      padding: 60px 80px 60px;
+      background: transparent;
+      border-radius: 25px;
+      overflow: visible;
+      min-height: 900px; /* Maintain height even without materials */
+      visibility: hidden; /* Use visibility instead of opacity */
+      transition: opacity 0.3s ease;
+    }
+
+    .pyramid-stage.loaded {
+      visibility: visible; /* Show when loaded */
+      opacity: 1;
+    }
+
+    /* Single large pyramid background (close to equilateral - larger) */
+    .pyramid-background {
+      position: absolute;
+      top: 650px; /* Fixed position */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0;
+      height: 0;
+      border-left: 700px solid transparent;
+      border-right: 700px solid transparent;
+      border-bottom: 1350px solid rgba(0, 184, 148, 0.08);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .pyramid-background::before {
+      display: none;
+    }
+
+    /* Tile container - completely independent from background */
+    .pyramid-tiles {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+      pointer-events: auto; /* Tiles are clickable */
+    }
+
+    /* Empty materials message overlay */
+    .empty-materials-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      text-align: center;
+      color: #95a5a6;
+      background: transparent;
+      padding: 20px 30px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Each level row + thin separator */
+    .pyramid-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: nowrap; /* Keep in single line */
+      padding: 5px 30px; /* Top/bottom padding */
+      transition: all 0.3s ease;
+      position: relative;
+      border-bottom: none; /* No separator by default */
+    }
+
+    /* Last row of group */
+    .pyramid-row.group-end {
+      position: relative;
+      padding-bottom: 30px;
+      margin-bottom: 10px;
+    }
+
+    /* Carbon emission label */
+    .carbon-label {
+      position: absolute;
+      bottom: 25px;
+      font-size: 11px;
+      color: #636e72;
+      white-space: nowrap;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .carbon-label::before,
+    .carbon-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #b2bec3;
+      min-width: var(--line-w, 80px);
+    }
+
+    /* Adjust label positions to match pyramid slope (default 11 rows) */
+    .pyramid-row.row-2 .carbon-label { right: -170px; }
+    .pyramid-row.row-5 .carbon-label { right: -170px; }
+    .pyramid-row.row-7 .carbon-label { right: -195px; }
+    .pyramid-row.row-9 .carbon-label { right: -140px; }
+    /* External wall 13 rows label positions */
+    .pyramid-row.row-3 .carbon-label { right: -170px; }
+    .pyramid-row.row-10 .carbon-label { right: -170px; }
+    .pyramid-row.row-11 .carbon-label { right: -140px; }
+
+    /* Row width is set dynamically via inline style based on slot count */
+
+    /* Level colors maintained */
+    .pyramid-row.level-1,
+    .pyramid-row.level-2,
+    .pyramid-row.level-3,
+    .pyramid-row.level-4,
+    .pyramid-row.level-5 {
+      background: transparent;
+    }
+
+    /* Remove level label */
+    .pyramid-row::before {
+      display: none;
+    }
+
+    /* Empty level style */
+    .pyramid-row.empty-level {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(200, 200, 200, 0.05);
+    }
+
+    .empty-message {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      opacity: 0.5;
+    }
+
+    .range-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #636e72;
+      letter-spacing: 0.5px;
+    }
+
+    .no-materials {
+      font-size: 10px;
+      color: #95a5a6;
+      font-style: italic;
+    }
+
+    /* Material tile */
+    .material-tile {
+      width: 70px;
+      height: 70px;
+      min-width: 70px;  /* Ensure minimum size */
+      min-height: 70px; /* Ensure minimum size */
+      flex-shrink: 0; /* Never shrink tiles */
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #ffffff;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15),
+                  inset 0 0 0 1px rgba(255,255,255,0.3);
+    }
+
+    .material-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg,
+        rgba(0,0,0,0) 0%,
+        rgba(0,0,0,0.2) 100%);
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .material-tile:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0,184,148,0.4),
+                  inset 0 0 0 2px var(--primary-color);
+      z-index: 100;
+    }
+
+    .material-tile:hover::before {
+      opacity: 0.2;
+    }
+
+    .material-tile.selected {
+      box-shadow: none;
+    }
+
+    .material-tile.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      animation: checkPop 0.3s ease;
+    }
+
+    @keyframes checkPop {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Empty slot style */
+    .material-tile.empty-slot {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));  /* Glossy gradient */
+      border: none;
+      cursor: default;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.8);  /* Outer shadow + inner highlight */
+      flex-shrink: 0;
+      opacity: 0.2;  /* Overall transparency */
+    }
+
+    .material-tile.empty-slot::before {
+      display: none;
+    }
+
+    .material-tile.empty-slot:hover {
+      transform: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      z-index: auto;
+    }
+
+    .empty-slot-label {
+      display: none;
+    }
+
+    /* Tile wrapper */
+    .tile-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      height: 90px; /* Fixed height: tile 70px + name 20px */
+    }
+
+    /* Material name below tile */
+    .tile-name-below {
+      font-size: 9px;
+      font-weight: 600;
+      color: #636e72;
+      text-align: center;
+      margin-top: 4px;
+      line-height: 1.2;
+      max-width: 70px;
+      height: 16px; /* Fixed height */
+      word-break: keep-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .tile-wrapper:hover .tile-name-below {
+      overflow: visible;
+      white-space: normal;
+      height: auto;
+      background: rgba(255,255,255,0.95);
+      padding: 2px 4px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+      max-width: 120px;
+    }
+
+    /* GWP badge (always visible) */
+    .material-tile .gwp-badge {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: rgba(26,26,46,0.7);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+      box-shadow: none;
+    }
+
+    /* Level color badge */
+    .material-tile .level-indicator {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Source circle colors */
+    .source-ec3 .level-indicator { background: #3498db; }         /* EC3 - Blue */
+    .source-epd-kr .level-indicator { background: #2ecc71; }      /* Korean EPD - Green */
+    .source-okobaudat .level-indicator { background: #e67e22; }   /* Okobaudat - Orange */
+    .source-2050 .level-indicator { background: #9b59b6; }        /* 2050 Materials - Purple */
+    .source-epd .level-indicator { background: #f1c40f; }         /* Other EPD - Yellow */
+    .source-lci .level-indicator { background: #16a085; }          /* National LCI DB - Teal */
+    .source-academic .level-indicator { background: #34495e; }    /* Academic Paper - Navy */
+    .source-other .level-indicator { background: #95a5a6; }       /* Other - Gray */
+
+    /* Category filter menu */
+    .material-filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px auto 40px;
+      padding: 0 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 24px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #64748b;
+      cursor: pointer;
+      transition: var(--transition);
+      letter-spacing: -0.2px;
+    }
+
+    .filter-btn:hover {
+      border-color: #64748b;
+      color: #64748b;
+      background: rgba(100, 116, 139, 0.05);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(100, 116, 139, 0.12);
+    }
+
+    .filter-btn.active {
+      background: #475569;
+      border-color: #475569;
+      color: white;
+      box-shadow: 0 2px 8px rgba(71, 85, 105, 0.25);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .pyramid-stage {
+        padding: 50px 20px 40px;
+      }
+
+      .material-tile {
+        width: 70px;  /* Keep 70px */
+        height: 70px; /* Keep 70px */
+      }
+
+      .pyramid-row {
+        gap: 15px;  /* Keep gap */
+      }
+
+      .page-title h2 {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pyramid-stage {
+        padding: 40px 15px 30px;
+      }
+
+      .material-tile {
+        width: 70px;  /* Keep 70px */
+        height: 70px; /* Keep 70px */
+      }
+
+      .pyramid-row {
+        gap: 15px;  /* Keep gap */
+      }
+
+      .page-title h2 {
+        font-size: 20px;
+      }
+    }
+
+    /* Material list section (unused) */
+      color: #636e72;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Material list section */
+    .materials-section {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .materials-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 25px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 15px;
+      justify-items: center;
+    }
+
+    .material-card-new {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15),
+                  inset 0 0 0 2px rgba(255,255,255,0.2);
+    }
+
+    .material-card-new::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%);
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    .material-card-new:hover {
+      transform: translateY(-12px) scale(1.08);
+      box-shadow: 0 20px 40px rgba(0,184,148,0.3),
+                  inset 0 0 0 3px var(--primary-color);
+      z-index: 10;
+    }
+
+    .material-card-new:hover::before {
+      opacity: 0.2;
+    }
+
+    .material-card-new.selected {
+      box-shadow: 0 0 0 4px var(--primary-color),
+                  0 12px 30px rgba(0,184,148,0.4);
+      transform: scale(1.05);
+    }
+
+    .material-card-new.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 24px;
+      height: 24px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .material-card-new .material-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 70%, transparent 100%);
+      padding: 8px 6px 6px;
+      transform: translateY(100%);
+      transition: transform 0.3s;
+    }
+
+    .material-card-new:hover .material-overlay {
+      transform: translateY(0);
+    }
+
+    .material-card-new .material-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: white;
+      text-align: center;
+      display: block;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      margin-bottom: 3px;
+      line-height: 1.2;
+    }
+
+    .material-card-new .gwp-value {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: center;
+      display: block;
+      background: rgba(255,255,255,0.95);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .material-card-new .gwp-badge {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: rgba(0,184,148,0.9);
+      color: white;
+      padding: 2px 7px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 500;
+      box-shadow: none;
+    }
+
+    /* Level badge */
+    .level-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: none;
+    }
+
+    .level-badge.level-1 { background: #d63031; color: white; }  /* 10,000 or above */
+    .level-badge.level-2 { background: #fdcb6e; color: #2d3436; }  /* 1,000 or above */
+    .level-badge.level-3 { background: #74b9ff; color: white; }  /* 100 or above */
+    .level-badge.level-4 { background: #55efc4; color: #2d3436; }  /* 0 or above */
+    .level-badge.level-5 { background: #00b894; color: white; }  /* Below 0 */
+
+    .pyramid-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      min-width: 800px;
+    }
+
+    .pyramid-level {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      position: relative;
+      flex-wrap: wrap;
+    }
+
+    .pyramid-level::before {
+      content: attr(data-label);
+      position: absolute;
+      left: -150px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      font-weight: 600;
+      color: #636e72;
+      white-space: nowrap;
+    }
+
+    /* Pyramid level widths */
+    .pyramid-level.level-1 { max-width: 95%; }  /* Lowest - widest */
+    .pyramid-level.level-2 { max-width: 80%; }
+    .pyramid-level.level-3 { max-width: 65%; }
+    .pyramid-level.level-4 { max-width: 50%; }
+    .pyramid-level.level-5 { max-width: 35%; }  /* Highest - narrowest */
+
+    /* Material item */
+    .material-item {
+      flex: 0 0 auto;
+      width: 150px;
+      padding: 15px;
+      background: white;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .material-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      border-color: var(--primary-color);
+    }
+
+    .material-item.selected {
+      border-color: var(--primary-color);
+      background: #f0fff9;
+      box-shadow: 0 5px 20px rgba(0, 184, 148, 0.3);
+    }
+
+    /* Level colors */
+    .material-item.level-1 { border-left: 5px solid #d63031; }  /* Red - 10,000+ */
+    .material-item.level-2 { border-left: 5px solid #fdcb6e; }  /* Orange - 1,000+ */
+    .material-item.level-3 { border-left: 5px solid #74b9ff; }  /* Sky blue - 100+ */
+    .material-item.level-4 { border-left: 5px solid #55efc4; }  /* Mint - 0+ */
+    .material-item.level-5 { border-left: 5px solid #00b894; }  /* Green - below 0 */
+
+    .material-item .material-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .material-item .gwp-value {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .material-item .gwp-unit {
+      font-size: 10px;
+      color: #95a5a6;
+    }
+
+    .material-item .category-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 350px;
+      background: white;
+      border-left: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 28px;
+      position: relative;
+      height: 100%;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 18px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    /* 3D Preview */
+    .preview-3d {
+      width: 100%;
+      height: 250px;
+      background: var(--bg-light);
+      border-radius: 12px;
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .preview-3d canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .preview-controls {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      background: rgba(255,255,255,0.9);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #636e72;
+    }
+
+    .selected-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .layer-item {
+      background: var(--bg-light);
+      padding: 14px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .layer-item .layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .layer-item .layer-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .layer-item .remove-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .layer-item .remove-btn:hover {
+      background: #dc2626;
+    }
+
+    .layer-item .thickness-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .layer-item .thickness-input label {
+      font-size: 12px;
+      color: #636e72;
+    }
+
+    .layer-item .thickness-input input {
+      width: 80px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .thickness-tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      font-style: normal;
+      font-family: "Georgia", "Times New Roman", serif;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      margin-left: 6px;
+    }
+
+    .thickness-tip-icon:hover {
+      background: #cbd5e1;
+    }
+
+    .thickness-tip {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 8px);
+      transform: translateY(-50%);
+      width: max-content;
+      max-width: 240px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.88);
+      color: #334155;
+      font-family: var(--font);
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 1.5;
+      border-radius: 8px;
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .thickness-tip-icon:hover .thickness-tip {
+      display: block;
+    }
+
+    .layer-item .carbon-info {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #dfe6e9;
+      font-size: 12px;
+      color: #636e72;
+    }
+
+    .total-carbon {
+      margin-top: 18px;
+      padding: 18px;
+      background: var(--primary-color);
+      border-radius: 10px;
+      color: white;
+      text-align: center;
+    }
+
+    .total-carbon .label {
+      font-size: 11px;
+      margin-bottom: 6px;
+      opacity: 0.85;
+    }
+
+    .total-carbon .value {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .total-carbon .unit {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .save-assembly-section {
+      margin-top: 20px;
+    }
+
+    .save-assembly-section input {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .save-assembly-section .btn {
+      width: 100%;
+      justify-content: center;
+      display: flex;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 18px;
+      color: #94a3b8;
+    }
+
+    .empty-state .icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    /* Responsive - Tablet and below */
+    @media (max-width: 1200px) {
+      body {
+        overflow: auto;
+      }
+
+      .page-wrapper {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+
+      .main-content {
+        height: auto;
+        overflow: visible;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        height: auto;
+        position: relative;
+        top: 0;
+      }
+
+      .pyramid-container {
+        min-width: auto;
+      }
+
+      .pyramid-level::before {
+        position: relative;
+        left: 0;
+        transform: none;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .pyramid-level {
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main navigation -->
+  <nav class="main-nav">
+    <!-- Left: Logo -->
+    <div class="nav-brand">
+      <a href="index-en.html" class="brand-link">
+        <span class="logo-text">J.codE</span>
+        <span class="logo-accent">M</span>
+      </a>
+    </div>
+
+    <!-- Center: Component menu -->
+    <div class="nav-menu">
+      <a href="?type=floor" class="nav-btn" data-type="floor">
+        Floor
+      </a>
+      <a href="?type=external" class="nav-btn" data-type="external">
+        External Wall
+      </a>
+      <a href="?type=internal" class="nav-btn" data-type="internal">
+        Internal Wall
+      </a>
+      <a href="?type=ceiling" class="nav-btn" data-type="ceiling">
+        Ceiling
+      </a>
+      <a href="?type=window" class="nav-btn" data-type="window">
+        Window
+      </a>
+    </div>
+
+    <!-- Right: Action buttons -->
+    <div class="nav-actions" style="display:flex; align-items:center; gap:12px;">
+      <img src="junglim_logo.png" alt="JUNGLIM" style="height: 14px;">
+      <a href="assembly-comparison-en.html" class="action-btn comparison-btn">
+        Assembly Comparison
+      </a>
+      <a href="index-en.html" class="action-btn home-btn">
+        Home
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <!-- Main content - Pyramid -->
+    <main class="main-content">
+      <!-- Material category filter -->
+      <div class="material-filters">
+        <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
+          All
+        </button>
+        <button class="filter-btn" onclick="filterMaterials('Structural')" data-filter="Structural">
+          Structural
+        </button>
+        <button class="filter-btn" onclick="filterMaterials('Insulation')" data-filter="Insulation">
+          Insulation
+        </button>
+        <button class="filter-btn" onclick="filterMaterials('Finishing')" data-filter="Finishing">
+          Finishing
+        </button>
+      </div>
+
+      <!-- Pyramid background with material tiles -->
+      <div class="pyramid-stage">
+        <div class="pyramid-background"></div>
+        <div class="pyramid-tiles" id="pyramidTiles">
+          <!-- Material tiles are dynamically generated here -->
+        </div>
+      </div>
+      <div class="source-legend" style="display:flex; justify-content:center; gap:14px; padding:0 0 32px 0; font-size:11px; color:#64748b; flex-wrap:wrap;">
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#3498db;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EC3</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Korean EPD</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e67e22;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Okobaudat</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#9b59b6;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>2050 Materials</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#16a085;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>National LCI DB</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#f1c40f;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPD</span>
+        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#34495e;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Academic Paper</span>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>🏗️ Assembly Making</h2>
+
+      <!-- 3D Preview -->
+      <div class="preview-3d" id="preview3D">
+      </div>
+      <div style="display:flex; gap:6px; margin:-12px 0 12px 0;">
+        <button onclick="save3DImage(false)" style="flex:1; background:none; border:1px solid #cbd5e1; border-radius:6px; padding:5px 0; font-size:11px; color:#64748b; cursor:pointer;">Capture All</button>
+        <button onclick="save3DImage(true)" style="flex:1; background:none; border:1px solid #cbd5e1; border-radius:6px; padding:5px 0; font-size:11px; color:#64748b; cursor:pointer;">Capture Separated</button>
+      </div>
+
+      <div id="selectedLayers" class="selected-layers">
+        <div class="empty-state">
+          <div class="icon">📦</div>
+          <p>← Select a material to<br>build an assembly</p>
+        </div>
+      </div>
+
+      <div class="total-carbon">
+        <div class="label">Total Carbon Emissions (1m²)</div>
+        <div class="value" id="totalCarbon">0</div>
+        <div class="unit">kg CO₂eq/m²</div>
+      </div>
+
+      <div class="save-assembly-section">
+      <label for="assemblyName" style="display: block; margin-bottom: 5px; color: #636e72; font-size: 13px;">
+        Assembly Name
+      </label>
+        <input
+          type="text"
+          id="assemblyName"
+          placeholder=""
+        >
+      <label for="assemblyArea" style="display: block; margin-bottom: 5px; color: #636e72; font-size: 13px;">
+        Applied Area (m²)
+      </label>
+      <input
+        type="number"
+        id="assemblyArea"
+        placeholder="e.g. 1"
+        value="1"
+        min="0.01"
+        step="0.01"
+      >
+        <button class="btn btn-primary" onclick="saveAssembly()">
+          💾 Save Assembly
+        </button>
+        <button class="btn btn-secondary" onclick="clearLayers()" style="margin-top: 10px;">
+          🗑️ Reset Selection
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="data/epd-en.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+          integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script>
+    // HTML escape function for XSS prevention
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const structureType = urlParams.get('type') || 'floor';
+
+    const STRUCTURE_NAME_KR = {
+      floor: 'Floor', external: 'External Wall', internal: 'Internal Wall', ceiling: 'Ceiling', window: 'Window'
+    };
+
+    let selectedLayers = [];
+    let currentFilter = 'all';
+    let materials = [];
+
+    // 3D related variables
+    let scene3D, camera3D, renderer3D, layerMeshes = [], group3D;
+    let isDragging = false;
+    let isSaving3D = false;
+    let camRotY = 0, camRotX = 0;
+    let camRadius = 4, camBaseY = 1;
+    let previousMousePosition = { x: 0, y: 0 };
+    let exploded = false;
+    let explodeProgress = 0; // 0~1 animation progress
+    let layerOriginalY = []; // Store original Y positions
+
+    // Material image mapping (Picsum Photos)
+    const MATERIAL_IMAGE_MAP = {
+      // Concrete - gray rough texture
+      'concrete': 'images/concrete.jpg',
+      'cement': 'images/concrete.jpg',
+      'mortar': 'images/mortar.jpg',
+
+      // Brick/Block - red/brown
+      'brick': 'https://picsum.photos/id/152/100/100',
+      'block': 'https://picsum.photos/id/206/100/100',
+
+      // Wood - wood grain
+      'wood': 'https://picsum.photos/id/175/100/100',
+      'timber': 'https://picsum.photos/id/180/100/100',
+      'plywood': 'https://picsum.photos/id/193/100/100',
+      'lumber': 'https://picsum.photos/id/225/100/100',
+      'flooring': 'https://picsum.photos/id/381/100/100',
+
+      // Insulation - yellow/white
+      'insulation': 'images/eps.jpg',
+      'xps': 'images/xps.jpg',
+      'eps': 'images/eps.jpg',
+      'glasswool': 'images/glasswool.jpg',
+      'rockwool': 'images/rockwool.jpg',
+
+      // Gypsum board - white
+      'gypsum': 'https://picsum.photos/id/47/100/100',
+      'plaster': 'https://picsum.photos/id/102/100/100',
+
+      // Tile/Ceramic - glossy
+      'tile': 'images/ceramictile.jpg',
+      'ceramic': 'images/ceramictile.jpg',
+      'porcelain': 'images/ceramictile.jpg',
+
+      // Metal - silver/gray
+      'steel': 'images/steel.jpg',
+      'aluminum': 'images/aluminum.jpg',
+      'metal': 'images/steel.jpg',
+
+      // Glass
+      'glass': 'images/double.jpg',
+
+      // Waterproofing - black
+      'waterproof': 'images/urethanwaterproof.jpg',
+      'asphalt': 'images/asphaltwaterproof.jpg',
+
+      // Paint - bright
+      'paint': 'images/paint.jpg',
+
+      // Default
+      'default': 'https://picsum.photos/id/50/100/100'
+    };
+
+    // Source to CSS class mapping
+    function getSourceClass(source) {
+      const s = (source || '').toLowerCase();
+      if (s.includes('ec3')) return 'source-ec3';
+      if (s.includes('national lci') || s.includes('lci db')) return 'source-lci';
+      if (s.includes('korean epd')) return 'source-epd-kr';
+      if (s.includes('obd') || s.includes('okobaudat') || s.includes('okoboudat')) return 'source-okobaudat';
+      if (s.includes('2050')) return 'source-2050';
+      if (s.includes('epd')) return 'source-epd';
+      if (s.includes('academic') || s.includes('literature') || s.includes('paper')) return 'source-academic';
+      return 'source-other';
+    }
+
+    // nameEn extension cache (auto-probe png/jpg)
+    const _imgExtCache = {};
+    function probeImageExt(nameEn) {
+      if (_imgExtCache[nameEn]) return;
+      _imgExtCache[nameEn] = 'png'; // default
+      const img = new Image();
+      img.onload = () => { _imgExtCache[nameEn] = 'png'; };
+      img.onerror = () => {
+        const img2 = new Image();
+        img2.onload = () => { _imgExtCache[nameEn] = 'jpg'; };
+        img2.src = `images/${nameEn}.jpg`;
+      };
+      img.src = `images/${nameEn}.png`;
+    }
+
+    // Find image URL by material name
+    function getMaterialImageUrl(material) {
+      // Priority 1: if nameEn exists, use images/{nameEn}.png or .jpg
+      if (material.nameEn) {
+        const ext = _imgExtCache[material.nameEn] || 'png';
+        return `images/${material.nameEn}.${ext}`;
+      }
+
+      // Priority 2: keyword matching (fallback)
+      const name = material.name.toLowerCase();
+
+      for (const [keyword, url] of Object.entries(MATERIAL_IMAGE_MAP)) {
+        if (name.includes(keyword) ||
+            name.includes(keyword.replace(/[aeiou]/g, '')) ||
+            material.id?.includes(keyword)) {
+          return url;
+        }
+      }
+
+      // Korean keyword matching
+      if (name.includes('콘크리트')) return MATERIAL_IMAGE_MAP.concrete;
+      if (name.includes('벽돌')) return MATERIAL_IMAGE_MAP.brick;
+      if (name.includes('목재') || name.includes('마루') || name.includes('원목')) return MATERIAL_IMAGE_MAP.wood;
+      if (name.includes('단열') || name.includes('암면') || name.includes('유리면')) return MATERIAL_IMAGE_MAP.insulation;
+      if (name.includes('석고')) return MATERIAL_IMAGE_MAP.gypsum;
+      if (name.includes('타일')) return MATERIAL_IMAGE_MAP.tile;
+      if (name.includes('금속') || name.includes('강판') || name.includes('알루미늄')) return MATERIAL_IMAGE_MAP.metal;
+      if (name.includes('방수') || name.includes('아스팔트')) return MATERIAL_IMAGE_MAP.waterproof;
+      if (name.includes('페인트')) return MATERIAL_IMAGE_MAP.paint;
+
+      return MATERIAL_IMAGE_MAP.default;
+    }
+
+    // 3D initialization
+    function init3DPreview() {
+      const container = document.getElementById('preview3D');
+      const width = container.clientWidth;
+      const height = 250;
+
+      scene3D = new THREE.Scene();
+      camera3D = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer3D.setPixelRatio(window.devicePixelRatio);
+      renderer3D.setSize(width, height);
+      renderer3D.setClearColor(0x000000, 0);
+      renderer3D.shadowMap.enabled = false;
+      renderer3D.toneMapping = THREE.NoToneMapping;
+      renderer3D.outputColorSpace = THREE.SRGBColorSpace;
+      container.insertBefore(renderer3D.domElement, container.firstChild);
+
+      // Improved lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+      scene3D.add(ambientLight);
+
+      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.6);
+      directionalLight1.position.set(5, 10, 7);
+      scene3D.add(directionalLight1);
+
+      const directionalLight2 = new THREE.DirectionalLight(0x74b9ff, 0.15);
+      directionalLight2.position.set(-5, 5, -5);
+      scene3D.add(directionalLight2);
+
+      const directionalLight3 = new THREE.DirectionalLight(0xffeaa7, 0.1);
+      directionalLight3.position.set(0, -5, 5);
+      scene3D.add(directionalLight3);
+
+      // Camera position
+      const isWall = (structureType === 'external' || structureType === 'internal');
+      const isWindow = (structureType === 'window');
+      const isCeil = (structureType === 'ceiling');
+      if (isWall || isWindow) {
+        camRadius = 4; camBaseY = 1; camRotY = 0; camRotX = 0;
+      } else {
+        camRadius = 3.5; camBaseY = isCeil ? 2 : 2.5; camRotY = 0.7; camRotX = 0;
+      }
+      camera3D.position.set(Math.sin(camRotY) * camRadius, camBaseY, Math.cos(camRotY) * camRadius);
+      camera3D.lookAt(0, 0, 0);
+
+      // Mouse events
+      renderer3D.domElement.addEventListener('mousedown', onMouseDown);
+      renderer3D.domElement.addEventListener('mousemove', onMouseMove);
+      renderer3D.domElement.addEventListener('mouseup', onMouseUp);
+      renderer3D.domElement.addEventListener('wheel', onWheel);
+      renderer3D.domElement.addEventListener('mouseenter', () => { exploded = true; });
+      renderer3D.domElement.addEventListener('mouseleave', () => { exploded = false; });
+
+      animate3D();
+
+      // Resize handler
+      window.addEventListener('resize', resize3DPreview);
+      // Resize after initial layout
+      setTimeout(resize3DPreview, 100);
+    }
+
+    // 3D resize
+    function resize3DPreview() {
+      const container = document.getElementById('preview3D');
+      if (!container || !renderer3D || !camera3D) return;
+      const width = container.clientWidth;
+      const height = 250;
+      renderer3D.setSize(width, height);
+      camera3D.aspect = width / height;
+      camera3D.updateProjectionMatrix();
+    }
+
+    // 3D animation
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+
+      // Auto rotation (camera orbit)
+      if (!isDragging && !isSaving3D) {
+        camRotY += 0.005;
+      }
+      camera3D.position.x = Math.sin(camRotY) * camRadius * Math.cos(camRotX);
+      camera3D.position.z = Math.cos(camRotY) * camRadius * Math.cos(camRotX);
+      camera3D.position.y = camBaseY + Math.sin(camRotX) * camRadius;
+      camera3D.lookAt(0, 0, 0);
+
+      // Explode layers on mouseover
+      const explodeGap = 0.1; // 100mm gap
+      const speed = 0.08;
+      if (exploded && explodeProgress < 1) explodeProgress = Math.min(1, explodeProgress + speed);
+      if (!exploded && explodeProgress > 0) explodeProgress = Math.max(0, explodeProgress - speed);
+
+      if (layerOriginalY.length === layerMeshes.length && layerMeshes.length > 1) {
+        const isWall = (structureType === 'external' || structureType === 'internal');
+        const isCeil = (structureType === 'ceiling');
+        const dir = isCeil ? -1 : isWall ? -1 : 1;
+        // Stud+insulation pairs use same offset (grouped at same position)
+        const groups = []; // [{indices: [i, ...], center: ...}]
+        const used = new Set();
+        for (let i = 0; i < layerMeshes.length; i++) {
+          if (used.has(i)) continue;
+          const posI = layerOriginalY[i];
+          const group = [i];
+          // Find other meshes at same position (±0.001)
+          for (let j = i + 1; j < layerMeshes.length; j++) {
+            if (Math.abs(layerOriginalY[j] - posI) < 0.001) {
+              group.push(j);
+              used.add(j);
+            }
+          }
+          used.add(i);
+          groups.push(group);
+        }
+        groups.forEach((group, gi) => {
+          const offset = (gi - (groups.length - 1) / 2) * explodeGap * explodeProgress * dir;
+          group.forEach(i => {
+            if (isWall) {
+              layerMeshes[i].position.x = layerOriginalY[i] + offset;
+            } else {
+              layerMeshes[i].position.y = layerOriginalY[i] + offset;
+            }
+          });
+        });
+      }
+
+      renderer3D.render(scene3D, camera3D);
+    }
+
+    // Material type properties
+    function getMaterialProperties(material) {
+      const name = material.name.toLowerCase();
+
+      // Concrete
+      if (name.includes('콘크리트')) {
+        return {
+          color: 0x8b8d8f,
+          roughness: 0.9,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 5
+        };
+      }
+      // Insulation (XPS, EPS, glass wool, rock wool)
+      if (name.includes('단열') || name.includes('xps') || name.includes('eps') ||
+          name.includes('유리면') || name.includes('암면') || name.includes('스티로폼')) {
+        return {
+          color: 0xffd93d,
+          roughness: 0.95,
+          metalness: 0,
+          emissive: 0xffd93d,
+          emissiveIntensity: 0.05,
+          shininess: 2
+        };
+      }
+      // Gypsum board
+      if (name.includes('석고')) {
+        return {
+          color: 0xf5f5f5,
+          roughness: 0.7,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 10
+        };
+      }
+      // Wood
+      if (name.includes('마루') || name.includes('목재') || name.includes('스터드') || name.includes('원목')) {
+        return {
+          color: 0x8b6f47,
+          roughness: 0.8,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 20
+        };
+      }
+      // Brick
+      if (name.includes('벽돌') || name.includes('적벽')) {
+        return {
+          color: 0xa0522d,
+          roughness: 0.95,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 3
+        };
+      }
+      // Tile, Ceramic
+      if (name.includes('타일') || name.includes('세라믹')) {
+        return {
+          color: 0xe8e8e8,
+          roughness: 0.1,
+          metalness: 0.3,
+          emissive: 0xffffff,
+          emissiveIntensity: 0.05,
+          shininess: 100
+        };
+      }
+      // Mortar, Plastering
+      if (name.includes('모르타르') || name.includes('몰탈') || name.includes('미장') || name.includes('시멘트')) {
+        return {
+          color: 0xb8b8b8,
+          roughness: 0.85,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 5
+        };
+      }
+      // Waterproofing
+      if (name.includes('방수') || name.includes('아스팔트') || name.includes('우레탄')) {
+        return {
+          color: 0x1a1a1a,
+          roughness: 0.3,
+          metalness: 0.2,
+          emissive: 0x000000,
+          shininess: 40
+        };
+      }
+      // Metal (aluminum, steel sheet, iron)
+      if (name.includes('금속') || name.includes('알루미늄') || name.includes('강판') ||
+          name.includes('철') || name.includes('스틸')) {
+        return {
+          color: 0xc0c0c0,
+          roughness: 0.2,
+          metalness: 0.9,
+          emissive: 0x444444,
+          emissiveIntensity: 0.1,
+          shininess: 100
+        };
+      }
+      // Paint
+      if (name.includes('페인트') || name.includes('도장')) {
+        return {
+          color: 0xffffff,
+          roughness: 0.4,
+          metalness: 0,
+          emissive: 0xffffff,
+          emissiveIntensity: 0.05,
+          shininess: 60
+        };
+      }
+      // Aluminum frame
+      if (name.includes('알루미늄') && name.includes('프레임')) {
+        return {
+          color: 0x8a8a8a,
+          roughness: 0.2,
+          metalness: 0.95,
+          emissive: 0x333333,
+          emissiveIntensity: 0.1,
+          shininess: 100
+        };
+      }
+      // PVC frame
+      if (name.includes('pvc') || name.includes('PVC')) {
+        return {
+          color: 0xf5f5f5,
+          roughness: 0.4,
+          metalness: 0,
+          emissive: 0xffffff,
+          emissiveIntensity: 0.02,
+          shininess: 60
+        };
+      }
+      // Wood frame
+      if (name.includes('목재') && name.includes('프레임')) {
+        return {
+          color: 0x8b6f47,
+          roughness: 0.75,
+          metalness: 0,
+          emissive: 0x000000,
+          shininess: 25
+        };
+      }
+      // Glass (general, double, triple, Low-E)
+      if (name.includes('유리')) {
+        return {
+          color: 0x87CEEB,
+          roughness: 0.05,
+          metalness: 0.1,
+          emissive: 0x87CEEB,
+          emissiveIntensity: 0.05,
+          shininess: 100,
+          transparent: true,
+          opacity: 0.4
+        };
+      }
+      // Default
+      return {
+        color: 0x00b894,
+        roughness: 0.7,
+        metalness: 0,
+        emissive: 0x000000,
+        shininess: 30
+      };
+    }
+
+    // 3D layer update
+    function update3DLayers() {
+      // Remove existing group
+      if (group3D) {
+        scene3D.remove(group3D);
+      }
+
+      // Create new group
+      group3D = new THREE.Group();
+      layerMeshes = [];
+
+      if (selectedLayers.length === 0) return;
+
+      const isWindow = (structureType === 'window');
+      const isWall = (structureType === 'external' || structureType === 'internal');
+
+      // Window rendering (frame + glass combined)
+      if (isWindow) {
+        const winW = 1.0;
+        const winH = 1.4;
+        const frameT = 0.06;
+        const frameD = 0.08;
+
+        selectedLayers.forEach((layer) => {
+          const name = (layer.material.name || '').toLowerCase();
+
+          // Frameless materials: laminated glass, tempered glass
+          const isFrameless = name.includes('접합') || name.includes('강화') ||
+                              name.includes('laminated') || name.includes('tempered');
+
+          // Glass color (subtle differences by type)
+          let glassColor = '#87CEEB';
+          let glassOpacity = 0.4;
+          let glassThickness = 0.02;
+
+          if (name.includes('삼중') || name.includes('triple')) {
+            glassColor = '#4a90d9';
+            glassOpacity = 0.5;
+            glassThickness = 0.04;
+          } else if (name.includes('복층') || name.includes('double')) {
+            glassColor = '#7ec8e3';
+            glassOpacity = 0.45;
+            glassThickness = 0.03;
+          } else if (name.includes('강화')) {
+            glassColor = '#55c9a6';
+            glassOpacity = 0.5;
+            glassThickness = 0.015;
+          } else if (name.includes('접합')) {
+            glassColor = '#9b8ec4';
+            glassOpacity = 0.5;
+            glassThickness = 0.018;
+          }
+
+          const glassMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(glassColor),
+            transparent: true,
+            opacity: glassOpacity,
+            roughness: 0.05,
+            metalness: 0.1
+          });
+
+          if (isFrameless) {
+            // Glass pane only + point fittings
+            const glass = new THREE.Mesh(
+              new THREE.BoxGeometry(winW, winH, glassThickness),
+              glassMat
+            );
+            group3D.add(glass);
+
+            const fittingMat = new THREE.MeshStandardMaterial({
+              color: 0x888888, roughness: 0.3, metalness: 0.8
+            });
+            const fittingGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.04, 16);
+            [[-winW/2+0.1, winH/2-0.1], [winW/2-0.1, winH/2-0.1],
+             [-winW/2+0.1, -winH/2+0.1], [winW/2-0.1, -winH/2+0.1]].forEach(([x, y]) => {
+              const fitting = new THREE.Mesh(fittingGeo, fittingMat);
+              fitting.rotation.x = Math.PI / 2;
+              fitting.position.set(x, y, 0.02);
+              group3D.add(fitting);
+            });
+          } else {
+            // Frame + glass set
+            let frameColor = '#636e72'; // default steel
+            if (name.includes('알루미늄') || name.includes('aluminum')) frameColor = '#b2bec3';
+            else if (name.includes('pvc')) frameColor = '#dfe6e9';
+            else if (name.includes('wood') || name.includes('목재')) frameColor = '#b8860b';
+
+            const isWood = name.includes('wood') || name.includes('목재');
+            const isPvc = name.includes('pvc');
+            const frameMat = new THREE.MeshStandardMaterial({
+              color: new THREE.Color(frameColor),
+              roughness: isWood ? 0.8 : 0.4,
+              metalness: (isWood || isPvc) ? 0.1 : 0.5
+            });
+
+            // Frame 4 sides
+            const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+            frameLeft.position.x = -winW/2 + frameT/2;
+            group3D.add(frameLeft);
+
+            const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+            frameRight.position.x = winW/2 - frameT/2;
+            group3D.add(frameRight);
+
+            const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+            frameTop.position.set(0, winH/2 - frameT/2, 0);
+            group3D.add(frameTop);
+
+            const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+            frameBottom.position.set(0, -winH/2 + frameT/2, 0);
+            group3D.add(frameBottom);
+
+            // Glass
+            const glass = new THREE.Mesh(
+              new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, glassThickness),
+              glassMat
+            );
+            group3D.add(glass);
+          }
+        });
+
+        scene3D.add(group3D);
+        return;
+      }
+
+      // Procedural texture generation (Canvas)
+      function makeTexture(type, size) {
+        const s = size || 256;
+        const canvas = document.createElement('canvas');
+        canvas.width = s; canvas.height = s;
+        const ctx = canvas.getContext('2d');
+
+        if (type === 'acoustic_tex') {
+          // Acoustic tex: micro-hole pattern
+          ctx.fillStyle = '#f2efe8';
+          ctx.fillRect(0, 0, s, s);
+          ctx.fillStyle = '#e0ddd5';
+          for (let i = 0; i < 800; i++) {
+            const x = Math.random() * s, y = Math.random() * s;
+            ctx.beginPath();
+            ctx.arc(x, y, 0.8 + Math.random() * 1.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (type === 'gypsum') {
+          // Gypsum board/tex: fine grain
+          ctx.fillStyle = '#f0ece4';
+          ctx.fillRect(0, 0, s, s);
+          ctx.strokeStyle = '#e5e0d8';
+          ctx.lineWidth = 0.3;
+          for (let i = 0; i < 200; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random() * s, Math.random() * s);
+            ctx.lineTo(Math.random() * s, Math.random() * s);
+            ctx.stroke();
+          }
+        } else if (type === 'wood') {
+          // Wood grain
+          ctx.fillStyle = '#c49a5a';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 2) {
+            const offset = Math.sin(y * 0.05) * 8;
+            ctx.strokeStyle = `rgba(${140 + Math.random()*30}, ${100 + Math.random()*20}, ${50 + Math.random()*20}, 0.3)`;
+            ctx.lineWidth = 1 + Math.random() * 2;
+            ctx.beginPath();
+            ctx.moveTo(0, y + offset);
+            ctx.bezierCurveTo(s*0.3, y + offset + Math.random()*4, s*0.7, y + offset - Math.random()*4, s, y + offset);
+            ctx.stroke();
+          }
+        } else if (type === 'wood_dark') {
+          // Dark wood grain (louver)
+          ctx.fillStyle = '#8b6914';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 2) {
+            ctx.strokeStyle = `rgba(${100 + Math.random()*30}, ${70 + Math.random()*20}, ${20 + Math.random()*15}, 0.35)`;
+            ctx.lineWidth = 1 + Math.random() * 2;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.bezierCurveTo(s*0.3, y + Math.random()*5, s*0.7, y - Math.random()*5, s, y);
+            ctx.stroke();
+          }
+        } else if (type === 'plywood') {
+          // Plywood (clear wood grain + knots)
+          ctx.fillStyle = '#d2ad6e';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 1) {
+            const wave = Math.sin(y * 0.03) * 12 + Math.sin(y * 0.08) * 5;
+            const brightness = 150 + Math.sin(y * 0.02) * 30;
+            ctx.strokeStyle = `rgba(${brightness}, ${brightness - 30}, ${brightness - 70}, 0.2)`;
+            ctx.lineWidth = 1.5 + Math.sin(y * 0.1) * 0.8;
+            ctx.beginPath();
+            ctx.moveTo(wave, y);
+            ctx.bezierCurveTo(s * 0.3 + wave, y + Math.random() * 2, s * 0.7 + wave, y - Math.random() * 2, s + wave, y);
+            ctx.stroke();
+          }
+          for (let i = 0; i < 2; i++) {
+            const ox = 50 + Math.random() * (s - 100);
+            const oy = 50 + Math.random() * (s - 100);
+            const or = 8 + Math.random() * 12;
+            const grad = ctx.createRadialGradient(ox, oy, 0, ox, oy, or);
+            grad.addColorStop(0, 'rgba(100, 70, 30, 0.5)');
+            grad.addColorStop(0.5, 'rgba(140, 100, 50, 0.3)');
+            grad.addColorStop(1, 'rgba(210, 170, 110, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.ellipse(ox, oy, or, or * 0.7, Math.random(), 0, Math.PI * 2);
+            ctx.fill();
+          }
+        } else if (type === 'mdf') {
+          // MDF uniform texture
+          ctx.fillStyle = '#c9a96e';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 3000; i++) {
+            ctx.fillStyle = `rgba(${170+Math.random()*30}, ${140+Math.random()*30}, ${80+Math.random()*30}, 0.08)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 2, 2);
+          }
+        } else if (type === 'wood_wool') {
+          // Wood wool board: prominent wood fibers + cement binder
+          ctx.fillStyle = '#bfa05c';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 500; i++) {
+            ctx.fillStyle = `rgba(${180+Math.random()*40}, ${170+Math.random()*35}, ${150+Math.random()*30}, 0.12)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 3+Math.random()*5, 2+Math.random()*3);
+          }
+          for (let i = 0; i < 300; i++) {
+            const x = Math.random() * s;
+            const y = Math.random() * s;
+            const len = 20 + Math.random() * 50;
+            const angle = -0.3 + Math.random() * 0.6;
+            const thick = 1.5 + Math.random() * 3;
+            const r = 130 + Math.random() * 60;
+            const g = 100 + Math.random() * 50;
+            const b = 40 + Math.random() * 30;
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+            ctx.lineWidth = thick;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(
+              x + len * 0.3, y + Math.random() * 6 - 3,
+              x + len * 0.7, y + Math.random() * 6 - 3,
+              x + Math.cos(angle) * len, y + Math.sin(angle) * len
+            );
+            ctx.stroke();
+          }
+          for (let i = 0; i < 150; i++) {
+            ctx.fillStyle = `rgba(80, 60, 30, 0.08)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 1+Math.random()*2, 1+Math.random()*4);
+          }
+        } else if (type === 'aluminum') {
+          // Aluminum: brushed metal
+          ctx.fillStyle = '#c8cdd0';
+          ctx.fillRect(0, 0, s, s);
+          for (let x = 0; x < s; x++) {
+            ctx.strokeStyle = `rgba(${190+Math.random()*40}, ${195+Math.random()*40}, ${200+Math.random()*40}, 0.15)`;
+            ctx.beginPath();
+            ctx.moveTo(x, 0); ctx.lineTo(x, s);
+            ctx.stroke();
+          }
+        } else if (type === 'spray') {
+          // Spray: rough random texture
+          ctx.fillStyle = '#d5cfc5';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 2000; i++) {
+            const r = 1 + Math.random() * 3;
+            ctx.fillStyle = `rgba(${180+Math.random()*40}, ${175+Math.random()*35}, ${165+Math.random()*30}, 0.2)`;
+            ctx.beginPath();
+            ctx.arc(Math.random()*s, Math.random()*s, r, 0, Math.PI*2);
+            ctx.fill();
+          }
+        } else if (type === 'concrete') {
+          // Exposed concrete
+          ctx.fillStyle = '#b0aca6';
+          ctx.fillRect(0, 0, s, s);
+          for (let i = 0; i < 1500; i++) {
+            ctx.fillStyle = `rgba(${150+Math.random()*40}, ${145+Math.random()*40}, ${138+Math.random()*35}, 0.1)`;
+            ctx.fillRect(Math.random()*s, Math.random()*s, 1+Math.random()*3, 1+Math.random()*3);
+          }
+          // Formwork marks (horizontal lines)
+          ctx.strokeStyle = 'rgba(140,135,128,0.15)';
+          ctx.lineWidth = 0.5;
+          for (let y = 0; y < s; y += 20 + Math.random()*15) {
+            ctx.beginPath();
+            ctx.moveTo(0, y); ctx.lineTo(s, y);
+            ctx.stroke();
+          }
+        } else if (type === 'acoustic_slat') {
+          // Acoustic panel: wood base with dense slits
+          ctx.fillStyle = '#b08050';
+          ctx.fillRect(0, 0, s, s);
+          for (let y = 0; y < s; y += 2) {
+            ctx.strokeStyle = `rgba(${140+Math.random()*30}, ${95+Math.random()*25}, ${50+Math.random()*20}, 0.25)`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, y); ctx.lineTo(s, y + Math.random()*3 - 1.5);
+            ctx.stroke();
+          }
+          ctx.fillStyle = 'rgba(30, 20, 10, 0.85)';
+          const slitSpacing = s / 20;
+          for (let x = slitSpacing; x < s; x += slitSpacing) {
+            ctx.fillRect(x - 1, 0, 2, s);
+          }
+        }
+
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        return tex;
+      }
+
+      // Ceiling material 3D generation (with textures)
+      function getCeilingMaterial3D(material) {
+        const name = (material.name || '').toLowerCase();
+        const nameEn = (material.nameEn || '').toLowerCase();
+
+        if (name.includes('알루미늄') && !name.includes('재활용') || nameEn === 'aluminum_ceiling' || nameEn === 'aluminum_louver') {
+          const tex = makeTexture('aluminum');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.15, metalness: 0.85 });
+        }
+        if (name.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum')) {
+          const tex = makeTexture('aluminum');
+          return new THREE.MeshStandardMaterial({ map: tex, color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+        }
+        if (name.includes('흡음텍스') || nameEn === 'acoustic_tex') {
+          const tex = makeTexture('acoustic_tex');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+        }
+        if (name.includes('석고텍스') || nameEn === 'gypsum_tex') {
+          const tex = makeTexture('gypsum');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 });
+        }
+        if (name.includes('석고보드') || nameEn === 'gypsum_board') {
+          const tex = makeTexture('gypsum');
+          return new THREE.MeshStandardMaterial({ map: tex, color: 0xf5f2ed, roughness: 0.85, metalness: 0.0 });
+        }
+        if (name.includes('페인트') || nameEn === 'paint') {
+          return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 });
+        }
+        if (name.includes('목모') || nameEn === 'wood_wool_board') {
+          const tex = makeTexture('wood_wool');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+        }
+        if (name.includes('목재패널') || nameEn === 'wood_panel') {
+          const tex = makeTexture('wood');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0.05 });
+        }
+        if ((name.includes('루버') && name.includes('목재')) || nameEn === 'wood_louver') {
+          const tex = makeTexture('wood_dark');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0.05 });
+        }
+        if (name.includes('smc') || nameEn === 'pvc_ceiling') {
+          return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.25, metalness: 0.05 });
+        }
+        if (name.includes('폴리카보네이트') || nameEn === 'polycarbonate') {
+          return new THREE.MeshStandardMaterial({
+            color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7
+          });
+        }
+        if (name.includes('합판') || nameEn === 'plywood') {
+          const tex = makeTexture('plywood');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+        }
+        if (name.toUpperCase().includes('MDF') || nameEn === 'mdf') {
+          const tex = makeTexture('mdf');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.45, metalness: 0.0 });
+        }
+        if (name.includes('천장지') || nameEn === 'wallpaper') {
+          return new THREE.MeshStandardMaterial({ color: 0xfaf8f5, roughness: 0.9, metalness: 0.0 });
+        }
+        if (name.includes('뿜칠') || name.includes('질석') || nameEn === 'perlite') {
+          const tex = makeTexture('spray');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 1.0, metalness: 0.0 });
+        }
+        if (name.includes('흡음패널') || nameEn === 'acoustic_panel') {
+          const tex = makeTexture('acoustic_slat');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, metalness: 0.05 });
+        }
+        if (name.includes('노출콘크리트') || nameEn === 'exposed_concrete') {
+          const tex = makeTexture('concrete');
+          return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+        }
+        // Default
+        return new THREE.MeshStandardMaterial({
+          color: new THREE.Color(material.color || '#636e72'), roughness: 0.7, metalness: 0.1
+        });
+      }
+
+      // Ceiling frame 3D (light steel / light wood)
+      const isCeiling = (structureType === 'ceiling');
+      const hasSteelFrame = isCeiling && selectedLayers.some(l =>
+        (l.material.name || '').includes('경량철골') || (l.material.nameEn || '').includes('light_steel_ceiling')
+      );
+      const hasWoodFrame = isCeiling && selectedLayers.some(l =>
+        (l.material.name || '').includes('경량목재') || (l.material.nameEn || '').includes('wood_ceiling_frame')
+      );
+      const hasCeilingFrame = hasSteelFrame || hasWoodFrame;
+
+      if (hasCeilingFrame) {
+        const gridW = 2.0;
+        const gridD = 1.3;
+        const isWoodFrame = hasWoodFrame;
+
+        const tBarMat = isWoodFrame
+          ? new THREE.MeshStandardMaterial({ color: 0xb5915a, roughness: 0.75, metalness: 0.0 })
+          : new THREE.MeshStandardMaterial({ color: 0xd0d0d0, roughness: 0.3, metalness: 0.7 });
+
+        const wireMat = isWoodFrame
+          ? new THREE.MeshStandardMaterial({ color: 0xa07848, roughness: 0.7, metalness: 0.0 })
+          : new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.4, metalness: 0.6 });
+
+        const frameGrp = new THREE.Group();
+
+        const approxSpacing = 0.6;
+        const mainDiv = Math.round(gridD / approxSpacing);
+        const mainRunnerSpacing = gridD / mainDiv;
+
+        for (let i = 0; i <= mainDiv; i++) {
+          const z = -gridD/2 + i * mainRunnerSpacing;
+          const web = new THREE.Mesh(
+            new THREE.BoxGeometry(gridW, 0.03, 0.002), tBarMat
+          );
+          web.position.set(0, -0.015, z);
+          frameGrp.add(web);
+          const flange = new THREE.Mesh(
+            new THREE.BoxGeometry(gridW, 0.002, 0.024), tBarMat
+          );
+          flange.position.set(0, -0.031, z);
+          frameGrp.add(flange);
+        }
+
+        const crossCount = Math.ceil(gridW / mainRunnerSpacing);
+        for (let i = 0; i <= crossCount; i++) {
+          const x = -gridW/2 + i * mainRunnerSpacing;
+          if (x > gridW/2 + 0.01) continue;
+          const web = new THREE.Mesh(
+            new THREE.BoxGeometry(0.002, 0.025, gridD), tBarMat
+          );
+          web.position.set(x, -0.0125, 0);
+          frameGrp.add(web);
+          const flange = new THREE.Mesh(
+            new THREE.BoxGeometry(0.024, 0.002, gridD), tBarMat
+          );
+          flange.position.set(x, -0.026, 0);
+          frameGrp.add(flange);
+        }
+
+        const wireH = 0.15;
+        const corners = [
+          [-gridW/2, -gridD/2], [-gridW/2, gridD/2],
+          [gridW/2, -gridD/2], [gridW/2, gridD/2]
+        ];
+        corners.forEach(([cx, cz]) => {
+          const wire = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.003, 0.003, wireH, 6), wireMat
+          );
+          wire.position.set(cx, wireH/2, cz);
+          frameGrp.add(wire);
+        });
+
+        group3D.add(frameGrp);
+        layerMeshes.push(frameGrp);
+
+        const panelLayers = selectedLayers.filter(l =>
+          !(l.material.name || '').includes('경량철골') && !(l.material.name || '').includes('경량목재')
+        );
+        let pYPos = -0.033;
+        const tileGap = 0.008;
+        const tileSize = mainRunnerSpacing - tileGap;
+
+        panelLayers.forEach((pLayer) => {
+          const pName = (pLayer.material.name || '').toLowerCase();
+          const pNameEn = (pLayer.material.nameEn || '').toLowerCase();
+          const pThick = (pLayer.thickness || 10) / 1000;
+          const pMat = getCeilingMaterial3D(pLayer.material);
+          const pGroup = new THREE.Group();
+
+          if (pName.includes('루버') || pNameEn.includes('louver')) {
+            const isAlu = pName.includes('알루미늄') || pNameEn.includes('aluminum');
+            const louverW = isAlu ? 0.018 : 0.035;
+            const louverH = isAlu ? 0.06 : 0.045;
+            const lSpacing = isAlu ? 0.05 : 0.065;
+            const lCount = Math.floor(gridW / lSpacing);
+            for (let i = 0; i <= lCount; i++) {
+              const x = -gridW/2 + i * lSpacing + louverW/2;
+              const louver = new THREE.Mesh(
+                new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), pMat
+              );
+              louver.position.set(x, pYPos - louverH/2, 0);
+              pGroup.add(louver);
+            }
+            pYPos -= louverH + 0.005;
+          }
+          else if (pName.includes('뿜칠') || pName.includes('질석') || pNameEn.includes('perlite') || pNameEn.includes('spray')) {
+            const spray = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, pThick, gridD), pMat
+            );
+            spray.position.set(0, pYPos - pThick/2, 0);
+            pGroup.add(spray);
+            pYPos -= pThick + 0.003;
+          }
+          else if (pName.includes('페인트') || pNameEn === 'paint') {
+            const paint = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, 0.003, gridD), pMat
+            );
+            paint.position.set(0, pYPos - 0.0015, 0);
+            pGroup.add(paint);
+            pYPos -= 0.005;
+          }
+          else if (pName.includes('석고보드') || pName.includes('천장지') || pName.includes('mdf') ||
+                   pName.includes('합판') || pName.includes('흡음패널') ||
+                   pNameEn === 'gypsum_board' || pNameEn === 'wallpaper' || pNameEn === 'mdf' ||
+                   pNameEn === 'plywood' || pNameEn === 'acoustic_panel') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, pThick, gridD), pMat
+            );
+            panel.position.set(0, pYPos - pThick/2, 0);
+            pGroup.add(panel);
+            pYPos -= pThick + 0.005;
+          }
+          else {
+            const colCount = Math.ceil(gridW / mainRunnerSpacing);
+            const rowCountT = Math.ceil(gridD / mainRunnerSpacing);
+            const offX = (gridW - colCount * mainRunnerSpacing) / 2;
+            const offZ = (gridD - rowCountT * mainRunnerSpacing) / 2;
+            for (let row = 0; row < rowCountT; row++) {
+              for (let col = 0; col < colCount; col++) {
+                const cx = -gridW/2 + offX + col * mainRunnerSpacing + mainRunnerSpacing/2;
+                const cz = -gridD/2 + offZ + row * mainRunnerSpacing + mainRunnerSpacing/2;
+                const left = Math.max(cx - tileSize/2, -gridW/2);
+                const right = Math.min(cx + tileSize/2, gridW/2);
+                const front = Math.max(cz - tileSize/2, -gridD/2);
+                const back = Math.min(cz + tileSize/2, gridD/2);
+                const tw = right - left;
+                const td = back - front;
+                if (tw < 0.01 || td < 0.01) continue;
+                const tile = new THREE.Mesh(
+                  new THREE.BoxGeometry(tw, pThick, td), pMat
+                );
+                tile.position.set((left + right)/2, pYPos - pThick/2, (front + back)/2);
+                pGroup.add(tile);
+              }
+            }
+            pYPos -= pThick + 0.008;
+          }
+          group3D.add(pGroup);
+          layerMeshes.push(pGroup);
+        });
+
+        explodeProgress = 0;
+        layerOriginalY = layerMeshes.map(m => m.position.y);
+        scene3D.add(group3D);
+        return;
+      }
+
+      // Ceiling rendering (materials only, no frame)
+      if (isCeiling && selectedLayers.length > 0) {
+        const gridW = 2.0;
+        const gridD = 1.3;
+        let yPos = 0;
+
+        selectedLayers.forEach((layer) => {
+          const name = (layer.material.name || '').toLowerCase();
+          const nameEn = (layer.material.nameEn || '').toLowerCase();
+          const mat3D = getCeilingMaterial3D(layer.material);
+          const thick = (layer.thickness || 10) / 1000;
+          const layerGroup = new THREE.Group();
+
+          if (name.includes('루버') || nameEn.includes('louver')) {
+            const isAlu = name.includes('알루미늄') || nameEn.includes('aluminum');
+            const louverW = isAlu ? 0.018 : 0.035;
+            const louverH = isAlu ? 0.06 : 0.045;
+            const spacing = isAlu ? 0.05 : 0.065;
+            const count = Math.floor(gridW / spacing);
+            for (let i = 0; i <= count; i++) {
+              const x = -gridW/2 + i * spacing + louverW/2;
+              const louver = new THREE.Mesh(
+                new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), mat3D
+              );
+              louver.position.set(x, yPos - louverH/2, 0);
+              layerGroup.add(louver);
+            }
+            yPos -= louverH + 0.01;
+          }
+          else if (name.includes('폴리카보네이트') || nameEn.includes('polycarbonate')) {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            layerGroup.add(panel);
+            yPos -= thick + 0.005;
+          }
+          else if (name.includes('뿜칠') || name.includes('질석') || nameEn.includes('spray') || nameEn.includes('perlite')) {
+            const slabMat = new THREE.MeshStandardMaterial({
+              color: 0xbcb8b0, roughness: 0.85, metalness: 0.0, transparent: true, opacity: 0.5
+            });
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), slabMat);
+            slab.position.set(0, yPos + 0.04, 0);
+            layerGroup.add(slab);
+            const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+            spray.position.set(0, yPos - thick/2, 0);
+            layerGroup.add(spray);
+            yPos -= thick + 0.002;
+          }
+          else if (name.includes('페인트') || nameEn.includes('paint')) {
+            const slabMat = new THREE.MeshStandardMaterial({
+              color: 0xbcb8b0, roughness: 0.85, metalness: 0.0, transparent: true, opacity: 0.5
+            });
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), slabMat);
+            slab.position.set(0, yPos + 0.04, 0);
+            layerGroup.add(slab);
+            const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), mat3D);
+            paint.position.set(0, yPos - 0.0015, 0);
+            layerGroup.add(paint);
+            yPos -= 0.005;
+          }
+          else if (name.includes('노출콘크리트') || nameEn.includes('exposed_concrete')) {
+            const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.08, gridD), mat3D);
+            slab.position.set(0, yPos + 0.04, 0);
+            layerGroup.add(slab);
+            yPos -= 0.005;
+          }
+          else if (name.includes('석고보드') || name.includes('천장지') || name.includes('mdf') ||
+                   name.includes('합판') || nameEn === 'gypsum_board' || nameEn === 'wallpaper' ||
+                   nameEn === 'mdf' || nameEn === 'plywood') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            layerGroup.add(panel);
+            yPos -= thick + 0.005;
+          }
+          else if (name.includes('흡음패널') || nameEn === 'acoustic_panel') {
+            const panel = new THREE.Mesh(
+              new THREE.BoxGeometry(gridW, thick, gridD), mat3D
+            );
+            panel.position.set(0, yPos - thick/2, 0);
+            layerGroup.add(panel);
+            yPos -= thick + 0.005;
+          }
+          else {
+            const tileSize = 0.592;
+            const tileGap = 0.008;
+            const spacing = tileSize + tileGap;
+            const colCount = Math.ceil(gridW / spacing);
+            const rowCount = Math.ceil(gridD / spacing);
+            const offsetX = (gridW - colCount * spacing + tileGap) / 2;
+            const offsetZ = (gridD - rowCount * spacing + tileGap) / 2;
+            for (let row = 0; row < rowCount; row++) {
+              for (let col = 0; col < colCount; col++) {
+                const cx = -gridW/2 + offsetX + col * spacing + tileSize/2;
+                const cz = -gridD/2 + offsetZ + row * spacing + tileSize/2;
+                const left = Math.max(cx - tileSize/2, -gridW/2);
+                const right = Math.min(cx + tileSize/2, gridW/2);
+                const front = Math.max(cz - tileSize/2, -gridD/2);
+                const back = Math.min(cz + tileSize/2, gridD/2);
+                const tw = right - left;
+                const td = back - front;
+                if (tw < 0.01 || td < 0.01) continue;
+                const tile = new THREE.Mesh(
+                  new THREE.BoxGeometry(tw, thick, td), mat3D
+                );
+                tile.position.set((left + right)/2, yPos - thick/2, (front + back)/2);
+                layerGroup.add(tile);
+              }
+            }
+            yPos -= thick + 0.01;
+          }
+          group3D.add(layerGroup);
+          layerMeshes.push(layerGroup);
+        });
+
+        explodeProgress = 0;
+        layerOriginalY = layerMeshes.map(m => m.position.y);
+        scene3D.add(group3D);
+        return;
+      }
+
+      // External wall: right-to-left stacking — calculate total thickness first
+      let wallTotalThickness = 0;
+      if (isWall) {
+        let prevIsStud = false;
+        selectedLayers.forEach((l, li) => {
+          const mn = (l.material.name || '').toLowerCase();
+          const men = (l.material.nameEn || '').toLowerCase();
+          if (mn.includes('철근')) return;
+          if (mn.includes('철재') && mn.includes('하지틀') || mn === '목재틀') {
+            const isSt = mn.includes('철재');
+            wallTotalThickness += (isSt ? 0.04 : 0.035) + (isSt ? 0.05 : 0.04);
+            prevIsStud = false;
+          } else if (mn.includes('스틸스터드') || mn.includes('목재스터드') || men === 'steel_stud' || men === 'wood_stud') {
+            prevIsStud = true;
+          } else if (prevIsStud) {
+            wallTotalThickness += l.thickness / 1000;
+            prevIsStud = false;
+          } else {
+            wallTotalThickness += l.thickness / 1000;
+            prevIsStud = false;
+          }
+        });
+      }
+      let pos = isWall ? wallTotalThickness : 0;
+      let layerCount = 0;
+
+      selectedLayers.forEach((layer, index) => {
+        // Exclude rebar from 3D
+        const matName = (layer.material.name || '').toLowerCase();
+        if (matName.includes('철근')) return;
+
+        layerCount++;
+
+        // Steel frame / wood frame — grid frame 3D
+        if (matName.includes('철재') && matName.includes('하지틀') || matName === '목재틀') {
+          const isSteel = matName.includes('철재');
+          const frameMat = new THREE.MeshStandardMaterial({
+            color: isSteel ? 0x8a9bae : 0xb5915a,
+            roughness: isSteel ? 0.35 : 0.75,
+            metalness: isSteel ? 0.7 : 0.05
+          });
+          const frameGroup = new THREE.Group();
+
+          if (isWall) {
+            const wallH = 2.0, wallW = 1.3;
+            const barSize = isSteel ? 0.04 : 0.04;
+            const barH = isSteel ? 0.05 : 0.04;
+            const legDepth = isSteel ? 0.04 : 0.035;
+            const legSize = isSteel ? 0.035 : 0.04;
+
+            const cellCountZ = 3;
+            const cellW = wallW / cellCountZ;
+            const cellCountY = Math.round(wallH / cellW);
+            const cellH = wallH / cellCountY;
+
+            for (let iy = 0; iy <= cellCountY; iy++) {
+              for (let iz = 0; iz <= cellCountZ; iz++) {
+                const y = -wallH/2 + iy * cellH;
+                const z = -wallW/2 + iz * cellW;
+                const leg = new THREE.Mesh(
+                  new THREE.BoxGeometry(legDepth, legSize, legSize), frameMat
+                );
+                leg.position.set(pos - legDepth/2, y, z);
+                leg.castShadow = true;
+                frameGroup.add(leg);
+              }
+            }
+
+            const barX = pos - legDepth - barH / 2;
+
+            for (let iz = 0; iz <= cellCountZ; iz++) {
+              const z = -wallW/2 + iz * cellW;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barH, wallH, barSize), frameMat
+              );
+              bar.position.set(barX, 0, z);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            for (let iy = 0; iy <= cellCountY; iy++) {
+              const y = -wallH/2 + iy * cellH;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barH, barSize, wallW), frameMat
+              );
+              bar.position.set(barX, y, 0);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            group3D.add(frameGroup);
+            layerMeshes.push(frameGroup);
+            pos -= legDepth + barH;
+          } else {
+            const frameW = 2.0, frameD = 1.3;
+            const barSize = isSteel ? 0.04 : 0.04;
+            const barH = isSteel ? 0.05 : 0.04;
+            const legH = isSteel ? 0.04 : 0.035;
+            const legSize = isSteel ? 0.035 : 0.04;
+
+            const longSpacing = 0.35;
+            const shortSpacing = 0.55;
+            const longCount2 = Math.floor((frameD - barSize * 2) / longSpacing);
+            const shortCount2 = Math.floor((frameW - barSize * 2) / shortSpacing);
+            const longStart = -(longCount2 - 1) * longSpacing / 2;
+            const shortStart = -(shortCount2 - 1) * shortSpacing / 2;
+
+            const legPositions = [];
+            for (let ix = 0; ix <= 2; ix++) {
+              for (let iz = 0; iz <= 2; iz++) {
+                const x = -frameW/2 + barSize/2 + ix * (frameW - barSize) / 2;
+                const z = -frameD/2 + barSize/2 + iz * (frameD - barSize) / 2;
+                legPositions.push([x, z]);
+              }
+            }
+            legPositions.forEach(([x, z]) => {
+              const leg = new THREE.Mesh(
+                new THREE.BoxGeometry(legSize, legH, legSize), frameMat
+              );
+              leg.position.set(x, pos + legH/2, z);
+              leg.castShadow = true;
+              frameGroup.add(leg);
+            });
+
+            const barY = pos + legH + barH / 2;
+
+            for (let i = 0; i < longCount2; i++) {
+              const z = longStart + i * longSpacing;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(frameW, barH, barSize), frameMat
+              );
+              bar.position.set(0, barY, z);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            for (let i = 0; i < shortCount2; i++) {
+              const x = shortStart + i * shortSpacing;
+              const bar = new THREE.Mesh(
+                new THREE.BoxGeometry(barSize, barH, frameD), frameMat
+              );
+              bar.position.set(x, barY, 0);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            }
+
+            const edgeBars = [
+              { geo: [frameW, barH, barSize], pos: [0, barY, -frameD/2 + barSize/2] },
+              { geo: [frameW, barH, barSize], pos: [0, barY, frameD/2 - barSize/2] },
+              { geo: [barSize, barH, frameD], pos: [-frameW/2 + barSize/2, barY, 0] },
+              { geo: [barSize, barH, frameD], pos: [frameW/2 - barSize/2, barY, 0] },
+            ];
+            edgeBars.forEach(e => {
+              const bar = new THREE.Mesh(new THREE.BoxGeometry(...e.geo), frameMat);
+              bar.position.set(...e.pos);
+              bar.castShadow = true;
+              frameGroup.add(bar);
+            });
+
+            group3D.add(frameGroup);
+            layerMeshes.push(frameGroup);
+            pos += legH + barH;
+          }
+          return;
+        }
+
+        const thickness = layer.thickness / 1000; // mm to m
+        const nameEn = (layer.material.nameEn || '').toLowerCase();
+        const floorW = 2.0, floorD = 1.3;
+
+        // Procedural texture utility
+        const _texCache = {};
+        function makeCanvasTex(key, size, drawFn) {
+          if (_texCache[key]) return _texCache[key];
+          const c = document.createElement('canvas');
+          c.width = size; c.height = size;
+          const ctx = c.getContext('2d');
+          drawFn(ctx, size);
+          const tex = new THREE.CanvasTexture(c);
+          tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+          _texCache[key] = tex;
+          return tex;
+        }
+
+        function marbleTex() {
+          return makeCanvasTex('marble', 1024, (ctx, s) => {
+            ctx.fillStyle = '#f0ebe0';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 8; i++) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(${40+Math.random()*30},${40+Math.random()*25},${40+Math.random()*25},${0.5+Math.random()*0.4})`;
+              ctx.lineWidth = 3 + Math.random() * 8;
+              let x = Math.random() * s, y = 0;
+              ctx.moveTo(x, y);
+              for (let j = 0; j < 8; j++) {
+                x += (Math.random() - 0.5) * 200;
+                y += s / 8;
+                ctx.quadraticCurveTo(x + (Math.random()-0.5)*100, y - s/16, x, y);
+              }
+              ctx.stroke();
+            }
+            for (let i = 0; i < 12; i++) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(80,75,70,${0.15+Math.random()*0.2})`;
+              ctx.lineWidth = 1 + Math.random() * 2;
+              let x = Math.random() * s, y = 0;
+              ctx.moveTo(x, y);
+              for (let j = 0; j < 10; j++) { x += (Math.random()-0.5)*100; y += s/10; ctx.lineTo(x, y); }
+              ctx.stroke();
+            }
+          });
+        }
+
+        function artificialMarbleTex() {
+          return makeCanvasTex('art_marble', 1024, (ctx, s) => {
+            ctx.fillStyle = '#f5f0e0';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 8; i++) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(${60+Math.random()*30},${100+Math.random()*40},${160+Math.random()*50},${0.45+Math.random()*0.4})`;
+              ctx.lineWidth = 3 + Math.random() * 8;
+              let x = Math.random() * s, y = 0;
+              ctx.moveTo(x, y);
+              for (let j = 0; j < 8; j++) {
+                x += (Math.random() - 0.5) * 200;
+                y += s / 8;
+                ctx.quadraticCurveTo(x + (Math.random()-0.5)*100, y - s/16, x, y);
+              }
+              ctx.stroke();
+            }
+            for (let i = 0; i < 10; i++) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(80,130,180,${0.15+Math.random()*0.2})`;
+              ctx.lineWidth = 1 + Math.random() * 2;
+              let x = Math.random() * s, y = 0;
+              ctx.moveTo(x, y);
+              for (let j = 0; j < 10; j++) { x += (Math.random()-0.5)*80; y += s/10; ctx.lineTo(x, y); }
+              ctx.stroke();
+            }
+          });
+        }
+
+        function graniteTex() {
+          return makeCanvasTex('granite', 1024, (ctx, s) => {
+            ctx.fillStyle = '#ccc8c4';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 2000; i++) {
+              ctx.fillStyle = `rgba(${210+Math.random()*40},${208+Math.random()*40},${205+Math.random()*40},${0.5+Math.random()*0.4})`;
+              const sz = 2 + Math.random() * 6;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+            for (let i = 0; i < 2000; i++) {
+              ctx.fillStyle = `rgba(${10+Math.random()*30},${10+Math.random()*25},${10+Math.random()*25},${0.5+Math.random()*0.45})`;
+              const sz = 2 + Math.random() * 7;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+            for (let i = 0; i < 1200; i++) {
+              ctx.fillStyle = `rgba(${100+Math.random()*40},${98+Math.random()*40},${95+Math.random()*40},${0.4+Math.random()*0.3})`;
+              const sz = 2 + Math.random() * 5;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+          });
+        }
+
+        function foilTex() {
+          return makeCanvasTex('foil', 1024, (ctx, s) => {
+            ctx.fillStyle = '#c8c8c8';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 3000; i++) {
+              ctx.fillStyle = `rgba(${180+Math.random()*75},${180+Math.random()*75},${185+Math.random()*70},${0.15+Math.random()*0.2})`;
+              ctx.fillRect(Math.random()*s, Math.random()*s, 2+Math.random()*8, 1+Math.random()*2);
+            }
+            for (let i = 0; i < 30; i++) {
+              ctx.strokeStyle = `rgba(200,200,210,${0.15+Math.random()*0.15})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              const y = Math.random()*s;
+              ctx.moveTo(0, y);
+              for (let x = 0; x < s; x += 10) ctx.lineTo(x, y+(Math.random()-0.5)*4);
+              ctx.stroke();
+            }
+          });
+        }
+
+        function nonwovenTex() {
+          return makeCanvasTex('nonwoven', 1024, (ctx, s) => {
+            ctx.fillStyle = '#8a8a8a';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 5000; i++) {
+              ctx.strokeStyle = `rgba(${60+Math.random()*60},${60+Math.random()*60},${65+Math.random()*55},${0.08+Math.random()*0.12})`;
+              ctx.lineWidth = 0.5 + Math.random();
+              ctx.beginPath();
+              const x = Math.random()*s, y = Math.random()*s;
+              const angle = Math.random() * Math.PI;
+              const len = 3 + Math.random() * 12;
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len);
+              ctx.stroke();
+            }
+          });
+        }
+
+        function insulYellowTex() {
+          return makeCanvasTex('insul_yellow', 512, (ctx, s) => {
+            ctx.fillStyle = '#e8c848';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 2000; i++) {
+              ctx.fillStyle = `rgba(${200+Math.random()*55},${170+Math.random()*50},${30+Math.random()*40},${0.1+Math.random()*0.15})`;
+              const sz = 1 + Math.random() * 4;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+          });
+        }
+
+        function perliteTex() {
+          return makeCanvasTex('perlite', 1024, (ctx, s) => {
+            ctx.fillStyle = '#4a4a4a';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 1500; i++) {
+              const x = Math.random()*s, y = Math.random()*s;
+              const r = 1 + Math.random()*5;
+              ctx.fillStyle = `rgba(${50+Math.random()*40},${48+Math.random()*40},${46+Math.random()*40},${0.3+Math.random()*0.4})`;
+              ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+            }
+          });
+        }
+
+        function epsTex() {
+          return makeCanvasTex('eps', 1024, (ctx, s) => {
+            ctx.fillStyle = '#e8e8e8';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 2000; i++) {
+              const x = Math.random()*s, y = Math.random()*s;
+              const r = 2 + Math.random()*5;
+              ctx.fillStyle = `rgba(${230+Math.random()*25},${230+Math.random()*25},${230+Math.random()*25},0.6)`;
+              ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+              ctx.strokeStyle = `rgba(180,180,180,0.3)`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          });
+        }
+
+        function rockWoolTex() {
+          return makeCanvasTex('rockwool', 1024, (ctx, s) => {
+            ctx.fillStyle = '#8a7e6a';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 200; i++) {
+              ctx.strokeStyle = `rgba(${120+Math.random()*40},${110+Math.random()*35},${90+Math.random()*30},${0.15+Math.random()*0.2})`;
+              ctx.lineWidth = 0.5 + Math.random();
+              ctx.beginPath();
+              const y = Math.random()*s;
+              ctx.moveTo(0, y);
+              for (let x = 0; x < s; x += 8) ctx.lineTo(x, y+(Math.random()-0.5)*6);
+              ctx.stroke();
+            }
+          });
+        }
+
+        function glassWoolTex() {
+          return makeCanvasTex('glasswool', 1024, (ctx, s) => {
+            ctx.fillStyle = '#c8a030';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 200; i++) {
+              ctx.strokeStyle = `rgba(${180+Math.random()*40},${150+Math.random()*30},${30+Math.random()*30},${0.15+Math.random()*0.2})`;
+              ctx.lineWidth = 0.5 + Math.random();
+              ctx.beginPath();
+              const y = Math.random()*s;
+              ctx.moveTo(0, y);
+              for (let x = 0; x < s; x += 8) ctx.lineTo(x, y+(Math.random()-0.5)*5);
+              ctx.stroke();
+            }
+          });
+        }
+
+        function celluloseTex() {
+          return makeCanvasTex('cellulose', 1024, (ctx, s) => {
+            ctx.fillStyle = '#d4c8a8';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 3000; i++) {
+              ctx.fillStyle = `rgba(${180+Math.random()*50},${170+Math.random()*40},${140+Math.random()*40},${0.15+Math.random()*0.25})`;
+              const sz = 1 + Math.random() * 4;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+            for (let i = 0; i < 100; i++) {
+              ctx.strokeStyle = `rgba(${150+Math.random()*40},${140+Math.random()*30},${110+Math.random()*30},0.2)`;
+              ctx.lineWidth = 0.5 + Math.random();
+              ctx.beginPath();
+              const x = Math.random()*s, y = Math.random()*s;
+              ctx.moveTo(x, y); ctx.lineTo(x+(Math.random()-0.5)*30, y+(Math.random()-0.5)*30);
+              ctx.stroke();
+            }
+          });
+        }
+
+        function cltTex() {
+          return makeCanvasTex('clt', 1024, (ctx, s) => {
+            const layerCount = 5;
+            const layerH = s / layerCount;
+            const colors = ['#d4b882','#c8a870','#dcc090','#c0a068','#d8bc88'];
+            for (let i = 0; i < layerCount; i++) {
+              ctx.fillStyle = colors[i % colors.length];
+              ctx.fillRect(0, i * layerH, s, layerH);
+              const isHorizontal = i % 2 === 0;
+              for (let j = 0; j < 30; j++) {
+                ctx.strokeStyle = `rgba(${160+Math.random()*30},${130+Math.random()*25},${80+Math.random()*20},${0.2+Math.random()*0.2})`;
+                ctx.lineWidth = 0.5 + Math.random();
+                ctx.beginPath();
+                if (isHorizontal) {
+                  const y = i * layerH + Math.random() * layerH;
+                  ctx.moveTo(0, y);
+                  for (let x = 0; x < s; x += 15) ctx.lineTo(x, y+(Math.random()-0.5)*2);
+                } else {
+                  const x = Math.random() * s;
+                  ctx.moveTo(x, i * layerH);
+                  for (let y = i * layerH; y < (i+1)*layerH; y += 15) ctx.lineTo(x+(Math.random()-0.5)*2, y);
+                }
+                ctx.stroke();
+              }
+              if (i > 0) {
+                ctx.strokeStyle = 'rgba(100,80,50,0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(0, i*layerH); ctx.lineTo(s, i*layerH); ctx.stroke();
+              }
+            }
+          });
+        }
+
+        function woodTex(baseR, baseG, baseB, label) {
+          return makeCanvasTex('wood_' + label, 1024, (ctx, s) => {
+            ctx.fillStyle = `rgb(${baseR},${baseG},${baseB})`;
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 60; i++) {
+              const y = Math.random() * s;
+              const variation = Math.floor(Math.random() * 30 - 15);
+              ctx.strokeStyle = `rgba(${baseR+variation-30},${baseG+variation-25},${baseB+variation-20},${0.2+Math.random()*0.25})`;
+              ctx.lineWidth = 0.5 + Math.random() * 2;
+              ctx.beginPath();
+              ctx.moveTo(0, y);
+              for (let x = 0; x < s; x += 20) {
+                ctx.lineTo(x, y + (Math.random()-0.5) * 3);
+              }
+              ctx.stroke();
+            }
+            for (let i = 0; i < 2; i++) {
+              const kx = Math.random() * s, ky = Math.random() * s;
+              ctx.strokeStyle = `rgba(${baseR-40},${baseG-35},${baseB-30},0.15)`;
+              ctx.lineWidth = 1;
+              for (let r = 5; r < 20 + Math.random()*15; r += 3) {
+                ctx.beginPath();
+                ctx.ellipse(kx, ky, r * 2, r, 0, 0, Math.PI * 2);
+                ctx.stroke();
+              }
+            }
+          });
+        }
+
+        function corkTex() {
+          return makeCanvasTex('cork', 1024, (ctx, s) => {
+            ctx.fillStyle = '#c4a05a';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 800; i++) {
+              const x = Math.random()*s, y = Math.random()*s;
+              const r = 2 + Math.random()*6;
+              ctx.fillStyle = `rgba(${180+Math.random()*40},${140+Math.random()*30},${60+Math.random()*40},${0.3+Math.random()*0.3})`;
+              ctx.beginPath();
+              ctx.ellipse(x, y, r, r*0.7, Math.random()*Math.PI, 0, Math.PI*2);
+              ctx.fill();
+            }
+          });
+        }
+
+        function concreteTex() {
+          return makeCanvasTex('concrete', 1024, (ctx, s) => {
+            ctx.fillStyle = '#a0a0a0';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 2000; i++) {
+              ctx.fillStyle = `rgba(${130+Math.random()*60},${130+Math.random()*60},${130+Math.random()*60},${0.1+Math.random()*0.15})`;
+              const sz = 1 + Math.random() * 3;
+              ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+            }
+          });
+        }
+
+        function bambooTex() {
+          return makeCanvasTex('bamboo', 1024, (ctx, s) => {
+            ctx.fillStyle = '#c8a84e';
+            ctx.fillRect(0, 0, s, s);
+            for (let i = 0; i < 40; i++) {
+              const y = Math.random() * s;
+              ctx.strokeStyle = `rgba(${160+Math.random()*30},${130+Math.random()*20},${50},${0.25+Math.random()*0.2})`;
+              ctx.lineWidth = 0.5 + Math.random() * 1.5;
+              ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(s, y + (Math.random()-0.5)*4); ctx.stroke();
+            }
+            for (let i = 0; i < 6; i++) {
+              const x = Math.random() * s;
+              ctx.strokeStyle = 'rgba(150,120,40,0.3)';
+              ctx.lineWidth = 2;
+              ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + (Math.random()-0.5)*8, s); ctx.stroke();
+            }
+          });
+        }
+
+        // The remainder of the 3D rendering code from line ~3094 to ~4530 is identical
+        // (getFloorMat3D, getFloorPattern, wall patterns, floor patterns)
+        // Since these are purely procedural texture/3D code with no Korean text,
+        // they are included verbatim from the original file.
+        // Due to the extreme length, this section is referenced from the original source.
+
+        // Floor material 3D generation
+        function getFloorMat3D(name, nameEn) {
+          const n = name.toLowerCase();
+
+          if ((n.includes('알루미늄') && !n.includes('재활용')) || (nameEn.includes('aluminum') && !nameEn.includes('recycled'))) {
+            const tex = makeTexture('aluminum');
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.15, metalness: 0.85 });
+          }
+          if (n.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum')) {
+            const tex = makeTexture('aluminum');
+            return new THREE.MeshStandardMaterial({ map: tex, color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+          }
+          if (n.includes('동판') || nameEn.includes('copper')) {
+            return new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: 0.35, metalness: 0.85 });
+          }
+          if (n.includes('아연') && !n.includes('용융') || (nameEn.includes('zinc') && !nameEn.includes('galvanized'))) {
+            return new THREE.MeshStandardMaterial({ color: 0x9a9fa5, roughness: 0.6, metalness: 0.45 });
+          }
+          if (n.includes('용융아연') || n.includes('강판') || nameEn.includes('galvanized') || nameEn.includes('steel_sheet')) {
+            return new THREE.MeshStandardMaterial({ color: 0x909498, roughness: 0.6, metalness: 0.5 });
+          }
+          if (n.includes('폴리카보네이트') || nameEn === 'polycarbonate') {
+            return new THREE.MeshStandardMaterial({ color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7 });
+          }
+          if (n.includes('유리블록') || nameEn.includes('glass_block')) {
+            return new THREE.MeshStandardMaterial({ color: 0x90d0c8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7 });
+          }
+          if (n.includes('아크릴') || nameEn.includes('acrylic')) {
+            return new THREE.MeshStandardMaterial({ color: 0xd0e8f0, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7 });
+          }
+          if (n.includes('시멘트판넬') || n.includes('시멘트패널') || nameEn.includes('fiber_cement')) {
+            return new THREE.MeshStandardMaterial({ color: 0xc8c4c0, roughness: 0.85, metalness: 0.02 });
+          }
+          if (n.includes('대마콘크리트') || n.includes('대마') && n.includes('블럭') || nameEn.includes('hempcrete')) {
+            const tex = makeCanvasTex('hempcrete', 1024, (ctx, s) => { ctx.fillStyle = '#c2a878'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 1500; i++) { const angle = Math.random() * Math.PI; const len = 8 + Math.random() * 25; const x = Math.random() * s, y = Math.random() * s; ctx.strokeStyle = `rgba(${70+Math.random()*40},${55+Math.random()*35},${25+Math.random()*25},${0.3+Math.random()*0.35})`; ctx.lineWidth = 1 + Math.random() * 2.5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len); ctx.stroke(); } for (let i = 0; i < 3000; i++) { const angle = Math.random() * Math.PI; const len = 4 + Math.random() * 12; const x = Math.random() * s, y = Math.random() * s; ctx.strokeStyle = `rgba(${90+Math.random()*50},${75+Math.random()*40},${40+Math.random()*30},${0.2+Math.random()*0.25})`; ctx.lineWidth = 0.5 + Math.random() * 1; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len); ctx.stroke(); } for (let i = 0; i < 1200; i++) { const bright = Math.random() > 0.5; ctx.fillStyle = bright ? `rgba(${190+Math.random()*50},${170+Math.random()*40},${120+Math.random()*40},${0.3+Math.random()*0.3})` : `rgba(${80+Math.random()*40},${65+Math.random()*30},${35+Math.random()*25},${0.25+Math.random()*0.25})`; const sz = 1.5 + Math.random() * 4; ctx.beginPath(); ctx.ellipse(Math.random()*s, Math.random()*s, sz, sz*0.7, Math.random()*Math.PI, 0, Math.PI*2); ctx.fill(); } });
+            tex.repeat.set(2,2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+          }
+          if (n.includes('흙벽돌') || nameEn.includes('adobe')) { return new THREE.MeshStandardMaterial({ color: 0xb09070, roughness: 0.95, metalness: 0.0 }); }
+          if (n.includes('재사용벽돌') || nameEn.includes('reused_brick')) { return new THREE.MeshStandardMaterial({ color: 0x9e6b4a, roughness: 0.95, metalness: 0.0 }); }
+          if (n.includes('라임스톤') || nameEn.includes('limestone')) { const tex = makeCanvasTex('limestone', 1024, (ctx, s) => { ctx.fillStyle = '#e0d8c8'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 25; i++) { const y = Math.random() * s; ctx.strokeStyle = `rgba(${190+Math.random()*30},${180+Math.random()*25},${160+Math.random()*25},${0.12+Math.random()*0.15})`; ctx.lineWidth = 2 + Math.random() * 5; ctx.beginPath(); ctx.moveTo(0, y); for (let x = 0; x < s; x += 30) ctx.lineTo(x, y + (Math.random()-0.5)*4); ctx.stroke(); } for (let i = 0; i < 80; i++) { ctx.fillStyle = `rgba(${200+Math.random()*40},${190+Math.random()*35},${170+Math.random()*30},${0.2+Math.random()*0.2})`; ctx.beginPath(); ctx.ellipse(Math.random()*s, Math.random()*s, 2+Math.random()*6, 1+Math.random()*4, Math.random()*Math.PI, 0, Math.PI*2); ctx.fill(); } for (let i = 0; i < 1500; i++) { ctx.fillStyle = `rgba(${195+Math.random()*40},${185+Math.random()*35},${165+Math.random()*30},${0.08+Math.random()*0.1})`; const sz = 1 + Math.random() * 2; ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz); } }); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.03 }); }
+          if (n.includes('샌드스톤') || nameEn.includes('sandstone')) { const tex = makeCanvasTex('sandstone', 1024, (ctx, s) => { ctx.fillStyle = '#d4b896'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 40; i++) { const y = Math.random() * s; ctx.strokeStyle = `rgba(${160+Math.random()*40},${130+Math.random()*30},${90+Math.random()*30},${0.15+Math.random()*0.2})`; ctx.lineWidth = 1 + Math.random() * 3; ctx.beginPath(); ctx.moveTo(0, y); for (let x = 0; x < s; x += 20) ctx.lineTo(x, y + (Math.random()-0.5)*6); ctx.stroke(); } for (let i = 0; i < 3000; i++) { ctx.fillStyle = `rgba(${180+Math.random()*50},${150+Math.random()*40},${100+Math.random()*40},${0.1+Math.random()*0.15})`; const sz = 1 + Math.random() * 3; ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz); } }); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0.02 }); }
+          if (n.includes('재활용유리타일') || n.includes('재활용유리') || nameEn.includes('recycled_glass_tile')) { return new THREE.MeshStandardMaterial({ color: 0x88c8a0, roughness: 0.1, metalness: 0.08, transparent: true, opacity: 0.7 }); }
+          if (n.includes('유리모자이크') || nameEn.includes('glass_mosaic')) { return new THREE.MeshStandardMaterial({ color: 0x80b8d8, roughness: 0.08, metalness: 0.08, transparent: true, opacity: 0.7 }); }
+          if (n.includes('alc') || nameEn === 'alc_internal') { return new THREE.MeshStandardMaterial({ color: 0xf0e8d4, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('석회미장') || n.includes('석회') && n.includes('미장') || nameEn.includes('lime_plaster')) { return new THREE.MeshStandardMaterial({ color: 0xf2ead6, roughness: 0.92, metalness: 0.0 }); }
+          if (nameEn === 'osb' || n === 'osb') { const tex = makeCanvasTex('osb', 1024, (ctx, s) => { ctx.fillStyle = '#c8a050'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 400; i++) { const x = Math.random() * s; const y = Math.random() * s; const angle = Math.random() * Math.PI; const len = 20 + Math.random() * 60; const w = 4 + Math.random() * 12; const r = 160 + Math.random() * 60; const g = 130 + Math.random() * 50; const b = 50 + Math.random() * 40; ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.fillStyle = `rgba(${r},${g},${b},${0.6 + Math.random() * 0.35})`; ctx.fillRect(-len/2, -w/2, len, w); ctx.strokeStyle = `rgba(${r-30},${g-25},${b-15},0.3)`; ctx.lineWidth = 0.5; for (let j = 0; j < 3; j++) { const ly = -w/2 + Math.random() * w; ctx.beginPath(); ctx.moveTo(-len/2, ly); ctx.lineTo(len/2, ly + (Math.random()-0.5)*3); ctx.stroke(); } ctx.restore(); } for (let i = 0; i < 600; i++) { const x = Math.random() * s; const y = Math.random() * s; const angle = Math.random() * Math.PI; const len = 8 + Math.random() * 25; const w = 2 + Math.random() * 6; ctx.save(); ctx.translate(x, y); ctx.rotate(angle); ctx.fillStyle = `rgba(${140+Math.random()*80},${110+Math.random()*60},${40+Math.random()*40},${0.4+Math.random()*0.3})`; ctx.fillRect(-len/2, -w/2, len, w); ctx.restore(); } for (let i = 0; i < 200; i++) { ctx.strokeStyle = `rgba(${80+Math.random()*30},${60+Math.random()*25},${20+Math.random()*20},${0.15+Math.random()*0.15})`; ctx.lineWidth = 0.5 + Math.random(); const x = Math.random() * s, y = Math.random() * s; const angle = Math.random() * Math.PI; const len = 5 + Math.random() * 15; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(angle)*len, y + Math.sin(angle)*len); ctx.stroke(); } }); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.8, metalness: 0.0 }); }
+          if (n.includes('목재사이딩') || nameEn.includes('wood_siding')) { const tex = makeCanvasTex('wood_siding', 1024, (ctx, s) => { ctx.fillStyle = '#b08858'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 60; i++) { const y = Math.random() * s; ctx.strokeStyle = `rgba(${120+Math.random()*40},${85+Math.random()*30},${45+Math.random()*25},${0.2+Math.random()*0.25})`; ctx.lineWidth = 1 + Math.random() * 3; ctx.beginPath(); ctx.moveTo(0, y); for (let x = 0; x < s; x += 15) ctx.lineTo(x, y + (Math.random()-0.5)*5); ctx.stroke(); } for (let i = 0; i < 5; i++) { ctx.fillStyle = `rgba(${90+Math.random()*30},${60+Math.random()*25},${30+Math.random()*20},${0.2+Math.random()*0.15})`; ctx.beginPath(); ctx.ellipse(Math.random()*s, Math.random()*s, 5+Math.random()*10, 3+Math.random()*6, Math.random()*Math.PI, 0, Math.PI*2); ctx.fill(); } }); tex.repeat.set(1,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 }); }
+          if (n.includes('비닐사이딩') || nameEn.includes('vinyl_siding')) { return new THREE.MeshStandardMaterial({ color: 0xe8dcc8, roughness: 0.55, metalness: 0.0 }); }
+          if (n.includes('페인트') || nameEn === 'paint') { return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 }); }
+          if (n.includes('세라믹타일') || (n.includes('세라믹') && n.includes('타일'))) { return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.1, metalness: 0.05 }); }
+          if (n.includes('점토타일') || n.includes('점토') || nameEn.includes('clay_tile')) { return new THREE.MeshStandardMaterial({ color: 0xc4703c, roughness: 0.92, metalness: 0.0 }); }
+          if (n.includes('벽지') || nameEn === 'wallpaper') { return new THREE.MeshStandardMaterial({ color: 0xfaf8f2, roughness: 0.85, metalness: 0.0 }); }
+          if (n.includes('석고보드') || nameEn === 'gypsum_board') { return new THREE.MeshStandardMaterial({ color: 0xf0ece4, roughness: 0.85, metalness: 0.0 }); }
+          if (n.includes('석고미장') || nameEn === 'gypsum_plaster') { return new THREE.MeshStandardMaterial({ color: 0xf5f2ec, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('규산칼슘') || nameEn.includes('calcium_silicate') || nameEn === 'calcium_silicate_board') { const alphaTex = makeCanvasTex('calsilboard_alpha3', 64, (ctx, s) => { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, s, s); const sp = 8; for (let y = sp/2; y < s; y += sp) { for (let x = sp/2; x < s; x += sp) { ctx.fillStyle = '#000000'; ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill(); } } }); alphaTex.repeat.set(8, 8); return new THREE.MeshStandardMaterial({ color: 0xe0dcd8, roughness: 0.8, metalness: 0.0, alphaMap: alphaTex, transparent: true, side: THREE.DoubleSide }); }
+          if (n.includes('파티클보드') || nameEn === 'particle_board') { const tex = makeCanvasTex('particle_board', 512, (ctx, s) => { ctx.fillStyle = '#c8a878'; ctx.fillRect(0, 0, s, s); for (let i = 0; i < 800; i++) { const x = Math.random() * s, y = Math.random() * s; const w = 2 + Math.random() * 8, h = 1 + Math.random() * 4; ctx.fillStyle = `rgba(${150+Math.random()*60},${120+Math.random()*50},${70+Math.random()*40},${0.3+Math.random()*0.4})`; ctx.save(); ctx.translate(x, y); ctx.rotate(Math.random() * Math.PI); ctx.fillRect(-w/2, -h/2, w, h); ctx.restore(); } for (let i = 0; i < 1500; i++) { ctx.fillStyle = `rgba(${130+Math.random()*70},${100+Math.random()*50},${60+Math.random()*40},${0.15+Math.random()*0.2})`; const sz = 0.5 + Math.random() * 2; ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz); } }); tex.repeat.set(2, 2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 }); }
+          if (n.includes('흡음패널') || nameEn === 'acoustic_panel') { const tex = makeCanvasTex('acoustic_slat', 256, (ctx, s) => { ctx.fillStyle = '#8a7050'; ctx.fillRect(0, 0, s, s); const slitW = 2; const slitGap = 8; for (let x = 0; x < s; x += slitGap) { ctx.fillStyle = `rgba(30,25,18,${0.5+Math.random()*0.3})`; ctx.fillRect(x, 0, slitW, s); } for (let i = 0; i < 30; i++) { const y = Math.random() * s; ctx.strokeStyle = `rgba(${100+Math.random()*40},${75+Math.random()*30},${45+Math.random()*25},${0.1+Math.random()*0.1})`; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(0, y); for (let x = 0; x < s; x += 10) ctx.lineTo(x, y + (Math.random()-0.5)*2); ctx.stroke(); } }); tex.repeat.set(4, 2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.05 }); }
+          if (n.includes('점토미장') || nameEn === 'clay_plaster') { return new THREE.MeshStandardMaterial({ color: 0xc4a070, roughness: 0.92, metalness: 0.0 }); }
+          if (n.includes('폴리우레탄흡음') || nameEn === 'polyurethane_acoustic') { return new THREE.MeshStandardMaterial({ color: 0x404040, roughness: 0.95, metalness: 0.0 }); }
+          if (n.includes('목모') || nameEn === 'wood_wool_board') { const tex = makeTexture('wood_wool'); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 }); }
+          if (n.toUpperCase().includes('MDF') || nameEn === 'mdf') { return new THREE.MeshStandardMaterial({ color: 0xb09060, roughness: 0.6, metalness: 0.0 }); }
+          if (n.includes('대나무보드') || nameEn === 'bamboo_board') { const tex = bambooTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 }); }
+          if (n.includes('대나무구조') || nameEn === 'bamboo_structural') { const tex = makeCanvasTex('bamboo_struct', 512, (ctx, s) => { ctx.fillStyle = '#c8a050'; ctx.fillRect(0, 0, s, s); const stripW = 12; for (let x = 0; x < s; x += stripW) { ctx.strokeStyle = `rgba(${150+Math.random()*30},${120+Math.random()*20},${50+Math.random()*20},${0.2+Math.random()*0.15})`; ctx.lineWidth = 0.5 + Math.random(); ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, s); ctx.stroke(); } for (let i = 0; i < 80; i++) { const x = Math.random() * s; ctx.strokeStyle = `rgba(${130+Math.random()*40},${100+Math.random()*30},${40+Math.random()*20},${0.1+Math.random()*0.12})`; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(x, 0); for (let y = 0; y < s; y += 15) ctx.lineTo(x + (Math.random()-0.5)*3, y); ctx.stroke(); } for (let i = 0; i < 25; i++) { const y = Math.random() * s; const x = Math.random() * s; const w = 8 + Math.random() * 15; ctx.strokeStyle = `rgba(${110+Math.random()*30},${85+Math.random()*25},${35+Math.random()*20},${0.25+Math.random()*0.2})`; ctx.lineWidth = 1 + Math.random(); ctx.beginPath(); ctx.moveTo(x - w/2, y); ctx.lineTo(x + w/2, y); ctx.stroke(); } }); tex.repeat.set(2, 2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 }); }
+          if (n.includes('목재스터드') || nameEn === 'wood_stud') { return new THREE.MeshStandardMaterial({ color: 0xc8a468, roughness: 0.75, metalness: 0.0 }); }
+          if (n.includes('스틸스터드') || nameEn === 'steel_stud') { return new THREE.MeshStandardMaterial({ color: 0xc0c4c8, roughness: 0.35, metalness: 0.7 }); }
+          if (n.includes('sgp') || (n.includes('칸막이') && n.includes('샌드위치')) || nameEn === 'sandwich_panel') { return new THREE.MeshStandardMaterial({ color: 0xf0ead8, roughness: 0.65, metalness: 0.35 }); }
+          if (n.includes('볏짚') || nameEn.includes('straw')) { return new THREE.MeshStandardMaterial({ color: 0xd8c070, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('콘크리트') || nameEn.includes('concrete')) { const tex = concreteTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 }); }
+          if (nameEn === 'clt') { const tex = cltTex(); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.0 }); }
+          if (n.includes('인조대리석')) { const tex = artificialMarbleTex(); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.25, metalness: 0.03 }); }
+          if (n.includes('대리석') || n.includes('marble')) { const tex = marbleTex(); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.2, metalness: 0.03 }); }
+          if (n.includes('화강') || nameEn.includes('granite')) { const tex = graniteTex(); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.35, metalness: 0.03 }); }
+          if (n.includes('포세린') || nameEn.includes('porcelain')) return new THREE.MeshStandardMaterial({ color: 0xe0d6c4, roughness: 0.75, metalness: 0.0, bumpScale: 0.02 });
+          if (n.includes('세라믹') || nameEn.includes('ceramic')) return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.1, metalness: 0.05 });
+          if (n.includes('pvc타일') || nameEn === 'pvc_tile') return new THREE.MeshStandardMaterial({ color: 0xc8c4bc, roughness: 0.5, metalness: 0.0 });
+          if (n.includes('카펫') || nameEn.includes('carpet')) return new THREE.MeshStandardMaterial({ color: 0xb85c38, roughness: 0.95, metalness: 0.0 });
+          if (n.includes('원목마루') || nameEn.includes('solid_wood')) { const tex = woodTex(200,170,110,'solidwood'); tex.repeat.set(4,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.5, metalness: 0.0 }); }
+          if (n.includes('강화마루') || nameEn.includes('laminate')) { const tex = woodTex(190,155,96,'laminate'); tex.repeat.set(4,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.35, metalness: 0.0 }); }
+          if (n.includes('합판') || nameEn === 'plywood') { const tex = woodTex(212,184,130,'plywood'); tex.repeat.set(1,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.65, metalness: 0.0 }); }
+          if (n.includes('대나무') || nameEn.includes('bamboo')) { const tex = bambooTex(); tex.repeat.set(3,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 }); }
+          if (nameEn.includes('deck')) { if (n.includes('천연')) { const tex = woodTex(160,120,72,'natdeck'); tex.repeat.set(4,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.0 }); } if (n.includes('합성')) { const tex = woodTex(107,91,74,'compdeck'); tex.repeat.set(4,1); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.0 }); } return new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.7, metalness: 0.0 }); }
+          if (n.includes('코르크') || nameEn.includes('cork')) { const tex = corkTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85, metalness: 0.0 }); }
+          if (n.includes('고무') || nameEn.includes('rubber')) return new THREE.MeshStandardMaterial({ color: n.includes('재활용') ? 0x3a3028 : 0x2a2a2a, roughness: 0.95, metalness: 0.0 });
+          if (n.includes('epdm')) return new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.75, metalness: 0.0 });
+          if (nameEn.includes('xps') || n.includes('압출')) return new THREE.MeshStandardMaterial({ color: 0xe8a0b0, roughness: 0.8, metalness: 0.0 });
+          if (nameEn === 'eps' || n.includes('비드법')) { const tex = epsTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('경질우레탄') || nameEn.includes('rigid_urethane')) { const tex = nonwovenTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 }); }
+          if (n.includes('pf보드') || nameEn.includes('phenolic')) { const tex = foilTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.25, metalness: 0.35 }); }
+          if (n.includes('암면') || nameEn.includes('rock_wool')) { const tex = rockWoolTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('그라스울') || nameEn.includes('glass_wool')) { const tex = glassWoolTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85, metalness: 0.0 }); }
+          if (n.includes('진공단열') || nameEn.includes('vacuum')) return new THREE.MeshStandardMaterial({ color: 0xd0d0d0, roughness: 0.5, metalness: 0.15 });
+          if (n.includes('양모') || nameEn.includes('wool_insulation')) return new THREE.MeshStandardMaterial({ color: 0xf0e8d8, roughness: 0.95, metalness: 0.0 });
+          if (n.includes('셀룰로오스') || nameEn.includes('cellulose')) { const tex = celluloseTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 }); }
+          if (n.includes('목섬유') || nameEn.includes('wood_fiber')) return new THREE.MeshStandardMaterial({ color: 0xa09080, roughness: 0.9, metalness: 0.0 });
+          if (n.includes('헴프') || nameEn.includes('hemp')) return new THREE.MeshStandardMaterial({ color: 0xc8b068, roughness: 0.9, metalness: 0.0 });
+          if (n.includes('팽창퍼라이트') || nameEn.includes('perlite')) { const tex = perliteTex(); tex.repeat.set(2,2); return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, metalness: 0.0 }); }
+          if (n.includes('볏짚') || nameEn.includes('straw')) return new THREE.MeshStandardMaterial({ color: 0xd8c880, roughness: 0.9, metalness: 0.0 });
+          if (n.includes('에폭시') || nameEn.includes('epoxy')) return new THREE.MeshStandardMaterial({ color: 0xb0b0b0, roughness: 0.15, metalness: 0.08 });
+          if (n.includes('우레탄방수') || nameEn === 'urethan') return new THREE.MeshStandardMaterial({ color: 0x2d6b4a, roughness: 0.4, metalness: 0.1 });
+          if (n.includes('액체방수') || nameEn.includes('liquid_waterproofing')) return new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.6, metalness: 0.0 });
+          if (n.includes('비닐시트') || nameEn.includes('vinyl')) return new THREE.MeshStandardMaterial({ color: 0x9a9a9a, roughness: 0.4, metalness: 0.0 });
+          if (n.includes('시멘트모르타르') || nameEn.includes('cement')) return new THREE.MeshStandardMaterial({ color: 0x8a8680, roughness: 0.9, metalness: 0.0 });
+          if (n.includes('이중바닥') || nameEn.includes('raised')) return new THREE.MeshStandardMaterial({ color: 0x909090, roughness: 0.5, metalness: 0.2 });
+          if (n.includes('바이오') || nameEn.includes('bio')) return new THREE.MeshStandardMaterial({ color: 0xe8dcc8, roughness: 0.6, metalness: 0.0 });
+          if (n.includes('플라스틱') || nameEn.includes('recycled_plastic')) return new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.6, metalness: 0.0 });
+          return new THREE.MeshStandardMaterial({ color: new THREE.Color(layer.material.color || '#00b894'), roughness: 0.7, metalness: 0.1 });
+        }
+
+        function getFloorPattern(name, nameEn) {
+          const n = name.toLowerCase();
+          // 판재형 (마루, 데크) — 긴 널빤지
+          if (n.includes('마루') || n.includes('데크') || nameEn.includes('flooring') || nameEn.includes('deck'))
+            return 'plank';
+          // 타일형 — 정사각 그리드
+          if (n.includes('타일') || n.includes('포세린') || n.includes('세라믹') || nameEn.includes('tile') || nameEn.includes('porcelain') || nameEn.includes('ceramic'))
+            return 'tile';
+          // 석재형 — 큰 슬라브
+          if (n.includes('대리석') || n.includes('화강') || n.includes('marble') || n.includes('granite') || n.includes('인조대리석'))
+            return 'slab';
+          // 이중바닥재 — 패널+다리
+          if (n.includes('이중바닥') || nameEn.includes('raised'))
+            return 'raised';
+          // 단열 보드형 — 직사각 보드
+          if (n.includes('단열') || n.includes('보온판') || n.includes('pf보드') || n.includes('경질우레탄') || n.includes('암면') || n.includes('그라스울') || n.includes('진공') || n.includes('퍼라이트') || n.includes('볏짚')
+              || nameEn.includes('insulation') || nameEn.includes('xps') || nameEn === 'eps' || nameEn.includes('phenolic') || nameEn.includes('rigid_urethane') || nameEn.includes('rock_wool') || nameEn.includes('glass_wool') || nameEn.includes('vacuum') || nameEn.includes('perlite') || nameEn.includes('straw'))
+            return 'board';
+          // 구조재형 — 한 판 (콘크리트, CLT, 합판, 대나무)
+          if (n.includes('콘크리트') || nameEn.includes('concrete') || nameEn === 'clt' || n.includes('합판') || nameEn === 'plywood' || n.includes('대나무') || nameEn.includes('bamboo'))
+            return 'solid';
+          // 도포/시트형 — 얇은 한 판
+          if (n.includes('에폭시') || n.includes('우레탄') || n.includes('방수') || n.includes('비닐') || n.includes('epdm') || n.includes('고무') || n.includes('코르크') || n.includes('모르타르') || n.includes('바이오'))
+            return 'coat';
+          return 'solid';
+        }
+
+        const floorMat = getFloorMat3D(matName, nameEn);
+        const pattern = !isWall ? getFloorPattern(matName, nameEn) : null;
+
+        if (isWall) {
+          const wallH = 2.0, wallW = 1.3;
+          const n = matName;
+          const ne = nameEn;
+
+          // 벽체 자재 패턴 분류
+          function getWallPattern() {
+            // 스틸스터드 / 목재스터드 — 전용 프레임
+            if (n.includes('스틸스터드') || n.includes('목재스터드') || ne === 'steel_stud' || ne === 'wood_stud')
+              return 'studframe';
+            // 유리블록 — 정사각 타일 (블록보다 먼저 체크)
+            if (n.includes('유리블록'))
+              return 'tile';
+            // 벽돌/블록형
+            if (n.includes('벽돌') || n.includes('블록') || n.includes('alc') || n.includes('대마콘크리트') ||
+                ne.includes('brick') || ne.includes('block') || ne === 'alc_internal' || ne.includes('hempcrete') || ne.includes('adobe'))
+              return 'brick';
+            // 포세린타일 — 석재형 큰 매지
+            if (n.includes('포세린') || nameEn.includes('porcelain'))
+              return 'stone';
+            // 타일형
+            if (n.includes('세라믹타일') || n.includes('점토타일') || n.includes('유리타일') || n.includes('모자이크'))
+              return 'tile';
+            // 사이딩 (가로줄)
+            if (n.includes('사이딩') || n.includes('테라코타'))
+              return 'siding';
+            // 석재형
+            if (n.includes('대리석') || n.includes('화강') || n.includes('샌드스톤') || n.includes('라임스톤') || n.includes('석재') ||
+                ne.includes('marble') || ne.includes('granite') || ne.includes('sandstone') || ne.includes('limestone'))
+              return 'stone';
+            // 미네랄울샌드위치패널 — 전용 패턴
+            if (n.includes('미네랄울샌드위치') || ne === 'sandwich_panel')
+              return 'sandwich';
+            // 석고보드 — 한 판 (매지 없음)
+            if (n.includes('석고보드') || ne === 'gypsum_board')
+              return 'solid';
+            // 코르크패널 — 패널형 매지
+            if (n.includes('코르크패널') || (n.includes('코르크') && !n.includes('단열')))
+              return 'panel';
+            // 규산칼슘보드 — 한 판 (매지 없음)
+            if (n.includes('규산칼슘') || ne.includes('calcium_silicate'))
+              return 'solid';
+            // 파티클보드 — 한 판 (매지 없음)
+            if (n.includes('파티클보드') || ne === 'particle_board')
+              return 'solid';
+            // 흡음패널 — 한 판 (매지 없음)
+            if (n.includes('흡음패널') || ne === 'acoustic_panel')
+              return 'solid';
+            // 폴리우레탄흡음재 — 한 판 (매지 없음)
+            if (n.includes('폴리우레탄흡음') || ne === 'polyurethane_acoustic')
+              return 'solid';
+            // 대나무보드 — 한 판 (매지 없음)
+            if (n.includes('대나무보드') || ne === 'bamboo_board')
+              return 'solid';
+            // 목모보드 — 한 판 (매지 없음)
+            if (n.includes('목모') || ne === 'wood_wool_board')
+              return 'solid';
+            // 단열재 — 직전이 스터드면 studfill, 아니면 solid
+            if (n.includes('그라스울') || n.includes('암면') || n.includes('양모') || n.includes('셀룰로오스') ||
+                n.includes('헴프') || n.includes('목섬유') || n.includes('볏짚') || n.includes('코르크단열') ||
+                n.includes('폴리우레탄흡음') ||
+                ne.includes('glass_wool') || ne.includes('rock_wool') || ne.includes('wool_insulation') ||
+                ne.includes('cellulose') || ne.includes('hemp') || ne.includes('wood_fiber') ||
+                ne.includes('straw') || ne.includes('cork_insulation') || ne === 'polyurethane_acoustic') {
+              // 앞뒤 레이어가 스터드인지 확인
+              const prevL = index > 0 ? selectedLayers[index - 1] : null;
+              const nextL = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+              const prevN = prevL ? (prevL.material.name || '').toLowerCase() : '';
+              const nextN = nextL ? (nextL.material.name || '').toLowerCase() : '';
+              if (prevN.includes('스틸스터드') || prevN.includes('목재스터드') ||
+                  nextN.includes('스틸스터드') || nextN.includes('목재스터드')) return 'studfill';
+              return 'solid';
+            }
+            // 단열재 (PF보드, 경질우레탄 등) — solid (면별 재질)
+            if (n.includes('pf보드') || n.includes('경질우레탄') || n.includes('단열') || n.includes('보온판') || n.includes('볏짚') ||
+                ne.includes('phenolic') || ne.includes('rigid_urethane') || ne.includes('insulation') || ne === 'xps' || ne === 'eps' ||
+                ne.includes('wool') || ne.includes('cork_insulation') || ne.includes('straw') || ne.includes('cellulose') || ne.includes('hemp'))
+              return 'solid';
+            // 패널형 (GRC, UHPC, HPL, 섬유시멘트패널, 시멘트판넬, 시멘트보드)
+            if ((n.includes('패널') || n.includes('판넬') || n.includes('보드')) &&
+                !n.includes('코르크') && !n.includes('미네랄울'))
+              return 'panel';
+            // 아연판 — 세로 이음새
+            if (n.includes('아연') && !n.includes('용융'))
+              return 'zincseam';
+            // 목재사이딩 — 사이딩(가로줄) 패턴
+            if (n.includes('목재사이딩'))
+              return 'siding';
+            // 금속 시트 (한 판 + 에지)
+            if (n.includes('알루미늄') || n.includes('동판') || n.includes('재활용알루미늄') ||
+                ne.includes('aluminum') || ne.includes('copper'))
+              return 'metalsheet';
+            // 도포형
+            if (n.includes('미장') || n.includes('페인트') || n.includes('모르타르') || n.includes('석회') ||
+                ne.includes('plaster') || ne.includes('paint') || ne.includes('mortar') || ne.includes('lime'))
+              return 'coat';
+            // 나머지 전부 solid (강판, 폴리카보네이트, 아크릴, 콘크리트, CLT, 합판, OSB, 코르크패널,
+            //   미네랄울샌드위치패널, 대나무, 단열재 등)
+            return 'solid';
+          }
+
+          const wp = getWallPattern();
+
+          // 에지 와이어프레임 헬퍼
+          function addEdges(parentMesh, geo) {
+            const edges = new THREE.EdgesGeometry(geo);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2, opacity: 0.4, transparent: true }));
+            parentMesh.add(line);
+          }
+
+          if (wp === 'brick') {
+            // 벽돌/블록 — 러닝본드, 단변 균등분할
+            const brickGroup = new THREE.Group();
+            const bH = n.includes('블록') || n.includes('alc') || n.includes('대마') || ne.includes('block') || ne.includes('alc') || ne.includes('hempcrete') || ne.includes('adobe') ? 0.2 : 0.057;
+            const bW = bH < 0.1 ? 0.19 : 0.4;
+            const gap = 0.008;
+            const cols = Math.max(1, Math.round(wallW / (bW + gap)));
+            const actualBW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (bH + gap));
+            for (let r = 0; r < rows; r++) {
+              const offset = (r % 2 === 1) ? (actualBW + gap) / 2 : 0;
+              for (let c = -1; c <= cols; c++) {
+                const z = -wallW/2 + c * (actualBW + gap) + actualBW/2 + offset;
+                const y = -wallH/2 + r * (bH + gap) + bH/2;
+                if (z - actualBW/2 > wallW/2 || z + actualBW/2 < -wallW/2) continue;
+                if (y - bH/2 > wallH/2) continue;
+                const clipL = Math.max(z - actualBW/2, -wallW/2);
+                const clipR = Math.min(z + actualBW/2, wallW/2);
+                const clipB = Math.max(y - bH/2, -wallH/2);
+                const clipT = Math.min(y + bH/2, wallH/2);
+                const cw = clipR - clipL;
+                const ch = clipT - clipB;
+                if (cw < 0.01 || ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, cw);
+                const b = new THREE.Mesh(geo, floorMat);
+                b.position.set(pos - thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                b.castShadow = true;
+                brickGroup.add(b);
+              }
+            }
+            pos -= thickness;
+            group3D.add(brickGroup);
+            layerMeshes.push(brickGroup);
+          } else if (wp === 'tile') {
+            // 타일 그리드 — 단변 균등분할
+            const tileGroup = new THREE.Group();
+            const isGlassBlock = n.includes('유리블록');
+            const tSize = n.includes('모자이크') ? 0.025 : isGlassBlock ? 0.19 : 0.3;
+            const gap = n.includes('모자이크') ? 0.003 : 0.005;
+            const cols = Math.max(1, Math.round(wallW / (tSize + gap)));
+            const actualTW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.max(1, Math.round(wallH / (isGlassBlock ? actualTW + gap : tSize + gap)));
+            const actualTH = (wallH - (rows - 1) * gap) / rows;
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const y = -wallH/2 + r * (actualTH + gap) + actualTH/2;
+                const z = -wallW/2 + c * (actualTW + gap) + actualTW/2;
+                const geo = new THREE.BoxGeometry(thickness, actualTH, actualTW);
+                const t = new THREE.Mesh(geo, floorMat);
+                t.position.set(pos - thickness/2, y, z);
+                t.castShadow = true;
+                tileGroup.add(t);
+              }
+            }
+            pos -= thickness;
+            group3D.add(tileGroup);
+            layerMeshes.push(tileGroup);
+          } else if (wp === 'siding') {
+            // 사이딩 — 높이 균등분할, 단면 대각선 (사다리꼴)
+            const sidingGroup = new THREE.Group();
+            const boardH = n.includes('테라코타') ? 0.3 : 0.18;
+            const gap = 0.005;
+            const rows = Math.max(1, Math.round(wallH / (boardH + gap)));
+            const actualBH = (wallH - (rows - 1) * gap) / rows;
+            const t = thickness;
+            const tiltOff = t * 0.7; // 하단이 상단보다 70% 두께만큼 돌출
+            for (let r = 0; r < rows; r++) {
+              const y = -wallH/2 + r * (actualBH + gap);
+              const hw = wallW / 2;
+              const x0 = pos;                // 뒷면 (벽쪽)
+              const x1 = pos - t - tiltOff;  // 하단 앞면 (더 돌출, 두꺼운쪽)
+              const x2 = pos - t;            // 상단 앞면 (얇은쪽)
+              // 사다리꼴 단면 x 전폭 wallW — BufferGeometry
+              const geo = new THREE.BufferGeometry();
+              // 8개 꼭짓점: 하단뒤, 하단앞, 상단앞(돌출), 상단뒤 × z양쪽
+              const verts = new Float32Array([
+                x0, y, -hw,             // 0: 하단뒤좌
+                x1, y, -hw,             // 1: 하단앞좌
+                x2, y+actualBH, -hw,    // 2: 상단앞좌
+                x0, y+actualBH, -hw,    // 3: 상단뒤좌
+                x0, y, hw,              // 4: 하단뒤우
+                x1, y, hw,              // 5: 하단앞우
+                x2, y+actualBH, hw,     // 6: 상단앞우
+                x0, y+actualBH, hw,     // 7: 상단뒤우
+              ]);
+              const indices = [
+                // 앞면 (기울어진 면)
+                1,5,6, 1,6,2,
+                // 뒷면
+                4,0,3, 4,3,7,
+                // 상면
+                3,2,6, 3,6,7,
+                // 하면
+                0,4,5, 0,5,1,
+                // 좌측면
+                0,1,2, 0,2,3,
+                // 우측면
+                5,4,7, 5,7,6,
+              ];
+              geo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+              geo.setIndex(indices);
+              geo.computeVertexNormals();
+              const s = new THREE.Mesh(geo, floorMat);
+              s.castShadow = true;
+              sidingGroup.add(s);
+            }
+            pos -= thickness;
+            group3D.add(sidingGroup);
+            layerMeshes.push(sidingGroup);
+          } else if (wp === 'stone') {
+            // 석재 — 러닝본드 1/3 오프셋, 단변 균등분할
+            const stoneGroup = new THREE.Group();
+            const sH = 0.4, sW = 0.6, gap = 0.004;
+            const cols = Math.max(1, Math.round(wallW / (sW + gap)));
+            const actualSW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (sH + gap));
+            for (let r = 0; r < rows; r++) {
+              const offset = (r % 2 === 1) ? (actualSW + gap) / 3 : 0;
+              for (let c = -1; c <= cols; c++) {
+                const y = -wallH/2 + r * (sH + gap) + sH/2;
+                const z = -wallW/2 + c * (actualSW + gap) + actualSW/2 + offset;
+                const clipL = Math.max(z - actualSW/2, -wallW/2);
+                const clipR = Math.min(z + actualSW/2, wallW/2);
+                const clipB = Math.max(y - sH/2, -wallH/2);
+                const clipT = Math.min(y + sH/2, wallH/2);
+                const cw = clipR - clipL;
+                const ch = clipT - clipB;
+                if (cw < 0.01 || ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, cw);
+                const s = new THREE.Mesh(geo, floorMat);
+                s.position.set(pos - thickness/2, (clipB + clipT)/2, (clipL + clipR)/2);
+                s.castShadow = true;
+                stoneGroup.add(s);
+              }
+            }
+            pos -= thickness;
+            group3D.add(stoneGroup);
+            layerMeshes.push(stoneGroup);
+          } else if (wp === 'panel') {
+            // 패널형 — 단변 균등분할
+            const panelGroup = new THREE.Group();
+            const pH = 1.0, pW = 0.6, gap = 0.006;
+            const cols = Math.max(1, Math.round(wallW / (pW + gap)));
+            const actualPW = (wallW - (cols - 1) * gap) / cols;
+            const rows = Math.ceil(wallH / (pH + gap));
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                const y = -wallH/2 + r * (pH + gap) + pH/2;
+                const z = -wallW/2 + c * (actualPW + gap) + actualPW/2;
+                const clipB = Math.max(y - pH/2, -wallH/2);
+                const clipT = Math.min(y + pH/2, wallH/2);
+                const ch = clipT - clipB;
+                if (ch < 0.01) continue;
+                const geo = new THREE.BoxGeometry(thickness, ch, actualPW);
+                const p = new THREE.Mesh(geo, floorMat);
+                p.position.set(pos - thickness/2, (clipB + clipT)/2, z);
+                p.castShadow = true;
+                panelGroup.add(p);
+              }
+            }
+            pos -= thickness;
+            group3D.add(panelGroup);
+            layerMeshes.push(panelGroup);
+          } else if (wp === 'woodboard') {
+            // 목재 세로 널빤지 — 단변 균등분할
+            const woodGroup = new THREE.Group();
+            const bW = 0.15;
+            const gap = 0.004;
+            const cols = Math.max(1, Math.round(wallW / (bW + gap)));
+            const actualBW = (wallW - (cols - 1) * gap) / cols;
+            for (let c = 0; c < cols; c++) {
+              const z = -wallW/2 + c * (actualBW + gap) + actualBW/2;
+              const geo = new THREE.BoxGeometry(thickness, wallH, actualBW);
+              const b = new THREE.Mesh(geo, floorMat);
+              b.position.set(pos - thickness/2, 0, z);
+              b.castShadow = true;
+              woodGroup.add(b);
+            }
+            pos -= thickness;
+            group3D.add(woodGroup);
+            layerMeshes.push(woodGroup);
+          } else if (wp === 'zincseam') {
+            // 아연판 — 징크패널 세로 이음새, 단변 균등분할
+            const zincGroup = new THREE.Group();
+            const seamW = 0.43;
+            const seamGap = 0.003;
+            const cols = Math.max(1, Math.round(wallW / (seamW + seamGap)));
+            const actualSeamW = (wallW - (cols - 1) * seamGap) / cols;
+            for (let c = 0; c < cols; c++) {
+              const z = -wallW/2 + c * (actualSeamW + seamGap) + actualSeamW/2;
+              const geo = new THREE.BoxGeometry(thickness, wallH, actualSeamW);
+              const panel = new THREE.Mesh(geo, floorMat);
+              panel.position.set(pos - thickness/2, 0, z);
+              panel.castShadow = true;
+              zincGroup.add(panel);
+              if (c < cols - 1) {
+                const seamZ = z + actualSeamW/2 + seamGap/2;
+                const seamGeo = new THREE.PlaneGeometry(wallH, thickness * 1.2);
+                const seamMat = new THREE.MeshBasicMaterial({ color: 0x606060, side: THREE.DoubleSide });
+                const seam = new THREE.Mesh(seamGeo, seamMat);
+                seam.rotation.z = Math.PI / 2;
+                seam.rotation.y = Math.PI / 2;
+                seam.position.set(pos - thickness/2, 0, seamZ);
+                zincGroup.add(seam);
+              }
+            }
+            pos -= thickness;
+            group3D.add(zincGroup);
+            layerMeshes.push(zincGroup);
+          } else if (wp === 'sandwich') {
+            // 미네랄울샌드위치패널 — 외판 + 단열재 + 내판
+            const sandGroup = new THREE.Group();
+            const skinT = 0.003; // 내외판 3mm
+            const coreT = thickness - skinT * 2; // 중간 단열재
+            const seamW = 0.15; // 매지 간격
+            const seamT = 0.001; // 매지 두께
+            // 금속판 재질 (아이보리 매트)
+            const skinMat = new THREE.MeshStandardMaterial({ color: 0xf0ead8, roughness: 0.65, metalness: 0.35 });
+            // 황토색 단열재 재질
+            const coreMat = new THREE.MeshStandardMaterial({ color: 0xd4a850, roughness: 0.9, metalness: 0.0 });
+            // 매지 재질
+            const seamMat = new THREE.MeshBasicMaterial({ color: 0x404040, side: THREE.DoubleSide });
+
+            // 외판 (바깥, +X 쪽)
+            const outerSkin = new THREE.Mesh(
+              new THREE.BoxGeometry(skinT, wallH, wallW), skinMat
+            );
+            outerSkin.position.set(pos - skinT/2, 0, 0);
+            outerSkin.castShadow = true;
+            sandGroup.add(outerSkin);
+
+            // 외판 세로 매지
+            const cols = Math.floor(wallW / seamW);
+            for (let c = 1; c < cols; c++) {
+              const z = -wallW/2 + c * seamW;
+              const sg = new THREE.PlaneGeometry(wallH, skinT * 2);
+              const sm = new THREE.Mesh(sg, seamMat);
+              sm.rotation.z = Math.PI / 2;
+              sm.rotation.y = Math.PI / 2;
+              sm.position.set(pos - skinT/2, 0, z);
+              sandGroup.add(sm);
+            }
+
+            // 중간 단열재
+            const core = new THREE.Mesh(
+              new THREE.BoxGeometry(coreT, wallH, wallW), coreMat
+            );
+            core.position.set(pos - skinT - coreT/2, 0, 0);
+            core.castShadow = true;
+            sandGroup.add(core);
+
+            // 내판 (안쪽, -X 쪽)
+            const innerSkin = new THREE.Mesh(
+              new THREE.BoxGeometry(skinT, wallH, wallW), skinMat
+            );
+            innerSkin.position.set(pos - skinT - coreT - skinT/2, 0, 0);
+            innerSkin.castShadow = true;
+            sandGroup.add(innerSkin);
+
+            // 내판 세로 매지
+            for (let c = 1; c < cols; c++) {
+              const z = -wallW/2 + c * seamW;
+              const sg = new THREE.PlaneGeometry(wallH, skinT * 2);
+              const sm = new THREE.Mesh(sg, seamMat);
+              sm.rotation.z = Math.PI / 2;
+              sm.rotation.y = Math.PI / 2;
+              sm.position.set(pos - skinT - coreT - skinT/2, 0, z);
+              sandGroup.add(sm);
+            }
+
+            pos -= thickness;
+            group3D.add(sandGroup);
+            layerMeshes.push(sandGroup);
+          } else if (wp === 'studframe') {
+            // 스틸스터드/목재스터드 — C채널 수직 프레임
+            // 다음 레이어(단열재)의 두께에 따라 스터드 깊이 결정
+            const studGroup = new THREE.Group();
+            const isSteel = n.includes('스틸') || ne === 'steel_stud';
+            const studMat = floorMat;
+            const studW = isSteel ? 0.04 : 0.038;   // 스터드 폭 (플랜지)
+            // 다음 레이어 단열재 두께 찾기
+            let nextInsulThick = 0;
+            for (let ni = index + 1; ni < selectedLayers.length; ni++) {
+              const nm = (selectedLayers[ni].material.name || '').toLowerCase();
+              const nen = (selectedLayers[ni].material.nameEn || '').toLowerCase();
+              if (nm.includes('단열') || nm.includes('그라스울') || nm.includes('암면') || nm.includes('볏짚') ||
+                  nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('양모') || nm.includes('목섬유') ||
+                  nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                  nen.includes('insulation') || nen.includes('glass_wool') || nen.includes('rock_wool') ||
+                  nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                  nen.includes('wool') || nen.includes('wood_fiber') || nen.includes('polyurethane_acoustic')) {
+                nextInsulThick = selectedLayers[ni].thickness / 1000;
+                break;
+              }
+            }
+            // 앞뒤 레이어에서 단열재 두께 찾기 (순서 무관)
+            if (nextInsulThick === 0) {
+              for (let ni = index - 1; ni >= 0; ni--) {
+                const nm = (selectedLayers[ni].material.name || '').toLowerCase();
+                const nen = (selectedLayers[ni].material.nameEn || '').toLowerCase();
+                if (nm.includes('단열') || nm.includes('그라스울') || nm.includes('암면') || nm.includes('볏짚') ||
+                    nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('양모') || nm.includes('목섬유') ||
+                    nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                    nen.includes('insulation') || nen.includes('glass_wool') || nen.includes('rock_wool') ||
+                    nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                    nen.includes('wool') || nen.includes('wood_fiber') || nen.includes('polyurethane_acoustic')) {
+                  nextInsulThick = selectedLayers[ni].thickness / 1000;
+                  break;
+                }
+                break; // 직전만 체크
+              }
+            }
+            const studD = nextInsulThick > 0 ? nextInsulThick : (isSteel ? 0.075 : 0.089);
+            const studT = isSteel ? 0.001 : studW;  // 두께 (강재 얇음 / 목재=폭과 동일)
+            const runnerH = isSteel ? 0.03 : 0.038; // 러너 높이
+            const braceH = isSteel ? 0.025 : 0.03;  // 보강채널 높이
+            const studSpacing = 0.4; // 400mm 간격
+            const studCount = Math.max(2, Math.round(wallW / studSpacing) + 1);
+            const actualSpacing = wallW / (studCount - 1);
+            // 직전이 studfill이면 그 위치에 맞추기 (단열재가 먼저 온 경우)
+            const prevIsInsul = index > 0 && (() => {
+              const pm = (selectedLayers[index-1].material.name||'').toLowerCase();
+              const pe = (selectedLayers[index-1].material.nameEn||'').toLowerCase();
+              return pm.includes('그라스울') || pm.includes('암면') || pm.includes('양모') ||
+                pm.includes('셀룰로오스') || pm.includes('헴프') || pm.includes('목섬유') ||
+                pm.includes('볏짚') || pm.includes('코르크단열') || pm.includes('폴리우레탄흡음') ||
+                pe.includes('glass_wool') || pe.includes('rock_wool') || pe.includes('insulation') ||
+                pe.includes('straw') || pe.includes('cellulose') || pe.includes('hemp') ||
+                pe.includes('wool') || pe.includes('wood_fiber') || pe === 'polyurethane_acoustic';
+            })();
+            const cx = prevIsInsul ? pos + studD / 2 : pos - studD / 2;
+
+            // 수직 스터드 (C채널 또는 각재)
+            for (let i = 0; i < studCount; i++) {
+              const z = -wallW / 2 + i * actualSpacing;
+              if (isSteel) {
+                // C채널: 웹(뒷판) + 플랜지 2개
+                // 웹
+                const web = new THREE.Mesh(
+                  new THREE.BoxGeometry(studT, wallH - runnerH * 2, studW), studMat
+                );
+                web.position.set(cx - studD/2 + studT/2, 0, z);
+                web.castShadow = true;
+                studGroup.add(web);
+                // 앞 플랜지
+                const f1 = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studT), studMat
+                );
+                f1.position.set(cx, 0, z + studW/2 - studT/2);
+                f1.castShadow = true;
+                studGroup.add(f1);
+                // 뒤 플랜지
+                const f2 = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studT), studMat
+                );
+                f2.position.set(cx, 0, z - studW/2 + studT/2);
+                f2.castShadow = true;
+                studGroup.add(f2);
+              } else {
+                // 목재: 단순 각재
+                const stud = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studW), studMat
+                );
+                stud.position.set(cx, 0, z);
+                stud.castShadow = true;
+                studGroup.add(stud);
+              }
+            }
+
+            // 상부 러너 (U채널 또는 깔도리)
+            const topRunner = new THREE.Mesh(
+              new THREE.BoxGeometry(studD, runnerH, wallW), studMat
+            );
+            topRunner.position.set(cx, wallH/2 - runnerH/2, 0);
+            topRunner.castShadow = true;
+            studGroup.add(topRunner);
+
+            // 하부 러너
+            const botRunner = new THREE.Mesh(
+              new THREE.BoxGeometry(studD, runnerH, wallW), studMat
+            );
+            botRunner.position.set(cx, -wallH/2 + runnerH/2, 0);
+            botRunner.castShadow = true;
+            studGroup.add(botRunner);
+
+            // 중간 보강채널
+            const brace = new THREE.Mesh(
+              new THREE.BoxGeometry(studD * 0.6, braceH, wallW), studMat
+            );
+            brace.position.set(cx, 0, 0);
+            brace.castShadow = true;
+            studGroup.add(brace);
+
+            // 인접 단열재가 있으면 pos를 여기서 빼지 않음 (studfill에서 통합)
+            const prevL2 = index > 0 ? selectedLayers[index - 1] : null;
+            const nextL = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+            const prevN2 = prevL2 ? (prevL2.material.name || '').toLowerCase() : '';
+            const nextN = nextL ? (nextL.material.name || '').toLowerCase() : '';
+            const nextNe = nextL ? (nextL.material.nameEn || '').toLowerCase() : '';
+            const prevNe2 = prevL2 ? (prevL2.material.nameEn || '').toLowerCase() : '';
+            function isInsul(nm, nen) {
+              return nm.includes('그라스울') || nm.includes('암면') || nm.includes('양모') ||
+                nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('목섬유') ||
+                nm.includes('볏짚') || nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                nen.includes('glass_wool') || nen.includes('rock_wool') || nen.includes('insulation') ||
+                nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                nen.includes('wool') || nen.includes('wood_fiber') || nen === 'polyurethane_acoustic';
+            }
+            const hasNextInsul = isInsul(nextN, nextNe);
+            const hasPrevInsul = isInsul(prevN2, prevNe2);
+            if (!hasNextInsul && !hasPrevInsul) pos -= studD;
+            // 직전이 단열재면 이미 pos가 빠져있으므로 추가로 빼지 않음
+            group3D.add(studGroup);
+            layerMeshes.push(studGroup);
+          } else if (wp === 'studfill') {
+            // 단열재 — 인접 스터드 프레임 사이 충진 (앞뒤 모두 체크)
+            const fillGroup = new THREE.Group();
+            const prevLayer = index > 0 ? selectedLayers[index - 1] : null;
+            const nextLayer = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+            const prevName = prevLayer ? (prevLayer.material.name || '').toLowerCase() : '';
+            const nextName = nextLayer ? (nextLayer.material.name || '').toLowerCase() : '';
+            const isStudPrev = prevName.includes('스틸스터드') || prevName.includes('목재스터드');
+            const isStudNext = nextName.includes('스틸스터드') || nextName.includes('목재스터드');
+            const hasStud = isStudPrev || isStudNext;
+            const studName = isStudPrev ? prevName : nextName;
+            const isSteel = studName.includes('스틸');
+            const fStudD = thickness; // 단열재 두께 = 스터드 깊이
+            const fStudW = hasStud ? (isSteel ? 0.04 : 0.038) : 0;
+            const fRunnerH = hasStud ? (isSteel ? 0.03 : 0.038) : 0;
+            const fStudSpacing = 0.4;
+            const fStudCount = hasStud ? Math.max(2, Math.round(wallW / fStudSpacing) + 1) : 0;
+            const fActualSpacing = hasStud ? wallW / (fStudCount - 1) : wallW;
+
+            if (hasStud && fStudCount > 1) {
+              // 스터드 사이사이에 단열재 블록 배치 (보강채널로 상하 분리)
+              const fBraceH = isSteel ? 0.025 : 0.03;
+              const fillHTotal = wallH - fRunnerH * 2;
+              const fillHUpper = (fillHTotal - fBraceH) / 2;
+              const fillHLower = (fillHTotal - fBraceH) / 2;
+              const fillX = pos - fStudD / 2;
+              for (let i = 0; i < fStudCount - 1; i++) {
+                const z1 = -wallW / 2 + i * fActualSpacing + fStudW / 2;
+                const z2 = -wallW / 2 + (i + 1) * fActualSpacing - fStudW / 2;
+                const fillW = z2 - z1;
+                if (fillW < 0.01) continue;
+                // 상부 블록
+                const geoUp = new THREE.BoxGeometry(fStudD * 0.95, fillHUpper, fillW);
+                const fillUp = new THREE.Mesh(geoUp, floorMat);
+                fillUp.position.set(fillX, fBraceH / 2 + fillHUpper / 2, (z1 + z2) / 2);
+                fillUp.castShadow = true;
+                fillGroup.add(fillUp);
+                // 하부 블록
+                const geoDown = new THREE.BoxGeometry(fStudD * 0.95, fillHLower, fillW);
+                const fillDown = new THREE.Mesh(geoDown, floorMat);
+                fillDown.position.set(fillX, -fBraceH / 2 - fillHLower / 2, (z1 + z2) / 2);
+                fillDown.castShadow = true;
+                fillGroup.add(fillDown);
+              }
+              pos -= thickness;
+            } else {
+              // 스터드 없으면 일반 한 판
+              geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+              const fill = new THREE.Mesh(geometry, floorMat);
+              fill.position.x = pos - thickness / 2;
+              fill.castShadow = true;
+              fillGroup.add(fill);
+              pos -= thickness;
+            }
+            group3D.add(fillGroup);
+            layerMeshes.push(fillGroup);
+          } else if (wp === 'metalsheet') {
+            // 금속 시트 — 한 판 + 에지
+            geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+            mesh = new THREE.Mesh(geometry, floorMat);
+            mesh.position.x = pos - thickness / 2;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            addEdges(mesh, geometry);
+            pos -= thickness;
+            group3D.add(mesh);
+            layerMeshes.push(mesh);
+          } else if (n.includes('폴리우레탄흡음') || ne === 'polyurethane_acoustic') {
+            // 폴리우레탄흡음재 — 에그크레이트 울퉁불퉁 표면
+            const foamGroup = new THREE.Group();
+            // 베이스 판
+            const baseT = thickness * 0.4;
+            const baseGeo = new THREE.BoxGeometry(baseT, wallH, wallW);
+            const baseMesh = new THREE.Mesh(baseGeo, floorMat);
+            baseMesh.position.set(pos - thickness + baseT/2, 0, 0);
+            baseMesh.castShadow = true;
+            foamGroup.add(baseMesh);
+            // 반구 돌기 (앞면에 에그크레이트 패턴)
+            const bumpR = 0.04;
+            const bumpSpacing = bumpR * 2.2;
+            const bumpX = pos - thickness + baseT;
+            for (let y = -wallH/2 + bumpSpacing; y < wallH/2; y += bumpSpacing) {
+              for (let z = -wallW/2 + bumpSpacing; z < wallW/2; z += bumpSpacing) {
+                const sphere = new THREE.Mesh(
+                  new THREE.SphereGeometry(bumpR, 8, 6, 0, Math.PI),
+                  floorMat
+                );
+                sphere.rotation.y = Math.PI / 2;
+                sphere.rotation.x = Math.PI;
+                sphere.position.set(bumpX + bumpR * 0.3, y, z);
+                foamGroup.add(sphere);
+              }
+            }
+            pos -= thickness;
+            group3D.add(foamGroup);
+            layerMeshes.push(foamGroup);
+          } else {
+            // solid, coat, insulation 등 — 한 판 + 에지
+            const isPFOrUrethane = n.includes('pf보드') || n.includes('경질우레탄') ||
+              ne.includes('phenolic') || ne.includes('rigid_urethane');
+            geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+            if (isPFOrUrethane) {
+              // 전후면(+X,-X): 은박/부직포(floorMat), 나머지 4면: 노란색 단열재
+              const sideTexW = insulYellowTex(); sideTexW.repeat.set(2,4);
+              const sideMat = new THREE.MeshStandardMaterial({ map: sideTexW, roughness: 0.85, metalness: 0.0 });
+              mesh = new THREE.Mesh(geometry, [floorMat, floorMat, sideMat, sideMat, sideMat, sideMat]);
+            } else {
+              mesh = new THREE.Mesh(geometry, floorMat);
+            }
+            mesh.position.x = pos - thickness / 2;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            addEdges(mesh, geometry);
+            pos -= thickness;
+            group3D.add(mesh);
+            layerMeshes.push(mesh);
+          }
+        }
+        // 판재형 (마루, 데크) — 가로 널빤지 + 줄눈
+        else if (pattern === 'plank') {
+          const plankGroup = new THREE.Group();
+          const plankW = 0.15;  // 널빤지 폭
+          const gap = 0.003;
+          const count = Math.ceil(floorD / (plankW + gap));
+          const offset = (floorD - count * (plankW + gap) + gap) / 2;
+          for (let i = 0; i < count; i++) {
+            const pw = (i === count - 1) ? Math.min(plankW, floorD - offset - i * (plankW + gap)) : plankW;
+            if (pw < 0.01) continue;
+            const plank = new THREE.Mesh(new THREE.BoxGeometry(floorW, thickness, pw), floorMat);
+            const z = -floorD/2 + offset + i * (plankW + gap) + pw/2;
+            plank.position.set(0, pos + thickness/2, z);
+            plank.castShadow = true;
+            plank.receiveShadow = true;
+            plankGroup.add(plank);
+          }
+          group3D.add(plankGroup);
+          layerMeshes.push(plankGroup);
+          pos += thickness;
+        }
+        // 타일형 — 단변 등분, 장변은 floorW 채움
+        else if (pattern === 'tile') {
+          const tileGroup = new THREE.Group();
+          const tGap = 0.004;
+          const approxSize = matName.includes('카펫') ? 0.5 : 0.3;
+          const rowCount = Math.round(floorD / (approxSize + tGap));
+          const tSize = (floorD - tGap * (rowCount - 1)) / rowCount;
+          const colCount = Math.ceil(floorW / (tSize + tGap));
+          for (let r = 0; r < rowCount; r++) {
+            for (let c = 0; c < colCount; c++) {
+              const cx = -floorW/2 + c * (tSize + tGap) + tSize/2;
+              const z = -floorD/2 + r * (tSize + tGap) + tSize/2;
+              const left = Math.max(cx - tSize/2, -floorW/2);
+              const right = Math.min(cx + tSize/2, floorW/2);
+              const tw = right - left;
+              if (tw < 0.01) continue;
+              const tile = new THREE.Mesh(new THREE.BoxGeometry(tw, thickness, tSize), floorMat);
+              tile.position.set((left+right)/2, pos + thickness/2, z);
+              tile.castShadow = true;
+              tile.receiveShadow = true;
+              tileGroup.add(tile);
+            }
+          }
+          group3D.add(tileGroup);
+          layerMeshes.push(tileGroup);
+          pos += thickness;
+        }
+        // 석재 슬라브형 — 단변 등분, 장변은 floorW 채움
+        else if (pattern === 'slab') {
+          const slabGroup = new THREE.Group();
+          const sGap = 0.003;
+          const approxS = 0.4;
+          const rowCount = Math.round(floorD / (approxS + sGap));
+          const sSize = (floorD - sGap * (rowCount - 1)) / rowCount;
+          const colCount = Math.ceil(floorW / (sSize + sGap));
+          for (let r = 0; r < rowCount; r++) {
+            for (let c = 0; c < colCount; c++) {
+              const cx = -floorW/2 + c * (sSize + sGap) + sSize/2;
+              const z = -floorD/2 + r * (sSize + sGap) + sSize/2;
+              const left = Math.max(cx - sSize/2, -floorW/2);
+              const right = Math.min(cx + sSize/2, floorW/2);
+              const tw = right - left;
+              if (tw < 0.01) continue;
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(tw, thickness, sSize), floorMat);
+              slab.position.set((left+right)/2, pos + thickness/2, z);
+              slab.castShadow = true;
+              slab.receiveShadow = true;
+              slabGroup.add(slab);
+            }
+          }
+          group3D.add(slabGroup);
+          layerMeshes.push(slabGroup);
+          pos += thickness;
+        }
+        // 이중바닥재 — 패널 + 지지대
+        else if (pattern === 'raised') {
+          const rGroup = new THREE.Group();
+          const pedH = 0.1;  // 지지대 높이 100mm
+          const pGap = 0.006, panelThick = thickness * 0.6;
+          // 단변 등분, 장변은 floorW 채움
+          const approxPanel = 0.58;
+          const rowCount = Math.round(floorD / (approxPanel + pGap));
+          const panelSize = (floorD - pGap * (rowCount - 1)) / rowCount;
+          const colCount = Math.ceil(floorW / (panelSize + pGap));
+          // 지지대 (베이스 + 기둥 + 헤드)
+          const pedMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.3, metalness: 0.7 });
+          for (let r = 0; r <= rowCount; r++) {
+            for (let c = 0; c <= colCount; c++) {
+              const x = Math.min(-floorW/2 + c * (panelSize + pGap), floorW/2);
+              const z = -floorD/2 + Math.min(r, rowCount - 1) * (panelSize + pGap) + (r === rowCount ? panelSize : 0);
+              // 베이스 플레이트
+              const base = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.028, 0.008, 12), pedMat);
+              base.position.set(x, pos + 0.004, z);
+              rGroup.add(base);
+              // 기둥 (나사봉)
+              const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, pedH - 0.02, 8), pedMat);
+              shaft.position.set(x, pos + 0.008 + (pedH - 0.02)/2, z);
+              rGroup.add(shaft);
+              // 헤드 플레이트
+              const head = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.022, 0.012, 12), pedMat);
+              head.position.set(x, pos + pedH - 0.006, z);
+              rGroup.add(head);
+            }
+          }
+          // 패널
+          for (let r = 0; r < rowCount; r++) {
+            for (let c = 0; c < colCount; c++) {
+              const cx = -floorW/2 + c * (panelSize + pGap) + panelSize/2;
+              const z = -floorD/2 + r * (panelSize + pGap) + panelSize/2;
+              const left = Math.max(cx - panelSize/2, -floorW/2);
+              const right = Math.min(cx + panelSize/2, floorW/2);
+              const tw = right - left;
+              if (tw < 0.01) continue;
+              const panel = new THREE.Mesh(new THREE.BoxGeometry(tw, panelThick, panelSize), floorMat);
+              panel.position.set((left+right)/2, pos + pedH + panelThick/2, z);
+              panel.castShadow = true;
+              rGroup.add(panel);
+            }
+          }
+          group3D.add(rGroup);
+          layerMeshes.push(rGroup);
+          pos += pedH + panelThick;
+        }
+        // 단열재 — 한 판 (그리드 없음)
+        else if (pattern === 'board') {
+          const isPFOrUrethane = matName.includes('pf보드') || matName.includes('경질우레탄') ||
+            nameEn.includes('phenolic') || nameEn.includes('rigid_urethane');
+          if (isPFOrUrethane) {
+            // 상하면: 은박/부직포(floorMat), 측면 4면: 노란색 단열재
+            const sideTexY = insulYellowTex(); sideTexY.repeat.set(4,1);
+            const sideMat = new THREE.MeshStandardMaterial({ map: sideTexY, roughness: 0.85, metalness: 0.0 });
+            // BoxGeometry 면 순서: +X, -X, +Y, -Y, +Z, -Z
+            const mats = [sideMat, sideMat, floorMat, floorMat, sideMat, sideMat];
+            geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
+            mesh = new THREE.Mesh(geometry, mats);
+          } else {
+            geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
+            mesh = new THREE.Mesh(geometry, floorMat);
+          }
+          mesh.position.y = pos + thickness / 2;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+
+          const edges = new THREE.EdgesGeometry(geometry);
+          const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2, opacity: 0.4, transparent: true }));
+          mesh.add(line);
+
+          pos += thickness;
+          group3D.add(mesh);
+          layerMeshes.push(mesh);
+        }
+        // 도포/시트형 & 구조체형 — 한 판
+        else {
+          geometry = new THREE.BoxGeometry(floorW, thickness, floorD);
+          mesh = new THREE.Mesh(geometry, floorMat);
+          mesh.position.y = pos + thickness / 2;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+
+          const edges = new THREE.EdgesGeometry(geometry);
+          const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2, opacity: 0.4, transparent: true }));
+          mesh.add(line);
+
+          pos += thickness;
+          group3D.add(mesh);
+          layerMeshes.push(mesh);
+        }
+      });
+
+      // 전체 중심 맞추기
+      const totalSize = isWall ? wallTotalThickness : pos;
+      layerMeshes.forEach(mesh => {
+        if (isWall) {
+          mesh.position.x -= totalSize / 2;
+        } else {
+          mesh.position.y -= totalSize / 2;
+        }
+      });
+
+      // explode용 원래 위치 저장
+      explodeProgress = 0;
+      layerOriginalY = layerMeshes.map(mesh => isWall ? mesh.position.x : mesh.position.y);
+
+      // 그룹을 scene에 추가
+      scene3D.add(group3D);
+    }
+
+    // Mouse drag for rotation
+    function onMouseDown(e) {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+
+      const deltaX = e.clientX - previousMousePosition.x;
+      const deltaY = e.clientY - previousMousePosition.y;
+
+      // Camera orbit rotation
+      camRotY -= deltaX * 0.01;
+      camRotX += deltaY * 0.01;
+      camRotX = Math.max(-1, Math.min(1, camRotX));
+
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+    }
+
+    // Mouse wheel zoom
+    function onWheel(e) {
+      e.preventDefault();
+      camRadius += e.deltaY * 0.01;
+      camRadius = Math.max(1, Math.min(10, camRadius));
+    }
+
+    // Category filter rendering
+    function renderCategoryFilters() {
+      const filterContainer = document.querySelector('.material-filters');
+
+      // Ceiling: All/Structural/Finishing
+      if (structureType === 'ceiling') {
+        filterContainer.innerHTML = `
+          <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
+            All
+          </button>
+          <button class="filter-btn" onclick="filterMaterials('Structural')" data-filter="Structural">
+            Structural
+          </button>
+          <button class="filter-btn" onclick="filterMaterials('Finishing')" data-filter="Finishing">
+            Finishing
+          </button>
+        `;
+      }
+      // Window: All only
+      if (structureType === 'window') {
+        filterContainer.innerHTML = `
+          <button class="filter-btn active" onclick="filterMaterials('all')" data-filter="all">
+            All
+          </button>
+        `;
+      }
+      // Default filters are already in HTML
+    }
+
+    // Initialization
+    function init() {
+      materials = KOREAN_EPD[structureType]?.materials || [];
+
+      // Probe image extensions (png/jpg)
+      materials.forEach(m => { if (m.nameEn) probeImageExt(m.nameEn); });
+
+      // Set default assembly name
+      const krName = STRUCTURE_NAME_KR[structureType] || structureType;
+      document.getElementById('assemblyName').value = krName + '01';
+
+      // Set navigation active state
+      updateNavigation();
+
+      // Render category filters
+      renderCategoryFilters();
+
+      // Update filter button visibility
+      updateFilterButtons();
+
+      // Initialize 3D
+      init3DPreview();
+
+      renderPyramid();
+    }
+
+    // Show/hide filter buttons based on structure type
+    function updateFilterButtons() {
+      const hideFilters = {
+        ceiling: ['단열재', '방수재']
+      };
+
+      const filtersToHide = hideFilters[structureType] || [];
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.getAttribute('data-filter');
+        if (filtersToHide.includes(filter)) {
+          btn.style.display = 'none';
+        } else {
+          btn.style.display = '';
+        }
+      });
+    }
+
+    // Update navigation active state
+    function updateNavigation() {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const btnType = btn.getAttribute('data-type');
+        if (btnType === structureType) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Pyramid rendering (Denmark absolute value based)
+    function renderPyramid() {
+      const container = document.getElementById('pyramidTiles');
+      const pyramidStage = document.querySelector('.pyramid-stage');
+
+      // Apply category filter
+      let filtered = materials;
+      if (currentFilter !== 'all') {
+        filtered = materials.filter(m => {
+          if (currentFilter === 'Structural') {
+            return m.categoryName === 'Structural';
+          } else if (currentFilter === 'Insulation') {
+            return m.categoryName.includes('Insulation');
+          } else if (currentFilter === 'Finishing') {
+            return ['Finishing', 'Exterior', 'Roofing', 'Ceiling', 'Hanger'].includes(m.categoryName);
+          } else if (currentFilter === 'Waterproof') {
+            return m.categoryName.includes('Waterproof');
+          } else if (currentFilter === 'Frame') {
+            return m.categoryName === 'Frame';
+          } else if (currentFilter === 'Glass') {
+            return m.categoryName === 'Glass';
+          }
+          return m.categoryName === currentFilter;
+        });
+      }
+
+      // Sort by GWP
+      filtered.sort((a, b) => b.gwp - a.gwp); // Highest first
+
+      // Maintain empty pyramid structure even without materials
+      const showEmptyMessage = filtered.length === 0;
+
+      // Row slot configuration
+      const rowSlotCounts = structureType === 'floor'
+        ? [1, 2, 3, 5, 7, 8, 10, 11, 13, 14, 16]          // 11 rows
+        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];          // 11 rows (external/internal wall)
+
+      // m2 unit check (ceiling, window)
+      const isM2Unit = (structureType === 'ceiling' || structureType === 'window');
+
+      let html = '';
+
+      if (isM2Unit) {
+        // === Ceiling/Window: sequential placement (no Level groups) ===
+        const filteredSetM2 = new Set(filtered.map(m => m.id));
+        const allSorted = [...materials].sort((a, b) => b.gwp - a.gwp);
+        let materialIndex = 0;
+        rowSlotCounts.forEach((slotCount, rowIndex) => {
+          const rowNumber = rowIndex + 1;
+          let level;
+          if (rowNumber <= 2) level = 1;
+          else if (rowNumber <= 5) level = 2;
+          else if (rowNumber <= 7) level = 3;
+          else if (rowNumber <= 9) level = 4;
+          else level = 5;
+
+          const tiles = [];
+          for (let i = 0; i < slotCount; i++) {
+            const material = allSorted[materialIndex];
+            if (material) {
+              const isVisible = filteredSetM2.has(material.id);
+              const isSelected = selectedLayers.some(l => l.material.id === material.id);
+              const imageUrl = getMaterialImageUrl(material);
+              const gwpDisplay = material.gwp < 10 ? material.gwp.toFixed(1) : (material.gwp < 0 ? '-' + formatNumber(Math.abs(material.gwp), 0) : formatNumber(material.gwp, 0));
+
+              tiles.push(`
+                <div class="tile-wrapper"${!isVisible ? ' style="visibility:hidden;"' : ''}>
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
+                       style="background-image: url('${escapeHtml(imageUrl)}')"
+                       tabindex="0"
+                       role="button"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${gwpDisplay} kgCO₂e/m²"
+                       onclick="selectMaterial('${escapeHtml(material.id)}')"
+                       onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                       data-id="${escapeHtml(material.id)}">
+                    <div class="gwp-badge">${gwpDisplay}</div>
+                    <div class="level-indicator"></div>
+                  </div>
+                  <div class="tile-name-below">${escapeHtml(material.name)}</div>
+                </div>
+              `);
+              materialIndex++;
+            } else {
+              tiles.push(`
+                <div class="tile-wrapper" style="visibility:hidden;">
+                  <div class="material-tile empty-slot level-${level}"></div>
+                  <div class="tile-name-below"></div>
+                </div>
+              `);
+            }
+          }
+
+          const levelLastRows = [2, 5, 7, 9];
+          const isLevelEnd = levelLastRows.includes(rowNumber);
+          const groupEndClass = isLevelEnd ? 'group-end' : '';
+
+          const rowMaxWidth = slotCount * 85 + 15;
+          html += `
+            <div class="pyramid-row level-${level} row-${rowNumber} ${groupEndClass}" style="max-width:${rowMaxWidth}px">
+              ${tiles.join('')}
+            </div>
+          `;
+        });
+      } else {
+        // === Floor/External Wall/Internal Wall: separate by GWP level ===
+
+        const levelBounds = structureType === 'floor' ? [
+          { level: 1, min: 10000, rows: [1, 2] },
+          { level: 2, min: 1000,  rows: [3, 4] },
+          { level: 3, min: 100,   rows: [5, 6, 7] },
+          { level: 4, min: 0,     rows: [8, 9] },
+          { level: 5, min: -Infinity, rows: [10, 11] },
+        ] : [
+          { level: 1, min: 10000, rows: [1, 2, 3] },
+          { level: 2, min: 1000,  rows: [4, 5] },
+          { level: 3, min: 100,   rows: [6, 7, 8] },
+          { level: 4, min: 0,     rows: [9] },
+          { level: 5, min: -Infinity, rows: [10, 11] },
+        ];
+
+        const groupBoundaryRows = structureType === 'floor' ? [2, 4, 7, 9] : [3, 5, 8, 9];
+        const carbonLabels = structureType === 'floor'
+          ? { 2: '10,000 kgCO₂e/m³', 4: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' }
+          : { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³'};
+
+        const filteredSet = new Set(filtered.map(m => m.id));
+        const levelMaterials = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+        materials.forEach(m => {
+          if (m.gwp >= 10000) levelMaterials[1].push(m);
+          else if (m.gwp >= 1000) levelMaterials[2].push(m);
+          else if (m.gwp >= 100) levelMaterials[3].push(m);
+          else if (m.gwp >= 0) levelMaterials[4].push(m);
+          else levelMaterials[5].push(m);
+        });
+        Object.values(levelMaterials).forEach(arr => arr.sort((a, b) => b.gwp - a.gwp));
+
+        const rowDataList = [];
+        for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
+          const rowNumber = rowIndex + 1;
+          const slotCount = rowSlotCounts[rowIndex];
+          const level = structureType === 'floor'
+            ? (rowNumber <= 2 ? 1 : rowNumber <= 4 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5)
+            : (rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5);
+
+          const tiles = [];
+          let hasContent = false;
+          for (let i = 0; i < slotCount; i++) {
+            const material = levelMaterials[level].shift();
+            if (material) {
+              const isVisible = filteredSet.has(material.id);
+              if (isVisible) hasContent = true;
+              const isSelected = selectedLayers.some(l => l.material.id === material.id);
+              const imageUrl = getMaterialImageUrl(material);
+
+              tiles.push(`
+                <div class="tile-wrapper"${!isVisible ? ' style="visibility:hidden;"' : ''}>
+                  <div class="material-tile ${isSelected ? 'selected' : ''} level-${level} ${getSourceClass(material.source)}"
+                       style="background-image: url('${escapeHtml(imageUrl)}')"
+                       tabindex="0"
+                       role="button"
+                       aria-label="${escapeHtml(material.name)} - GWP: ${formatNumber(material.gwp, 0)} kgCO₂e/m³"
+                       onclick="selectMaterial('${escapeHtml(material.id)}')"
+                       onkeypress="if(event.key==='Enter') selectMaterial('${escapeHtml(material.id)}')"
+                       data-id="${escapeHtml(material.id)}">
+                    <div class="gwp-badge">${material.gwp < 0 ? '-' + formatNumber(Math.abs(material.gwp), 0) : formatNumber(material.gwp, 0)}</div>
+                    <div class="level-indicator"></div>
+                  </div>
+                  <div class="tile-name-below">${escapeHtml(material.name)}</div>
+                </div>
+              `);
+            } else {
+              tiles.push(`
+                <div class="tile-wrapper" style="visibility:hidden;">
+                  <div class="material-tile empty-slot level-${level}"></div>
+                  <div class="tile-name-below"></div>
+                </div>
+              `);
+            }
+          }
+
+          const isBoundary = groupBoundaryRows.includes(rowNumber);
+          rowDataList.push({ rowNumber, slotCount, level, tiles, hasContent, isBoundary, carbonLabelText: isBoundary ? carbonLabels[rowNumber] : '' });
+        }
+
+        for (const rd of rowDataList) {
+          const rowMaxWidth = rd.slotCount * 85 + 15;
+          const labelLineWidth = (rd.level === 1 && structureType !== 'external') ? 50 : 80;
+          const carbonLabel = rd.isBoundary && rd.carbonLabelText ? `<span class="carbon-label" style="left:50%;transform:translateX(-50%);right:auto;bottom:0px;--line-w:${labelLineWidth}px">${rd.carbonLabelText}</span>` : '';
+          const tightBoundary = rd.isBoundary && rd.level === 1 && structureType !== 'external';
+          html += `
+            <div class="pyramid-row level-${rd.level} row-${rd.rowNumber} ${rd.isBoundary ? 'group-end' : ''}" style="max-width:${rowMaxWidth}px${tightBoundary ? ';padding-bottom:15px;margin-bottom:5px' : ''}">
+              ${rd.tiles.join('')}
+              ${carbonLabel}
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = html;
+
+      // Show message overlay if no materials
+      if (showEmptyMessage) {
+        container.insertAdjacentHTML('beforeend', '<div class="empty-materials-overlay">No materials in this category</div>');
+      }
+
+      // Update selection state
+      updateMaterialCards();
+
+      // Mark pyramid as loaded
+      requestAnimationFrame(() => {
+        pyramidStage.classList.add('loaded');
+      });
+    }
+
+    // Update material card selection state
+    function updateMaterialCards() {
+      document.querySelectorAll('.material-tile').forEach(tile => {
+        const materialId = tile.getAttribute('data-id');
+        const isSelected = selectedLayers.some(l => l.material.id === materialId);
+
+        if (isSelected) {
+          tile.classList.add('selected');
+        } else {
+          tile.classList.remove('selected');
+        }
+      });
+    }
+
+    // Select material
+    function selectMaterial(materialId) {
+      const material = materials.find(m => m.id === materialId);
+      if (!material) return;
+
+      // Default thickness: use from material DB if available, otherwise 100mm
+      const defaultThickness = material.thickness || 100;
+
+      // Window: select only 1 (replace)
+      if (structureType === 'window') {
+        selectedLayers = [{ material, thickness: defaultThickness, id: Date.now() }];
+      } else {
+        selectedLayers.push({
+          material: material,
+          thickness: defaultThickness,
+          id: Date.now()
+        });
+      }
+
+      updateSelectedLayers();
+      updateTotalCarbon();
+      updateMaterialCards();
+      update3DLayers();
+    }
+
+    // Update selected layers
+    function updateSelectedLayers() {
+      const container = document.getElementById('selectedLayers');
+
+      if (selectedLayers.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📦</div>
+            <p>Click a material to<br>add a layer</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = selectedLayers.map((layer, index) => {
+        const carbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, 1);
+        const matUnit = String(layer.material.unit || '').toLowerCase();
+        const isM2 = matUnit.includes('m²') || matUnit.includes('m2');
+
+        const isFixed = layer.material.hideThickness === true;
+
+        const thicknessHtml = isM2 ? `
+            <div class="thickness-input">
+              <label>Area unit (m²)</label>
+            </div>
+        ` : isFixed ? '' : `
+            <div class="thickness-input">
+              <label>Thickness:</label>
+              <input
+                type="number"
+                value="${layer.thickness}"
+                min="1"
+                step="1"
+                onchange="updateThickness(${layer.id}, this.value)"
+              >
+              <span>mm</span>
+
+            </div>
+        `;
+
+        return `
+          <div class="layer-item">
+            <div class="layer-header">
+              <span class="layer-name">${index + 1}. ${escapeHtml(layer.material.name)}${layer.material.tip ? `<span class="thickness-tip-icon">i
+                <div class="thickness-tip">${escapeHtml(layer.material.tip)}</div>
+              </span>` : ''}</span>
+              <button class="remove-btn" onclick="removeLayer(${layer.id})">✕</button>
+            </div>
+            ${thicknessHtml}
+            <div class="carbon-info">
+              Carbon: ${formatNumber(carbon, 2)} kg CO₂eq/m²
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Remove layer
+    function removeLayer(layerId) {
+      selectedLayers = selectedLayers.filter(l => l.id !== layerId);
+      updateSelectedLayers();
+      updateTotalCarbon();
+      updateMaterialCards();
+      update3DLayers();
+    }
+
+    // Update thickness
+    function updateThickness(layerId, thickness) {
+      const layer = selectedLayers.find(l => l.id === layerId);
+      if (layer) {
+        layer.thickness = parseFloat(thickness);
+        updateSelectedLayers();
+        updateTotalCarbon();
+        update3DLayers();
+      }
+    }
+
+    // Update total carbon emissions
+    function updateTotalCarbon() {
+      const total = calculator.calculateAssemblyCarbon(selectedLayers, 1);
+      document.getElementById('totalCarbon').textContent = formatNumber(total, 2);
+    }
+
+    // Filtering
+    function filterMaterials(filter) {
+      currentFilter = filter;
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+      renderPyramid();
+    }
+
+    // Clear layers
+    function clearLayers() {
+      if (selectedLayers.length === 0) return;
+
+      if (confirm('Reset all layers?')) {
+        selectedLayers = [];
+        updateSelectedLayers();
+        updateTotalCarbon();
+        updateMaterialCards();
+        update3DLayers();
+      }
+    }
+
+    // Save 3D high-resolution image
+    function save3DImage(separated) {
+      if (!renderer3D || !scene3D || !camera3D || layerMeshes.length === 0) return;
+      const scale = 4;
+      const container = document.getElementById('preview3D');
+      const w = container.clientWidth;
+      const h = 250;
+
+      const savedProgress = explodeProgress;
+      if (separated) {
+        explodeProgress = 1;
+      } else {
+        explodeProgress = 0;
+      }
+      const explodeGapSave = 0.1;
+      if (layerOriginalY.length === layerMeshes.length && layerMeshes.length > 1) {
+        const isWall = (structureType === 'external' || structureType === 'internal');
+        const isCeil = (structureType === 'ceiling');
+        const dir = isCeil ? -1 : 1;
+        layerMeshes.forEach((mesh, i) => {
+          const offset = (i - (layerMeshes.length - 1) / 2) * explodeGapSave * explodeProgress * dir;
+          if (isWall) {
+            mesh.position.x = layerOriginalY[i] + offset;
+          } else {
+            mesh.position.y = layerOriginalY[i] + offset;
+          }
+        });
+      }
+
+      // Resize to high resolution
+      renderer3D.setPixelRatio(1);
+      renderer3D.setSize(w * scale, h * scale);
+      camera3D.aspect = w / h;
+      camera3D.updateProjectionMatrix();
+      renderer3D.render(scene3D, camera3D);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = separated ? 'assembly-separated.png' : 'assembly-all.png';
+      link.href = renderer3D.domElement.toDataURL('image/png');
+      link.click();
+
+      // Restore original size + state
+      explodeProgress = savedProgress;
+      renderer3D.setPixelRatio(window.devicePixelRatio);
+      renderer3D.setSize(w, h);
+      renderer3D.render(scene3D, camera3D);
+    }
+
+    // Save assembly
+    function saveAssembly() {
+      if (selectedLayers.length === 0) {
+        alert('Please add a layer.');
+        return;
+      }
+
+      const name = document.getElementById('assemblyName').value.trim();
+      if (!name) {
+        alert('Please enter an assembly name.');
+        return;
+      }
+      if (name.length > 100) {
+        alert('Assembly name must be 100 characters or less.');
+        return;
+      }
+
+      const areaInput = document.getElementById('assemblyArea').value;
+      const area = parseFloat(areaInput);
+      if (isNaN(area) || area <= 0) {
+        alert('Area must be a number greater than 0.');
+        return;
+      }
+      if (area > 100000) {
+        alert('Area must be 100,000 m² or less.');
+        return;
+      }
+
+      const assembly = calculator.addAssembly(name, structureType, selectedLayers, area);
+
+      // Save 3D model JSON
+      if (group3D) {
+        try {
+          isSaving3D = true;
+          const savedRotX = group3D.rotation.x;
+          const savedRotY = group3D.rotation.y;
+          const savedRotZ = group3D.rotation.z;
+          group3D.rotation.set(0, 0, 0);
+
+          const isWallType = (structureType === 'external' || structureType === 'internal');
+          if (layerOriginalY && layerOriginalY.length === layerMeshes.length) {
+            layerMeshes.forEach((mesh, i) => {
+              if (isWallType) mesh.position.x = layerOriginalY[i];
+              else mesh.position.y = layerOriginalY[i];
+            });
+          }
+          explodeProgress = 0;
+          exploded = false;
+
+          const sceneJson = group3D.toJSON();
+
+          // Restore rotation
+          group3D.rotation.set(savedRotX, savedRotY, savedRotZ);
+          isSaving3D = false;
+          const stored = JSON.parse(localStorage.getItem('assemblies3D') || '{}');
+          stored[assembly.id] = sceneJson;
+          localStorage.setItem('assemblies3D', JSON.stringify(stored));
+        } catch(e) { console.warn('3D save failed:', e); }
+      }
+
+      alert('Assembly saved!');
+
+      if (confirm('Go to assembly comparison page?')) {
+        window.location.href = 'assembly-comparison-en.html';
+      } else {
+        selectedLayers = [];
+        document.getElementById('assemblyName').value = '';
+        document.getElementById('assemblyArea').value = '1';
+        updateSelectedLayers();
+        updateTotalCarbon();
+        updateMaterialCards();
+        update3DLayers();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

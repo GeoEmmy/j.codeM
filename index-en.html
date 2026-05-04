@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.codE M - Building Carbon Emission Assessment System</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .main-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .main-header h1 {
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -1.5px;
+      color: var(--dark);
+    }
+
+    .main-header h1 span {
+      color: var(--primary-color);
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 400;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .feature-tags {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .feature-tag {
+      padding: 6px 14px;
+      background: white;
+      border: 1px solid var(--light-gray);
+      border-radius: 20px;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      max-width: 1400px;
+    }
+
+    .button-box {
+      width: 250px;
+      height: 320px;
+      background: #ffffff;
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .button-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary-color);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .button-box:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+      border-color: transparent;
+    }
+
+    .button-box:hover::before {
+      transform: scaleX(1);
+    }
+
+    .canvas-container {
+      width: 230px;
+      height: 248px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .label-wrap {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg-light);
+      text-align: center;
+      border-top: 1px solid var(--light-gray);
+    }
+
+    .label {
+      color: var(--dark);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      transition: color 0.2s ease;
+    }
+
+    .button-box:hover .label {
+      color: var(--primary-color);
+    }
+
+    .label-sub {
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 400;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+
+    .quick-actions {
+      margin-top: 44px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .quick-action-btn {
+      padding: 12px 28px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .quick-action-btn:hover {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+    }
+
+    @media (max-width: 1200px) {
+      .button-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-header h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-header">
+    <img src="junglim_logo.png" alt="JUNGLIM" style="height: 16px; margin-bottom: 14px;">
+    <h1>J.codE <span>M</span></h1>
+    <p class="subtitle">JUNGLIM Carbon-oriented design Evaluation - Material</p>
+    <div class="feature-tags">
+      <span class="feature-tag">Korea EPD Based</span>
+      <span class="feature-tag">Real-time Carbon Calculation</span>
+      <span class="feature-tag">Assembly Comparison</span>
+      <span class="feature-tag">Visual Analysis</span>
+    </div>
+  </div>
+
+  <div class="button-grid">
+    <a href="material-selector-en.html?type=floor" class="button-box" data-type="floor">
+      <div class="canvas-container" id="floor-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Floor</div>
+        <div class="label-sub">Floor Finish</div>
+      </div>
+    </a>
+
+    <a href="material-selector-en.html?type=external" class="button-box" data-type="external">
+      <div class="canvas-container" id="external-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">External Wall</div>
+        <div class="label-sub">External Wall</div>
+      </div>
+    </a>
+
+    <a href="material-selector-en.html?type=internal" class="button-box" data-type="internal">
+      <div class="canvas-container" id="internal-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Internal Wall</div>
+        <div class="label-sub">Internal Wall</div>
+      </div>
+    </a>
+
+    <a href="material-selector-en.html?type=ceiling" class="button-box" data-type="ceiling">
+      <div class="canvas-container" id="ceiling-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Ceiling</div>
+        <div class="label-sub">Ceiling</div>
+      </div>
+    </a>
+
+    <a href="material-selector-en.html?type=window" class="button-box" data-type="window">
+      <div class="canvas-container" id="window-canvas"></div>
+      <div class="label-wrap">
+        <div class="label">Window</div>
+        <div class="label-sub">Window</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="quick-actions">
+    <a href="assembly-comparison-en.html" class="quick-action-btn">
+      Compare Assembly Carbon Emissions
+    </a>
+    <button class="quick-action-btn" onclick="showAbout()">
+      ℹ️ Information
+    </button>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+          integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script>
+    // Layer definitions for each structure type
+    const structures = {
+      floor: [
+        { name: 'Concrete', color: 0x636e72, height: 0.4 },
+        { name: 'Insulation', color: 0x55efc4, height: 0.25 },
+        { name: 'Mortar', color: 0xdfe6e9, height: 0.15 },
+        { name: 'Wood Floor', color: 0xb2bec3, height: 0.1 }
+      ],
+      external: [
+        { name: 'Exterior Finish', color: 0x2d3436, height: 0.1 },
+        { name: 'Insulation', color: 0x55efc4, height: 0.35 },
+        { name: 'Concrete', color: 0x636e72, height: 0.3 },
+        { name: 'Gypsum Board', color: 0xdfe6e9, height: 0.1 },
+        { name: 'Finish', color: 0xffffff, height: 0.05 }
+      ],
+      internal: [
+        { name: 'Gypsum Board', color: 0xdfe6e9, height: 0.1 },
+        { name: 'Stud', color: 0x00b894, height: 0.3 },
+        { name: 'Gypsum Board', color: 0xdfe6e9, height: 0.1 }
+      ],
+      ceiling: [
+        { name: 'Gypsum Board', color: 0xeeeeee, height: 0.04 },
+        { name: 'Gypsum Board', color: 0xf0f0f0, height: 0.04 },
+        { name: 'M-bar', color: 0x707070, height: 0.06 },
+        { name: 'Hanger', color: 0x888888, height: 0.1 }
+      ],
+      window: [
+        { name: 'Outer Frame', type: 'frame', color: 0x636e72 },
+        { name: 'Glass', type: 'glass', color: 0x87CEEB, opacity: 0.3 },
+        { name: 'Inner Frame', type: 'frame', color: 0x636e72 }
+      ]
+    };
+
+    // 3D button creation function
+    function create3DButton(containerId, type) {
+      const container = document.getElementById(containerId);
+      const width = 240, height = 260;
+      const isWall = (type === 'external' || type === 'internal');
+      const isCeiling = (type === 'ceiling');
+      const isWindow = (type === 'window');
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const light = new THREE.DirectionalLight(0xffffff, 0.8);
+      light.position.set(5, 10, 7);
+      scene.add(light);
+
+      const light2 = new THREE.DirectionalLight(0x00b894, 0.3);
+      light2.position.set(-5, 5, -5);
+      scene.add(light2);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+      const meshes = [];
+
+      if (isCeiling) {
+        // Ceiling light steel frame structure rendering
+        const metalMat = new THREE.MeshPhongMaterial({ color: 0x888888, shininess: 60 });
+        const gypsumMat = new THREE.MeshPhongMaterial({ color: 0xf0f0f0, shininess: 20 });
+
+        // Paint (light mint, bottommost layer)
+        const paintMat = new THREE.MeshPhongMaterial({ color: 0xa8e6cf, shininess: 30 });
+        const paint = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.02, 1.2), paintMat);
+        paint.position.y = -0.26;
+        paint.userData = { originalY: -0.26, expandedY: -0.55 };
+        scene.add(paint);
+        meshes.push(paint);
+
+        // Gypsum Board 2 layers
+        const gypsum1 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 1.2), gypsumMat);
+        gypsum1.position.y = -0.2;
+        gypsum1.userData = { originalY: -0.2, expandedY: -0.45 };
+        scene.add(gypsum1);
+        meshes.push(gypsum1);
+
+        const gypsum2 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 1.2), gypsumMat);
+        gypsum2.position.y = -0.15;
+        gypsum2.userData = { originalY: -0.15, expandedY: -0.25 };
+        scene.add(gypsum2);
+        meshes.push(gypsum2);
+
+        // M-bar horizontal (3 bars)
+        for (let i = -1; i <= 1; i++) {
+          const mbarH = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.05, 0.03), metalMat);
+          mbarH.position.set(0, 0.1, i * 0.4);
+          mbarH.userData = { originalY: 0.1, expandedY: 0 };
+          scene.add(mbarH);
+          meshes.push(mbarH);
+        }
+
+        // M-bar vertical (3 bars)
+        for (let i = -1; i <= 1; i++) {
+          const mbarV = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.05, 1.2), metalMat);
+          mbarV.position.set(i * 0.5, 0.1, 0);
+          mbarV.userData = { originalY: 0.1, expandedY: 0 };
+          scene.add(mbarV);
+          meshes.push(mbarV);
+        }
+
+        camera.position.set(2, 1.5, 2);
+        camera.lookAt(0, -0.1, 0);
+      } else if (isWindow) {
+        // Window (frame + glass) structure rendering
+        const frameMat = new THREE.MeshPhongMaterial({ color: 0x636e72, shininess: 60 });
+        const glassMat = new THREE.MeshPhongMaterial({
+          color: 0x87CEEB,
+          transparent: true,
+          opacity: 0.3,
+          shininess: 100
+        });
+
+        // Window group
+        const windowGroup = new THREE.Group();
+        const frameT = 0.06;  // Frame thickness
+        const frameD = 0.08;  // Frame depth (thin)
+        const winW = 1.0;     // Window width
+        const winH = 1.4;     // Window height
+        const glassD = 1.3;   // Glass depth (same as wall)
+
+        // Left frame
+        const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameLeft.position.x = -winW/2 + frameT/2;
+        windowGroup.add(frameLeft);
+
+        // Right frame
+        const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+        frameRight.position.x = winW/2 - frameT/2;
+        windowGroup.add(frameRight);
+
+        // Top frame
+        const frameTop = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameTop.position.set(0, winH/2 - frameT/2, 0);
+        windowGroup.add(frameTop);
+
+        // Bottom frame
+        const frameBottom = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+        frameBottom.position.set(0, -winH/2 + frameT/2, 0);
+        windowGroup.add(frameBottom);
+
+        // Glass (fits inside frame, thin thickness)
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
+        windowGroup.add(glass);
+
+        scene.add(windowGroup);
+        meshes.push(windowGroup);
+        windowGroup.userData = { isWindowGroup: true };
+
+        camera.position.set(0, 1.5, 3.5);
+        camera.lookAt(0, 0, 0);
+      } else {
+        // Standard layer-based approach
+        const layers = structures[type];
+        let pos = 0;
+
+        layers.forEach((layer, i) => {
+          let geometry, mesh;
+
+          if (isWall) {
+            geometry = new THREE.BoxGeometry(layer.height, 2, 1.3);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+              color: layer.color,
+              shininess: 30
+            }));
+
+            mesh.position.x = pos + layer.height / 2;
+            mesh.userData.originalX = mesh.position.x;
+            mesh.userData.expandedX = mesh.position.x + i * 0.15;
+          } else {
+            geometry = new THREE.BoxGeometry(2, layer.height, 1.3);
+            mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+              color: layer.color,
+              shininess: 30
+            }));
+
+            mesh.position.y = pos + layer.height / 2;
+            mesh.userData.originalY = mesh.position.y;
+            mesh.userData.expandedY = mesh.position.y + i * 0.15;
+          }
+
+          pos += layer.height;
+          scene.add(mesh);
+          meshes.push(mesh);
+        });
+
+        // Center alignment
+        const totalSize = pos;
+        meshes.forEach(mesh => {
+          if (isWall) {
+            mesh.position.x -= totalSize / 2;
+            mesh.userData.originalX -= totalSize / 2;
+            mesh.userData.expandedX -= totalSize / 2;
+          } else {
+            mesh.position.y -= totalSize / 2;
+            mesh.userData.originalY -= totalSize / 2;
+            mesh.userData.expandedY -= totalSize / 2;
+          }
+        });
+
+        if (isWall) {
+          camera.position.set(0, 1.5, 3.5);
+        } else {
+          camera.position.set(2.5, 1.8, 2.5);
+        }
+        camera.lookAt(0, 0, 0);
+      }
+
+      // Hover state
+      let isHovered = false;
+      let currentExpand = 0;
+      let rotationSpeed = 0.002;
+
+      container.parentElement.addEventListener('mouseenter', () => {
+        isHovered = true;
+        rotationSpeed = 0.008;
+      });
+      container.parentElement.addEventListener('mouseleave', () => {
+        isHovered = false;
+        rotationSpeed = 0.002;
+      });
+
+      // Animation
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const targetExpand = isHovered ? 1 : 0;
+        currentExpand += (targetExpand - currentExpand) * 0.06;
+
+        meshes.forEach(mesh => {
+          if (mesh.userData.isWindowGroup) {
+            // Window scales up by 10%
+            const scale = 1 + currentExpand * 0.1;
+            mesh.scale.set(scale, scale, scale);
+          } else if (isWall) {
+            mesh.position.x = mesh.userData.originalX +
+              (mesh.userData.expandedX - mesh.userData.originalX) * currentExpand;
+          } else {
+            mesh.position.y = mesh.userData.originalY +
+              (mesh.userData.expandedY - mesh.userData.originalY) * currentExpand;
+          }
+        });
+
+        scene.rotation.y += rotationSpeed;
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    }
+
+    // Create 5 buttons
+    create3DButton('floor-canvas', 'floor');
+    create3DButton('external-canvas', 'external');
+    create3DButton('internal-canvas', 'internal');
+    create3DButton('ceiling-canvas', 'ceiling');
+    create3DButton('window-canvas', 'window');
+
+    // Show project information
+    function showAbout() {
+      alert(`J.codE M - Building Carbon Emission Assessment System
+
+Based on Korea EPD (Environmental Product Declaration) data,
+this system calculates and compares carbon emissions of building materials.
+
+Key Features:
+• Material selection by building structure type
+• Real-time carbon emission calculation
+• Multiple assembly combination comparison
+• Visualization and analysis
+
+Data Source: Korea Environmental Industry & Technology Institute EPD
+Developed by: JUNGLIM`);
+    }
+  </script>
+</body>
+</html>

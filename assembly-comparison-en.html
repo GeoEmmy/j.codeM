@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J.codE M - Assembly Comparison</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css">
+  <style>
+    /* Full page */
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Content container */
+    .container {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Inner content wrapper */
+    .content-wrapper {
+      padding: 30px 50px;
+    }
+
+    /* Main navigation */
+    .main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 44px;
+      height: 72px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      gap: 36px;
+    }
+
+    /* Center menu space */
+    .nav-menu {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+      max-width: none;
+      margin-right: 230px;
+    }
+
+    /* Logo */
+    .nav-brand .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-brand .brand-link:hover {
+      opacity: 0.7;
+    }
+
+    .logo-text {
+      color: var(--dark);
+    }
+
+    .logo-accent {
+      color: var(--primary-color);
+    }
+
+
+
+    .nav-btn {
+      position: relative;
+      padding: 8px 22px;
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      transition: var(--transition);
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--primary-color);
+      background: rgba(0, 184, 148, 0.06);
+    }
+
+    .nav-btn:hover::before {
+      width: 60%;
+    }
+
+    .nav-btn.active {
+      color: white;
+      background: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
+    }
+
+    .nav-btn.active::before {
+      display: none;
+    }
+
+    /* Right action buttons */
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .action-btn {
+      padding: 8px 20px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 8px;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: -0.2px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .comparison-btn {
+      color: var(--primary-color);
+      border-color: rgba(0, 184, 148, 0.25);
+      background: rgba(0, 184, 148, 0.03);
+    }
+
+    .comparison-btn.active {
+      color: white;
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
+    }
+
+    .comparison-btn:hover:not(.active) {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 184, 148, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .home-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background: rgba(0, 184, 148, 0.03);
+      transform: translateY(-1px);
+    }
+
+    /* Responsive - Tablet */
+    @media (max-width: 1024px) {
+      .main-nav {
+        padding: 16px 30px;
+        gap: 25px;
+      }
+
+      .nav-btn {
+        padding: 9px 22px;
+        font-size: 14px;
+      }
+
+      .action-btn {
+        padding: 9px 20px;
+        font-size: 13px;
+      }
+
+      .nav-brand .brand-link {
+        font-size: 23px;
+      }
+    }
+
+    /* Responsive - Mobile */
+    @media (max-width: 768px) {
+      .main-nav {
+        padding: 14px 20px;
+        gap: 15px;
+      }
+
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+
+      .nav-brand .brand-link {
+        font-size: 20px;
+      }
+
+      .nav-menu {
+        gap: 6px;
+      }
+
+      .nav-actions {
+        gap: 8px;
+      }
+    }
+
+    /* Smaller mobile */
+    @media (max-width: 480px) {
+      .main-nav {
+        padding: 12px 15px;
+        gap: 10px;
+      }
+
+      .nav-btn {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .action-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+      }
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 22px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      text-align: center;
+    }
+
+    .stat-card .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .stat-card .value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .stat-card .unit {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    /* Assembly list */
+    .assemblies-section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .section-header .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .assemblies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    .assembly-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .assembly-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: transparent;
+    }
+
+    .assembly-card .preview-3d-small {
+      width: 100%;
+      height: 180px;
+      background: var(--bg-light);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .assembly-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .assembly-card .assembly-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .assembly-card .assembly-type {
+      font-size: 11px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .assembly-card .carbon-display-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .assembly-card .carbon-display {
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .assembly-card .carbon-display .label {
+      font-size: 11px;
+      opacity: 0.85;
+      margin-bottom: 5px;
+    }
+
+    .assembly-card .carbon-display .value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .assembly-card .carbon-display .unit {
+      font-size: 11px;
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+
+    .assembly-card .layers-list {
+      margin: 15px 0;
+    }
+
+    .assembly-card .layer-tag {
+      display: inline-block;
+      background: var(--bg-light);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      margin: 2px;
+      color: #64748b;
+    }
+
+    .assembly-card .metadata {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--light-gray);
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .assembly-card .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .assembly-card .actions button {
+      flex: 1;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    /* Comparison chart */
+    .comparison-section {
+      background: white;
+      padding: 28px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      margin-bottom: 36px;
+    }
+
+    .comparison-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      letter-spacing: -0.3px;
+    }
+
+    /* Chart area layout */
+    .charts-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .charts-row.five-cols .chart-box {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .charts-row.full-width .chart-box {
+      width: 100%;
+    }
+
+    .chart-box {
+      background: var(--bg-light);
+      border-radius: 10px;
+      padding: 10px 10px 5px 10px;
+    }
+
+    .chart-box-header {
+      text-align: center;
+      margin-bottom: 3px;
+    }
+
+    .chart-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 281px;
+      padding-top: 18px;
+      overflow: visible;
+    }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 8px;
+      height: 248px;
+    }
+    .bar-chart.has-negative {
+      align-items: stretch;
+    }
+    .bar-chart.has-negative .bar-item {
+      justify-content: flex-end;
+    }
+
+    .charts-row.full-width .bar-chart {
+      gap: 15px;
+    }
+
+    .bar-item {
+      flex: 1;
+      max-width: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      transition: var(--transition);
+      cursor: pointer;
+      min-height: 1px;
+    }
+
+    .bar:hover {
+      transform: scaleY(1.03);
+      box-shadow: 0 -4px 12px rgba(0, 184, 148, 0.2);
+    }
+
+    .bar .value-label {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dark);
+      white-space: nowrap;
+    }
+
+    .charts-row.five-cols .bar .value-label {
+      font-size: 10px;
+      top: -16px;
+    }
+
+    .bar-label {
+      font-size: 11px;
+      text-align: center;
+      color: #64748b;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      position: relative;
+    }
+    .bar-label:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(45,52,54,0.92);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      white-space: nowrap;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .charts-row.five-cols .bar-label {
+      font-size: 10px;
+    }
+
+    .charts-row.five-cols .bar-item {
+      gap: 2px;
+    }
+
+    /* Filter/Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      background: white;
+      border: 1.5px solid var(--light-gray);
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font);
+      font-weight: 500;
+    }
+
+    .tab-btn.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .tab-btn:hover {
+      border-color: var(--primary-color);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #64748b;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-content h3 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      letter-spacing: -0.3px;
+    }
+
+    .modal-content .detail-grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .modal-content .detail-item {
+      padding: 15px;
+      background: var(--bg-light);
+      border-radius: 10px;
+    }
+
+    .modal-content .detail-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .modal-content .detail-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #636e72;
+    }
+
+    @media (max-width: 1200px) {
+      .charts-row.five-cols {
+        flex-wrap: wrap;
+      }
+
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 calc(33.33% - 10px);
+        min-width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 calc(50% - 10px);
+      }
+
+      .assemblies-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bar-chart {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .bar-item {
+        width: 100%;
+        flex-direction: row;
+        height: 60px;
+      }
+
+      .bar {
+        height: 100%;
+        width: auto;
+        border-radius: 0 10px 10px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .charts-row.five-cols .chart-box {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main navigation -->
+  <nav class="main-nav">
+    <!-- Left: Logo -->
+    <div class="nav-brand">
+      <a href="index-en.html" class="brand-link">
+        <span class="logo-text">J.codE</span>
+        <span class="logo-accent">M</span>
+      </a>
+    </div>
+
+    <!-- Center: Empty space (same layout as material-selector) -->
+    <div class="nav-menu"></div>
+
+    <!-- Right: Action buttons -->
+    <div class="nav-actions" style="display:flex; align-items:center; gap:12px;">
+      <img src="junglim_logo.png" alt="JUNGLIM" style="height: 14px;">
+      <a href="assembly-comparison-en.html" class="action-btn comparison-btn active">
+        Assembly Comparison
+      </a>
+      <a href="material-selector-en.html" class="action-btn home-btn">
+        Material Selection
+      </a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="content-wrapper">
+    <!-- Page header -->
+    <div class="page-header">
+      <h2>Assembly Comparison</h2>
+      <p>Compare and analyze carbon emissions of saved assemblies</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Comparison chart -->
+    <div class="comparison-section" id="comparisonSection">
+      <div class="section-header">
+        <h3>Carbon Emissions Comparison</h3>
+        <div class="actions">
+          <button class="btn btn-secondary" onclick="exportData()">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- First row: 5 by structure type -->
+      <div class="charts-row five-cols">
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">Floor</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartFloor"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">External Wall</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartExternal"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">Internal Wall</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartInternal"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">Ceiling</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartCeiling"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">Window</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartWindow"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Second row: All -->
+      <div class="charts-row full-width">
+        <div class="chart-box">
+          <div class="chart-box-header">
+            <span class="chart-box-title">All</span>
+          </div>
+          <div class="chart-container">
+            <div class="bar-chart" id="barChartAll"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assembly list -->
+    <div class="assemblies-section">
+      <div class="section-header">
+        <h3>Saved Assemblies</h3>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="createNewAssembly()">
+            ➕ New Assembly
+          </button>
+          <button class="btn btn-danger" onclick="clearAllAssemblies()">
+            🗑️ Delete All
+          </button>
+        </div>
+      </div>
+      <div class="tabs" id="assemblyTabs">
+        <button class="tab-btn active" onclick="filterAssemblies('all')">All</button>
+        <button class="tab-btn" onclick="filterAssemblies('floor')">Floor</button>
+        <button class="tab-btn" onclick="filterAssemblies('external')">External Wall</button>
+        <button class="tab-btn" onclick="filterAssemblies('internal')">Internal Wall</button>
+        <button class="tab-btn" onclick="filterAssemblies('ceiling')">Ceiling</button>
+        <button class="tab-btn" onclick="filterAssemblies('window')">Window</button>
+      </div>
+      <div class="assemblies-grid" id="assembliesGrid"></div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Detail modal -->
+  <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="data/epd-en.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+          integrity="sha384-C7h9bKdF/Gm5GIiH5DnLF+6T7jSEv4nx4rvQxPX6zCJf+gqDvPvmPZDzOVGOjhRb"
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+          integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"></script>
+  <script>
+    // HTML escape function for XSS prevention
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    let currentFilter = 'all';
+
+    // Array for Three.js resource management
+    const threeResources = [];
+
+    // Initialize
+    function init() {
+      updateStats();
+      renderChart();
+      renderAssemblies();
+    }
+
+    // Update statistics
+    function updateStats() {
+      const allAssemblies = calculator.getAllAssemblies();
+      const statsGrid = document.getElementById('statsGrid');
+
+      // Total emissions
+      const totalCarbon = allAssemblies.reduce((sum, a) => sum + a.totalCarbon, 0);
+
+      // Emissions by type
+      const floorCarbon = calculator.getAssembliesByType('floor').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const externalCarbon = calculator.getAssembliesByType('external').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const internalCarbon = calculator.getAssembliesByType('internal').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const ceilingCarbon = calculator.getAssembliesByType('ceiling').reduce((sum, a) => sum + a.totalCarbon, 0);
+      const windowCarbon = calculator.getAssembliesByType('window').reduce((sum, a) => sum + a.totalCarbon, 0);
+
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <div class="label">Total Emissions</div>
+          <div class="value">${formatNumber(totalCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Floor Emissions</div>
+          <div class="value">${formatNumber(floorCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">External Wall Emissions</div>
+          <div class="value">${formatNumber(externalCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Internal Wall Emissions</div>
+          <div class="value">${formatNumber(internalCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Ceiling Emissions</div>
+          <div class="value">${formatNumber(ceilingCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Window Emissions</div>
+          <div class="value">${formatNumber(windowCarbon, 0)}</div>
+          <div class="unit">kg CO₂eq</div>
+        </div>
+      `;
+    }
+
+    // Color definitions by structure type (dark to light gradient)
+    const structureColors = {
+      floor: ['#e8590c', '#fb923c'],      // Floor: orange
+      external: ['#d97706', '#fbbf24'],   // External Wall: yellow
+      internal: ['#00b894', '#6ee7b7'],   // Internal Wall: green
+      ceiling: ['#56b3d6', '#a5dff0'],    // Ceiling: light sky
+      window: ['#2563eb', '#60a5fa'],     // Window: blue
+      all: ['#475569', '#94a3b8']         // All: slate
+    };
+
+    // Single chart rendering helper function
+    function renderSingleChart(containerId, assemblies, emptyMessage, chartHeight = 160, colorKey = 'all') {
+      const chartContainer = document.getElementById(containerId);
+      const colors = structureColors[colorKey] || structureColors.all;
+
+      if (assemblies.length === 0) {
+        chartContainer.innerHTML = `
+          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; font-size: 12px;">
+            <div class="icon" style="font-size: 24px;">📊</div>
+            <p style="margin: 5px 0; color: #999;">${emptyMessage}</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by carbon emissions (largest first on the left)
+      const sorted = [...assemblies].sort((a, b) => {
+        const aPerM2 = a.totalCarbon / a.area;
+        const bPerM2 = b.totalCarbon / b.area;
+        return bPerM2 - aPerM2;
+      });
+
+      const carbonValues = sorted.map(a => a.totalCarbon / a.area);
+      const maxVal = Math.max(...carbonValues.map(v => Math.abs(v)));
+      const hasNegative = carbonValues.some(v => v < 0);
+      const maxPositive = Math.max(0, ...carbonValues);
+      const minNegative = Math.min(0, ...carbonValues);
+      const totalRange = maxPositive + Math.abs(minNegative);
+      // Ratio of positive area
+      const posRatio = totalRange > 0 ? maxPositive / totalRange : 1;
+      const posHeight = hasNegative ? chartHeight * posRatio : chartHeight;
+      const negHeight = hasNegative ? chartHeight * (1 - posRatio) : 0;
+
+      if (hasNegative) chartContainer.classList.add('has-negative');
+      else chartContainer.classList.remove('has-negative');
+
+      chartContainer.innerHTML = sorted.map(assembly => {
+        const carbonPerM2 = assembly.totalCarbon / assembly.area;
+        const barColors = colorKey === 'all' ? structureColors[assembly.structureType] || colors : colors;
+
+        if (carbonPerM2 >= 0) {
+          const heightPx = maxPositive > 0 ? Math.max(1, (carbonPerM2 / maxPositive) * posHeight) : 1;
+          return `
+          <div class="bar-item" style="${hasNegative ? 'padding-bottom: ' + negHeight + 'px;' : ''}">
+            <div class="bar" style="height: ${heightPx}px; background: linear-gradient(to top, ${barColors[0]}, ${barColors[1]})" onclick="showDetail(${assembly.id})">
+              <div class="value-label">${formatNumber(carbonPerM2, 0)}</div>
+            </div>
+            <div class="bar-label" title="${escapeHtml(assembly.name)}">${escapeHtml(assembly.name)}</div>
+          </div>
+          `;
+        } else {
+          const absPx = Math.max(1, (Math.abs(carbonPerM2) / Math.abs(minNegative)) * negHeight);
+          return `
+          <div class="bar-item" style="justify-content: flex-start !important; padding-bottom: 0;">
+            <div style="flex: 0 0 ${posHeight + 18}px; display:flex; align-items:flex-end;"><div class="bar-label" title="${escapeHtml(assembly.name)}" style="width:100%;">${escapeHtml(assembly.name)}</div></div>
+            <div class="bar" style="height: ${absPx}px; background: linear-gradient(to bottom, ${barColors[0]}, ${barColors[1]}); border-radius: 0 0 10px 10px;" onclick="showDetail(${assembly.id})">
+              <div class="value-label" style="top: auto; bottom: -20px;">${formatNumber(carbonPerM2, 0)}</div>
+            </div>
+          </div>
+          `;
+        }
+      }).join('');
+    }
+
+    // Render charts (6 charts)
+    function renderChart() {
+      const chartHeight = 205;  // Same height for all charts
+
+      // Charts by structure type (5)
+      renderSingleChart('barChartFloor', calculator.getAssembliesByType('floor'), 'No assemblies', chartHeight, 'floor');
+      renderSingleChart('barChartExternal', calculator.getAssembliesByType('external'), 'No assemblies', chartHeight, 'external');
+      renderSingleChart('barChartInternal', calculator.getAssembliesByType('internal'), 'No assemblies', chartHeight, 'internal');
+      renderSingleChart('barChartCeiling', calculator.getAssembliesByType('ceiling'), 'No assemblies', chartHeight, 'ceiling');
+      renderSingleChart('barChartWindow', calculator.getAssembliesByType('window'), 'No assemblies', chartHeight, 'window');
+
+      // All chart (colored by each assembly)
+      renderSingleChart('barChartAll', calculator.getAllAssemblies(), 'No assemblies', chartHeight, 'all');
+    }
+
+    // Render assemblies
+    function renderAssemblies() {
+      const assemblies = currentFilter === 'all'
+        ? calculator.getAllAssemblies()
+        : calculator.getAssembliesByType(currentFilter);
+
+      const grid = document.getElementById('assembliesGrid');
+
+      if (assemblies.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; grid-column: 1 / -1;">
+            <div class="icon">📦</div>
+            <h3>No saved assemblies</h3>
+            <p>Create an assembly from the material selection page</p>
+            <button class="btn btn-primary" onclick="createNewAssembly()">➕ New Assembly</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = assemblies.map(assembly => {
+        const carbonPerM2 = assembly.totalCarbon / assembly.area;
+        const colors = structureColors[assembly.structureType] || structureColors.all;
+        const perM2Bg = `background: linear-gradient(135deg, ${colors[0]}, ${colors[1]})`;
+        const totalBg = `background: ${colors[0]}33; color: ${colors[0]}`;
+
+        return `
+          <div class="assembly-card">
+            <div class="preview-3d-small" id="preview3d-${assembly.id}"></div>
+
+            <div class="card-header">
+              <div>
+                <div class="assembly-name">${escapeHtml(assembly.name)}</div>
+                <div class="assembly-type">
+                  ${getStructureTypeIcon(assembly.structureType)}
+                  ${getStructureTypeName(assembly.structureType)}
+                </div>
+              </div>
+            </div>
+
+            <div class="carbon-display-grid">
+              <div class="carbon-display" style="${perM2Bg}">
+                <div class="label">Emissions per m²</div>
+                <div class="value">${formatNumber(carbonPerM2, 1)}</div>
+                <div class="unit">kg CO₂eq/m²</div>
+              </div>
+              <div class="carbon-display" style="${totalBg}">
+                <div class="label">Total Emissions</div>
+                <div class="value">${formatNumber(assembly.totalCarbon, 0)}</div>
+                <div class="unit">kg CO₂eq</div>
+              </div>
+            </div>
+
+            <div class="layers-list">
+              ${assembly.layers.map(l =>
+                `<span class="layer-tag">${escapeHtml(l.material.name)} (${l.thickness}mm)</span>`
+              ).join('')}
+            </div>
+
+            <div class="metadata">
+              <span>Area: ${assembly.area.toFixed(2)}m²</span>
+              <span>${formatDate(assembly.createdAt)}</span>
+            </div>
+
+            <div class="actions">
+              <button class="btn" style="background:#f1f5f9; color:#64748b;" onclick="showDetail(${assembly.id})">
+                Details
+              </button>
+              <button class="btn" style="background:#fef2f2; color:#dc2626;" onclick="deleteAssembly(${assembly.id})">
+                Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 3D rendering for each assembly
+      setTimeout(() => {
+        cleanupThreeResources(); // Clean up existing resources
+        assemblies.forEach(assembly => {
+          renderAssembly3D(assembly);
+        });
+      }, 100);
+    }
+
+    // Three.js resource cleanup function
+    function cleanupThreeResources() {
+      threeResources.forEach(resource => {
+        if (resource.animationId) {
+          cancelAnimationFrame(resource.animationId);
+        }
+        if (resource.renderer) {
+          resource.renderer.dispose();
+        }
+        if (resource.scene) {
+          resource.scene.traverse(obj => {
+            if (obj.geometry) obj.geometry.dispose();
+            if (obj.material) {
+              if (Array.isArray(obj.material)) {
+                obj.material.forEach(m => m.dispose());
+              } else {
+                obj.material.dispose();
+              }
+            }
+          });
+        }
+      });
+      threeResources.length = 0;
+    }
+
+    // Assembly 3D rendering
+    // Ceiling procedural texture generation
+    function makeTexture(type, size) {
+      const s = size || 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = s; canvas.height = s;
+      const ctx = canvas.getContext('2d');
+
+      if (type === 'acoustic_tex') {
+        ctx.fillStyle = '#f2efe8'; ctx.fillRect(0,0,s,s);
+        ctx.fillStyle = '#e0ddd5';
+        for (let i=0;i<800;i++){const x=Math.random()*s,y=Math.random()*s;ctx.beginPath();ctx.arc(x,y,0.8+Math.random()*1.2,0,Math.PI*2);ctx.fill();}
+      } else if (type === 'gypsum') {
+        ctx.fillStyle = '#f0ece4'; ctx.fillRect(0,0,s,s);
+        ctx.strokeStyle = '#e5e0d8'; ctx.lineWidth = 0.3;
+        for (let i=0;i<200;i++){ctx.beginPath();ctx.moveTo(Math.random()*s,Math.random()*s);ctx.lineTo(Math.random()*s,Math.random()*s);ctx.stroke();}
+      } else if (type === 'wood') {
+        ctx.fillStyle = '#c49a5a'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){const o=Math.sin(y*0.05)*8;ctx.strokeStyle=`rgba(${140+Math.random()*30},${100+Math.random()*20},${50+Math.random()*20},0.3)`;ctx.lineWidth=1+Math.random()*2;ctx.beginPath();ctx.moveTo(0,y+o);ctx.bezierCurveTo(s*0.3,y+o+Math.random()*4,s*0.7,y+o-Math.random()*4,s,y+o);ctx.stroke();}
+      } else if (type === 'wood_dark') {
+        ctx.fillStyle = '#8b6914'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){ctx.strokeStyle=`rgba(${100+Math.random()*30},${70+Math.random()*20},${20+Math.random()*15},0.35)`;ctx.lineWidth=1+Math.random()*2;ctx.beginPath();ctx.moveTo(0,y);ctx.bezierCurveTo(s*0.3,y+Math.random()*5,s*0.7,y-Math.random()*5,s,y);ctx.stroke();}
+      } else if (type === 'plywood') {
+        ctx.fillStyle = '#d2ad6e'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=1){const w=Math.sin(y*0.03)*12+Math.sin(y*0.08)*5;const b=150+Math.sin(y*0.02)*30;ctx.strokeStyle=`rgba(${b},${b-30},${b-70},0.2)`;ctx.lineWidth=1.5+Math.sin(y*0.1)*0.8;ctx.beginPath();ctx.moveTo(w,y);ctx.bezierCurveTo(s*0.3+w,y+Math.random()*2,s*0.7+w,y-Math.random()*2,s+w,y);ctx.stroke();}
+      } else if (type === 'mdf') {
+        ctx.fillStyle = '#c9a96e'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<3000;i++){ctx.fillStyle=`rgba(${170+Math.random()*30},${140+Math.random()*30},${80+Math.random()*30},0.08)`;ctx.fillRect(Math.random()*s,Math.random()*s,2,2);}
+      } else if (type === 'wood_wool') {
+        ctx.fillStyle = '#bfa05c'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<300;i++){const x=Math.random()*s,y=Math.random()*s,len=20+Math.random()*50,angle=-0.3+Math.random()*0.6,thick=1.5+Math.random()*3;ctx.strokeStyle=`rgba(${130+Math.random()*60},${100+Math.random()*50},${40+Math.random()*30},0.35)`;ctx.lineWidth=thick;ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x+len*0.3,y+Math.random()*6-3,x+len*0.7,y+Math.random()*6-3,x+Math.cos(angle)*len,y+Math.sin(angle)*len);ctx.stroke();}
+      } else if (type === 'aluminum') {
+        ctx.fillStyle = '#c8cdd0'; ctx.fillRect(0,0,s,s);
+        for (let x=0;x<s;x++){ctx.strokeStyle=`rgba(${190+Math.random()*40},${195+Math.random()*40},${200+Math.random()*40},0.15)`;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,s);ctx.stroke();}
+      } else if (type === 'spray') {
+        ctx.fillStyle = '#d5cfc5'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<2000;i++){const r=1+Math.random()*3;ctx.fillStyle=`rgba(${180+Math.random()*40},${175+Math.random()*35},${165+Math.random()*30},0.2)`;ctx.beginPath();ctx.arc(Math.random()*s,Math.random()*s,r,0,Math.PI*2);ctx.fill();}
+      } else if (type === 'concrete') {
+        ctx.fillStyle = '#b0aca6'; ctx.fillRect(0,0,s,s);
+        for (let i=0;i<1500;i++){ctx.fillStyle=`rgba(${150+Math.random()*40},${145+Math.random()*40},${138+Math.random()*35},0.1)`;ctx.fillRect(Math.random()*s,Math.random()*s,1+Math.random()*3,1+Math.random()*3);}
+      } else if (type === 'acoustic_slat') {
+        ctx.fillStyle = '#b08050'; ctx.fillRect(0,0,s,s);
+        for (let y=0;y<s;y+=2){ctx.strokeStyle=`rgba(${140+Math.random()*30},${95+Math.random()*25},${50+Math.random()*20},0.25)`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(s,y+Math.random()*3-1.5);ctx.stroke();}
+        ctx.fillStyle='rgba(30,20,10,0.85)';const sl=s/20;for(let x=sl;x<s;x+=sl){ctx.fillRect(x-1,0,2,s);}
+      }
+
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    // Ceiling material 3D material
+    function getCeilingMaterial3D(material) {
+      const name = (material.name || '').toLowerCase();
+      const nameEn = (material.nameEn || '').toLowerCase();
+      if (name.includes('알루미늄') && !name.includes('재활용') || nameEn === 'aluminum_ceiling' || nameEn === 'aluminum_louver')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('aluminum'), roughness: 0.15, metalness: 0.85 });
+      if (name.includes('재활용알루미늄') || nameEn.includes('recycled_aluminum'))
+        return new THREE.MeshStandardMaterial({ map: makeTexture('aluminum'), color: 0xa8adb0, roughness: 0.25, metalness: 0.75 });
+      if (name.includes('흡음텍스') || nameEn === 'acoustic_tex')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('acoustic_tex'), roughness: 0.95, metalness: 0.0 });
+      if (name.includes('석고텍스') || nameEn === 'gypsum_tex')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('gypsum'), roughness: 0.9, metalness: 0.0 });
+      if (name.includes('석고보드') || nameEn === 'gypsum_board')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('gypsum'), color: 0xf5f2ed, roughness: 0.85, metalness: 0.0 });
+      if (name.includes('페인트') || nameEn === 'paint')
+        return new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.35, metalness: 0.0 });
+      if (name.includes('목모') || nameEn === 'wood_wool_board')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood_wool'), roughness: 0.95, metalness: 0.0 });
+      if (name.includes('목재패널') || nameEn === 'wood_panel')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood'), roughness: 0.65, metalness: 0.05 });
+      if ((name.includes('루버') && name.includes('목재')) || nameEn === 'wood_louver')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('wood_dark'), roughness: 0.6, metalness: 0.05 });
+      if (name.includes('smc') || nameEn === 'pvc_ceiling')
+        return new THREE.MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.25, metalness: 0.05 });
+      if (name.includes('폴리카보네이트') || nameEn === 'polycarbonate')
+        return new THREE.MeshStandardMaterial({ color: 0x88c8e8, roughness: 0.05, metalness: 0.08, transparent: true, opacity: 0.7 });
+      if (name.includes('합판') || nameEn === 'plywood')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('plywood'), roughness: 0.55, metalness: 0.0 });
+      if (name.toUpperCase().includes('MDF') || nameEn === 'mdf')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('mdf'), roughness: 0.45, metalness: 0.0 });
+      if (name.includes('천장지') || nameEn === 'wallpaper')
+        return new THREE.MeshStandardMaterial({ color: 0xfaf8f5, roughness: 0.9, metalness: 0.0 });
+      if (name.includes('뿜칠') || name.includes('질석') || nameEn === 'perlite')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('spray'), roughness: 1.0, metalness: 0.0 });
+      if (name.includes('흡음패널') || nameEn === 'acoustic_panel')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('acoustic_slat'), roughness: 0.6, metalness: 0.05 });
+      if (name.includes('노출콘크리트') || nameEn === 'exposed_concrete')
+        return new THREE.MeshStandardMaterial({ map: makeTexture('concrete'), roughness: 0.55, metalness: 0.0 });
+      return new THREE.MeshStandardMaterial({ color: new THREE.Color(material.color || '#636e72'), roughness: 0.7, metalness: 0.1 });
+    }
+
+    function renderAssembly3D(assembly) {
+      const container = document.getElementById(`preview3d-${assembly.id}`);
+      if (!container) return;
+
+      // Remove existing canvas
+      const existingCanvas = container.querySelector('canvas');
+      if (existingCanvas) {
+        existingCanvas.remove();
+      }
+
+      const width = container.clientWidth;
+      const height = 180;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+      renderer.setSize(width, height);
+      renderer.setClearColor(0x000000, 0);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // Improved lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+
+      const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight1.position.set(5, 10, 7);
+      directionalLight1.castShadow = true;
+      directionalLight1.shadow.camera.near = 0.1;
+      directionalLight1.shadow.camera.far = 50;
+      scene.add(directionalLight1);
+
+      const directionalLight2 = new THREE.DirectionalLight(0x74b9ff, 0.3);
+      directionalLight2.position.set(-5, 5, -5);
+      scene.add(directionalLight2);
+
+      const directionalLight3 = new THREE.DirectionalLight(0xffeaa7, 0.2);
+      directionalLight3.position.set(0, -5, 5);
+      scene.add(directionalLight3);
+
+      // Attempt to restore saved 3D JSON
+      const stored3D = JSON.parse(localStorage.getItem('assemblies3D') || '{}');
+      const sceneJson = stored3D[assembly.id];
+
+      if (sceneJson) {
+        // Restore saved 3D model
+        const loader = new THREE.ObjectLoader();
+        const group = loader.parse(sceneJson);
+        group.rotation.set(0, 0, 0); // Reset rotation
+        scene.add(group);
+
+        const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
+        const isWindow = (assembly.structureType === 'window');
+        const isCeiling = (assembly.structureType === 'ceiling');
+
+        // Default camera position
+        let radius = isWall || isWindow ? 4 : 3.5;
+        const camY = isWall || isWindow ? 1 : (isCeiling ? 2 : 2.5);
+        camera.position.set(0, camY, radius);
+        camera.lookAt(0, 0, 0);
+
+        // Collect layer meshes (for explode)
+        const layerMeshes = [];
+        group.children.forEach(child => layerMeshes.push(child));
+        const layerOriginalPos = layerMeshes.map(m => isWall ? m.position.x : m.position.y);
+
+        // Drag rotation
+        let isDragging = false, prevX = 0, prevY = 0;
+        let rotY = 0, rotX = 0;
+        const canvas = renderer.domElement;
+
+        canvas.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+        canvas.addEventListener('mousemove', e => {
+          if (!isDragging) return;
+          rotY -= (e.clientX - prevX) * 0.01;
+          rotX += (e.clientY - prevY) * 0.01;
+          rotX = Math.max(-1, Math.min(1, rotX));
+          prevX = e.clientX; prevY = e.clientY;
+        });
+        canvas.addEventListener('mouseup', () => { isDragging = false; });
+        canvas.addEventListener('mouseleave', () => { isDragging = false; });
+
+        // Mouse wheel zoom
+        canvas.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          radius += e.deltaY * 0.01;
+          radius = Math.max(1, Math.min(10, radius));
+        }, { passive: false });
+
+        // Hover explode
+        let exploded = false, explodeProgress = 0;
+        canvas.addEventListener('mouseenter', () => { exploded = true; });
+        canvas.addEventListener('mouseleave', () => { exploded = false; });
+
+        function animate() {
+          const animId = requestAnimationFrame(animate);
+
+          // Auto-rotate when not dragging
+          if (!isDragging) rotY += 0.005;
+
+          camera.position.x = Math.sin(rotY) * radius * Math.cos(rotX);
+          camera.position.z = Math.cos(rotY) * radius * Math.cos(rotX);
+          camera.position.y = camY + Math.sin(rotX) * radius;
+          camera.lookAt(0, 0, 0);
+
+          // Explode animation
+          const speed = 0.08;
+          if (exploded && explodeProgress < 1) explodeProgress = Math.min(1, explodeProgress + speed);
+          if (!exploded && explodeProgress > 0) explodeProgress = Math.max(0, explodeProgress - speed);
+
+          if (layerMeshes.length > 1) {
+            const explodeGap = 0.1;
+            const dir = isCeiling ? -1 : isWall ? -1 : 1;
+            // Group same-position items
+            const groups = [];
+            const used = new Set();
+            for (let i = 0; i < layerMeshes.length; i++) {
+              if (used.has(i)) continue;
+              const g = [i];
+              for (let j = i + 1; j < layerMeshes.length; j++) {
+                if (Math.abs(layerOriginalPos[j] - layerOriginalPos[i]) < 0.001) { g.push(j); used.add(j); }
+              }
+              used.add(i);
+              groups.push(g);
+            }
+            groups.forEach((grp, gi) => {
+              const offset = (gi - (groups.length - 1) / 2) * explodeGap * explodeProgress * dir;
+              grp.forEach(i => {
+                if (isWall) layerMeshes[i].position.x = layerOriginalPos[i] + offset;
+                else layerMeshes[i].position.y = layerOriginalPos[i] + offset;
+              });
+            });
+          }
+
+          renderer.render(scene, camera);
+          threeResources.push({ animId });
+        }
+        animate();
+        threeResources.push({ renderer, scene });
+        return;
+      }
+
+      // === Fallback: simplified rendering when no saved 3D exists ===
+      function getMaterialProps(material) {
+        const name = (material.name || '').toLowerCase();
+        if (name.includes('콘크리트')) return { color: 0x8b8d8f, roughness: 0.9, metalness: 0 };
+        if (name.includes('단열') || name.includes('xps') || name.includes('eps') || name.includes('유리면') || name.includes('암면'))
+          return { color: 0xffd93d, roughness: 0.95, metalness: 0 };
+        if (name.includes('석고')) return { color: 0xf5f5f5, roughness: 0.7, metalness: 0 };
+        if (name.includes('마루') || name.includes('목재') || name.includes('스터드') || name.includes('원목'))
+          return { color: 0x8b6f47, roughness: 0.8, metalness: 0 };
+        if (name.includes('벽돌')) return { color: 0xa0522d, roughness: 0.95, metalness: 0 };
+        if (name.includes('타일') || name.includes('세라믹')) return { color: 0xe8e8e8, roughness: 0.1, metalness: 0.3 };
+        if (name.includes('모르타르') || name.includes('미장')) return { color: 0xb8b8b8, roughness: 0.85, metalness: 0 };
+        if (name.includes('방수')) return { color: 0x1a1a1a, roughness: 0.3, metalness: 0.2 };
+        if (name.includes('알루미늄') || name.includes('강판')) return { color: 0xc0c0c0, roughness: 0.2, metalness: 0.9 };
+        if (name.includes('페인트')) return { color: 0xffffff, roughness: 0.4, metalness: 0 };
+        if (name.includes('유리')) return { color: 0x87CEEB, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.4 };
+        return { color: 0x00b894, roughness: 0.7, metalness: 0 };
+      }
+
+      const isWindow = (assembly.structureType === 'window');
+      const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
+      const isCeiling = (assembly.structureType === 'ceiling');
+      let pos = 0;
+      const meshes = [];
+      const group = new THREE.Group();
+
+      // Ceiling-specific rendering
+      if (isCeiling && assembly.layers.length > 0) {
+        const gridW = 2.0;
+        const gridD = 1.3;
+
+        const hasCeilingFrame = assembly.layers.some(l =>
+          (l.material.name || '').includes('경량철골') || (l.material.nameEn || '').includes('light_steel_ceiling')
+        );
+
+        if (hasCeilingFrame) {
+          // T-bar material
+          const tBarMat = new THREE.MeshStandardMaterial({ color: 0xd0d0d0, roughness: 0.3, metalness: 0.7 });
+          const wireMat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.4, metalness: 0.6 });
+
+          const mainRunnerSpacing = 0.6;
+          const mainCount = Math.floor(gridD / mainRunnerSpacing);
+          for (let i = 0; i <= mainCount; i++) {
+            const z = -gridD/2 + i * mainRunnerSpacing;
+            const web = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.03, 0.002), tBarMat);
+            web.position.set(0, -0.015, z); group.add(web);
+            const flange = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.002, 0.024), tBarMat);
+            flange.position.set(0, -0.031, z); group.add(flange);
+          }
+
+          const crossSpacing = 0.6;
+          const crossCount = Math.floor(gridW / crossSpacing);
+          for (let i = 0; i <= crossCount; i++) {
+            const x = -gridW/2 + i * crossSpacing;
+            const web = new THREE.Mesh(new THREE.BoxGeometry(0.002, 0.025, gridD), tBarMat);
+            web.position.set(x, -0.0125, 0); group.add(web);
+            const flange = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.002, gridD), tBarMat);
+            flange.position.set(x, -0.026, 0); group.add(flange);
+          }
+
+          // Hanger wires
+          for (let i = 0; i <= mainCount; i += 2) {
+            const z = -gridD/2 + i * mainRunnerSpacing;
+            for (let j = 0; j <= crossCount; j += 2) {
+              const x = -gridW/2 + j * crossSpacing;
+              const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.002, 0.002, 0.25, 6), wireMat);
+              wire.position.set(x, 0.125, z); group.add(wire);
+              const anchor = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.005, 0.03), wireMat);
+              anchor.position.set(x, 0.252, z); group.add(anchor);
+            }
+          }
+
+          // Panel layers (excluding light steel frame)
+          const panelLayers = assembly.layers.filter(l =>
+            !(l.material.name || '').includes('경량철골')
+          );
+          let pYPos = -0.033;
+          const tileGap = 0.008;
+          const tileSize = mainRunnerSpacing - tileGap;
+
+          panelLayers.forEach((pLayer) => {
+            const pName = (pLayer.material.name || '').toLowerCase();
+            const pNameEn = (pLayer.material.nameEn || '').toLowerCase();
+            const pThick = (pLayer.thickness || 10) / 1000;
+            const pMat = getCeilingMaterial3D(pLayer.material);
+
+            if (pName.includes('루버') || pNameEn.includes('louver')) {
+              const isAlu = pName.includes('알루미늄') || pNameEn.includes('aluminum');
+              const louverW = isAlu ? 0.018 : 0.035;
+              const louverH = isAlu ? 0.06 : 0.045;
+              const lSpacing = isAlu ? 0.05 : 0.065;
+              const lCount = Math.floor(gridW / lSpacing);
+              for (let i = 0; i <= lCount; i++) {
+                const x = -gridW/2 + i * lSpacing + louverW/2;
+                const louver = new THREE.Mesh(new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), pMat);
+                louver.position.set(x, pYPos - louverH/2, 0); group.add(louver);
+              }
+              pYPos -= louverH + 0.005;
+            } else if (pName.includes('뿜칠') || pName.includes('질석') || pNameEn.includes('perlite') || pNameEn.includes('spray')) {
+              const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, pThick, gridD), pMat);
+              spray.position.set(0, pYPos - pThick/2, 0); group.add(spray);
+              pYPos -= pThick + 0.003;
+            } else if (pName.includes('페인트') || pNameEn === 'paint') {
+              const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), pMat);
+              paint.position.set(0, pYPos - 0.0015, 0); group.add(paint);
+              pYPos -= 0.005;
+            } else if (pName.includes('석고보드') || pName.includes('천장지') || pName.includes('mdf') ||
+                       pName.includes('합판') || pName.includes('흡음패널') ||
+                       pNameEn === 'gypsum_board' || pNameEn === 'wallpaper' || pNameEn === 'mdf' ||
+                       pNameEn === 'plywood' || pNameEn === 'acoustic_panel') {
+              const panel = new THREE.Mesh(new THREE.BoxGeometry(gridW, pThick, gridD), pMat);
+              panel.position.set(0, pYPos - pThick/2, 0); group.add(panel);
+              pYPos -= pThick + 0.005;
+            } else {
+              // Tile type (tex, wood wool board, SMC, aluminum ceiling, etc.) - 600x600 grid
+              const colCount = Math.floor(gridW / mainRunnerSpacing);
+              for (let row = 0; row <= mainCount; row++) {
+                for (let col = 0; col <= colCount; col++) {
+                  const x = -gridW/2 + col * mainRunnerSpacing + mainRunnerSpacing/2;
+                  const z = -gridD/2 + row * mainRunnerSpacing + mainRunnerSpacing/2;
+                  if (x - tileSize/2 < -gridW/2 - 0.01 || x + tileSize/2 > gridW/2 + 0.01) continue;
+                  if (z - tileSize/2 < -gridD/2 - 0.01 || z + tileSize/2 > gridD/2 + 0.01) continue;
+                  const tile = new THREE.Mesh(new THREE.BoxGeometry(tileSize, pThick, tileSize), pMat);
+                  tile.position.set(x, pYPos - pThick/2, z); group.add(tile);
+                }
+              }
+              pYPos -= pThick + 0.008;
+            }
+          });
+
+          // Upper slab
+          const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.4 });
+          const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW + 0.1, 0.08, gridD + 0.1), slabMat);
+          slab.position.set(0, 0.29, 0); group.add(slab);
+
+        } else {
+          // Materials only selected without light steel frame
+          let yPos = 0;
+          assembly.layers.forEach((layer) => {
+            const name = (layer.material.name || '').toLowerCase();
+            const nameEn = (layer.material.nameEn || '').toLowerCase();
+            const mat3D = getCeilingMaterial3D(layer.material);
+            const thick = (layer.thickness || 10) / 1000;
+
+            if (name.includes('루버') || nameEn.includes('louver')) {
+              const isAlu = name.includes('알루미늄') || nameEn.includes('aluminum');
+              const louverW = isAlu ? 0.018 : 0.035;
+              const louverH = isAlu ? 0.06 : 0.045;
+              const spacing = isAlu ? 0.05 : 0.065;
+              const count = Math.floor(gridW / spacing);
+              for (let i = 0; i <= count; i++) {
+                const x = -gridW/2 + i * spacing + louverW/2;
+                const louver = new THREE.Mesh(new THREE.BoxGeometry(louverW, louverH, gridD - 0.02), mat3D);
+                louver.position.set(x, yPos - louverH/2, 0); group.add(louver);
+              }
+              yPos -= louverH + 0.01;
+            } else if (name.includes('뿜칠') || name.includes('질석') || nameEn.includes('spray') || nameEn.includes('perlite')) {
+              const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.5 });
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), slabMat);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              const spray = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+              spray.position.set(0, yPos - thick/2, 0); group.add(spray);
+              yPos -= thick + 0.002;
+            } else if (name.includes('페인트') || nameEn.includes('paint')) {
+              const slabMat = new THREE.MeshStandardMaterial({ color: 0xbcb8b0, roughness: 0.85, transparent: true, opacity: 0.5 });
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), slabMat);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              const paint = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.003, gridD), mat3D);
+              paint.position.set(0, yPos - 0.0015, 0); group.add(paint);
+              yPos -= 0.005;
+            } else if (name.includes('노출콘크리트') || nameEn.includes('exposed_concrete')) {
+              const slab = new THREE.Mesh(new THREE.BoxGeometry(gridW, 0.06, gridD), mat3D);
+              slab.position.set(0, yPos + 0.03, 0); group.add(slab);
+              yPos -= 0.005;
+            } else {
+              const panel = new THREE.Mesh(new THREE.BoxGeometry(gridW, thick, gridD), mat3D);
+              panel.position.set(0, yPos - thick/2, 0); group.add(panel);
+              yPos -= thick + 0.005;
+            }
+          });
+        }
+
+        scene.add(group);
+        camera.position.set(2.5, 2, 2.5);
+        camera.lookAt(0, 0, 0);
+
+        const resource = { renderer, scene, animationId: null };
+        threeResources.push(resource);
+        function animate() {
+          resource.animationId = requestAnimationFrame(animate);
+          group.rotation.y += 0.003;
+          renderer.render(scene, camera);
+        }
+        animate();
+        return;
+      }
+
+      // Window: frame + glass combined rendering
+      if (isWindow && assembly.layers.length > 0) {
+        const layer = assembly.layers[0];
+        const name = (layer.material.name || '').toLowerCase();
+        const frameT = 0.06;
+        const frameD = 0.08;
+        const winW = 1.0;
+        const winH = 1.4;
+
+        const isFrameless = name.includes('접합') || name.includes('강화');
+
+        // Glass color
+        let glassColor = '#87CEEB', glassOpacity = 0.4;
+        if (name.includes('삼중') || name.includes('triple')) { glassColor = '#4a90d9'; glassOpacity = 0.5; }
+        else if (name.includes('복층') || name.includes('double')) { glassColor = '#7ec8e3'; glassOpacity = 0.45; }
+        else if (name.includes('강화')) { glassColor = '#55c9a6'; glassOpacity = 0.5; }
+        else if (name.includes('접합')) { glassColor = '#9b8ec4'; glassOpacity = 0.5; }
+
+        const glassMat = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(glassColor), transparent: true, opacity: glassOpacity, roughness: 0.05, metalness: 0.1
+        });
+
+        if (!isFrameless) {
+          let frameColor = '#636e72';
+          if (name.includes('알루미늄') || name.includes('aluminum')) frameColor = '#b2bec3';
+          else if (name.includes('pvc')) frameColor = '#dfe6e9';
+          else if (name.includes('wood') || name.includes('목재')) frameColor = '#b8860b';
+
+          const frameMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(frameColor), roughness: 0.5, metalness: 0.3
+          });
+
+          const frameLeft = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+          frameLeft.position.x = -winW/2 + frameT/2;
+          group.add(frameLeft);
+
+          const frameRight = new THREE.Mesh(new THREE.BoxGeometry(frameT, winH, frameD), frameMat);
+          frameRight.position.x = winW/2 - frameT/2;
+          group.add(frameRight);
+
+          const ft = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+          ft.position.set(0, winH/2 - frameT/2, 0); group.add(ft);
+          const fb = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, frameT, frameD), frameMat);
+          fb.position.set(0, -winH/2 + frameT/2, 0); group.add(fb);
+
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(winW - frameT*2, winH - frameT*2, 0.02), glassMat);
+          group.add(glass);
+        } else {
+          const glass = new THREE.Mesh(new THREE.BoxGeometry(winW, winH, 0.015), glassMat);
+          group.add(glass);
+        }
+
+        scene.add(group);
+        camera.position.set(0, 1, 4);
+        camera.lookAt(0, 0, 0);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          group.rotation.y += 0.005;
+          renderer.render(scene, camera);
+        }
+        animate();
+        return;
+      }
+
+      assembly.layers.forEach((layer, index) => {
+        const thickness = layer.thickness / 1000; // Convert mm to m
+        let geometry, mesh;
+
+        // Get material properties
+        const matProps = getMaterialProps(layer.material);
+
+        // Calculate transparency (get from matProps for glass)
+        const isTransparent = matProps.transparent || thickness < 0.05;
+        const materialOpacity = matProps.opacity || (thickness < 0.05 ? 0.85 : 1);
+
+        if (isWall) {
+          geometry = new THREE.BoxGeometry(thickness, 1.5, 1);
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+            color: matProps.color,
+            roughness: matProps.roughness,
+            metalness: matProps.metalness,
+            emissive: matProps.emissive || 0x000000,
+            emissiveIntensity: matProps.emissiveIntensity || 0,
+            transparent: isTransparent,
+            opacity: materialOpacity
+          }));
+          mesh.position.x = pos + thickness / 2;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+        } else {
+          geometry = new THREE.BoxGeometry(1.5, thickness, 1);
+          mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+            color: matProps.color,
+            roughness: matProps.roughness,
+            metalness: matProps.metalness,
+            emissive: matProps.emissive || 0x000000,
+            emissiveIntensity: matProps.emissiveIntensity || 0,
+            transparent: isTransparent,
+            opacity: materialOpacity
+          }));
+          mesh.position.y = pos + thickness / 2;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+        }
+
+        // Outline (thicker)
+        const edges = new THREE.EdgesGeometry(geometry);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
+          color: 0x000000,
+          linewidth: 2,
+          opacity: 0.6,
+          transparent: true
+        }));
+        mesh.add(line);
+
+        pos += thickness;
+        group.add(mesh);  // Add to group, not scene
+        meshes.push(mesh);
+      });
+
+      // Center alignment
+      const totalSize = pos;
+      meshes.forEach(mesh => {
+        if (isWall) {
+          mesh.position.x -= totalSize / 2;
+        } else {
+          mesh.position.y -= totalSize / 2;
+        }
+      });
+
+      // Add group to scene
+      scene.add(group);
+
+      // Camera position
+      if (isWall) {
+        camera.position.set(0, 0.8, 3);
+      } else {
+        camera.position.set(2, 1.5, 2);
+      }
+      camera.lookAt(0, 0, 0);
+
+      // Animation - auto rotation
+      const resource = { renderer, scene, animationId: null };
+      threeResources.push(resource);
+
+      function animate() {
+        resource.animationId = requestAnimationFrame(animate);
+        group.rotation.y += 0.003; // Slow Y-axis rotation
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // Filtering
+    function filterAssemblies(type) {
+      currentFilter = type;
+
+      // Activate tab
+      document.querySelectorAll('#assemblyTabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      renderAssemblies();
+    }
+
+    // Detail view
+    function showDetail(assemblyId) {
+      const assembly = calculator.getAllAssemblies().find(a => a.id === assemblyId);
+      if (!assembly) return;
+
+      const carbonPerM2 = assembly.totalCarbon / assembly.area;
+
+      const modalContent = document.getElementById('modalContent');
+      modalContent.innerHTML = `
+        <h3 id="modalTitle">${escapeHtml(assembly.name)}</h3>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <div class="detail-label">Structure Type</div>
+            <div class="detail-value">
+              ${getStructureTypeIcon(assembly.structureType)}
+              ${getStructureTypeName(assembly.structureType)}
+            </div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Area</div>
+            <div class="detail-value">${assembly.area.toFixed(2)} m²</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Total Carbon Emissions</div>
+            <div class="detail-value">${formatNumber(assembly.totalCarbon, 2)} kg CO₂eq</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Emissions per Unit Area</div>
+            <div class="detail-value">${formatNumber(carbonPerM2, 2)} kg CO₂eq/m²</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Created Date</div>
+            <div class="detail-value">${formatDate(assembly.createdAt)}</div>
+          </div>
+        </div>
+
+        <h4 style="margin-top: 30px; margin-bottom: 15px;">Layer Composition</h4>
+        <div class="detail-grid">
+          ${assembly.layers.map((layer, i) => {
+            const layerCarbon = calculator.calculateLayerCarbon(layer.material, layer.thickness, assembly.area);
+            return `
+              <div class="detail-item">
+                <div class="detail-label">${i + 1}. ${escapeHtml(layer.material.name)}</div>
+                <div class="detail-value">
+                  Thickness: ${layer.thickness}mm |
+                  Emissions: ${formatNumber(layerCarbon, 2)} kg CO₂eq
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      document.getElementById('detailModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.remove('show');
+    }
+
+    // Delete assembly
+    function deleteAssembly(assemblyId) {
+      if (confirm('Delete this assembly?')) {
+        calculator.removeAssembly(assemblyId);
+        // Also delete 3D JSON
+        try {
+          const stored = JSON.parse(localStorage.getItem('assemblies3D') || '{}');
+          delete stored[assemblyId];
+          localStorage.setItem('assemblies3D', JSON.stringify(stored));
+        } catch(e) {}
+        init();
+      }
+    }
+
+    // Delete all
+    function clearAllAssemblies() {
+      if (confirm('Delete all assemblies?\nThis action cannot be undone.')) {
+        calculator.clearAll();
+        localStorage.removeItem('assemblies3D');
+        init();
+      }
+    }
+
+    // Create new assembly
+    function createNewAssembly() {
+      window.location.href = 'material-selector-en.html';
+    }
+
+    // Export CSV
+    function exportData() {
+      const csv = calculator.exportToCSV();
+      if (!csv) {
+        alert('No data to export.');
+        return;
+      }
+
+      const filename = `jcode-assemblies-${new Date().toISOString().split('T')[0]}.csv`;
+      downloadCSV(csv, filename);
+      alert('CSV file has been downloaded.');
+    }
+
+    // Close modal on outside click
+    document.getElementById('detailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'detailModal') {
+        closeModal();
+      }
+    });
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('detailModal');
+        if (modal.classList.contains('show')) {
+          closeModal();
+        }
+      }
+    });
+
+    // Run initialization
+    init();
+  </script>
+</body>
+</html>
