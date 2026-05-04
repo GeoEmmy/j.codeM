@@ -634,12 +634,12 @@
     }
 
     /* 출처별 동그라미 색상 */
-    .source-ice .level-indicator { background: #e74c3c; }         /* ICE v3 - 빨강 */
+    /* ICE v3 제거됨 */
     .source-ec3 .level-indicator { background: #3498db; }         /* EC3 - 파랑 */
     .source-epd-kr .level-indicator { background: #2ecc71; }      /* 국내 EPD - 초록 */
     .source-okobaudat .level-indicator { background: #e67e22; }   /* Ökobaudat - 주황 */
     .source-2050 .level-indicator { background: #9b59b6; }        /* 2050 Materials - 보라 */
-    .source-epic .level-indicator { background: #1abc9c; }        /* EPiC - 틸 */
+    /* EPiC 제거됨 */
     .source-epd .level-indicator { background: #f1c40f; }         /* 기타 EPD - 노랑 */
     .source-lci .level-indicator { background: #16a085; }          /* 국가 LCI DB - 틸그린 */
     .source-academic .level-indicator { background: #34495e; }    /* 학술논문 - 남색 */
@@ -1327,13 +1327,11 @@
         </div>
       </div>
       <div class="source-legend" style="display:flex; justify-content:center; gap:14px; padding:0 0 32px 0; font-size:11px; color:#64748b; flex-wrap:wrap;">
-        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e74c3c;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>ICE v3</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#3498db;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EC3</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>국내 EPD</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#e67e22;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>Ökobaudat</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#9b59b6;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>2050 Materials</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#16a085;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>국가 LCI DB</span>
-        <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#1abc9c;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPiC</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#f1c40f;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>EPD</span>
         <span style="display:flex;align-items:center;gap:3px;"><span style="width:9px;height:9px;border-radius:50%;background:#34495e;display:inline-block;border:1px solid #fff;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></span>학술논문</span>
       </div>
@@ -1484,13 +1482,11 @@
     // 출처 → CSS 클래스 매핑
     function getSourceClass(source) {
       const s = (source || '').toLowerCase();
-      if (s.includes('ice')) return 'source-ice';
       if (s.includes('ec3')) return 'source-ec3';
       if (s.includes('국가 lci') || s.includes('국가lci')) return 'source-lci';
       if (s.includes('환경성적') || s.includes('국내epd') || s.includes('국내 epd')) return 'source-epd-kr';
-      if (s.includes('okobaudat') || s.includes('okoboudat')) return 'source-okobaudat';
+      if (s.includes('obd') || s.includes('okobaudat') || s.includes('okoboudat')) return 'source-okobaudat';
       if (s.includes('2050')) return 'source-2050';
-      if (s.includes('epic')) return 'source-epic';
       if (s.includes('epd')) return 'source-epd';
       if (s.includes('학술') || s.includes('논문')) return 'source-academic';
       return 'source-other';
@@ -1632,14 +1628,33 @@
       if (layerOriginalY.length === layerMeshes.length && layerMeshes.length > 1) {
         const isWall = (structureType === 'external' || structureType === 'internal');
         const isCeil = (structureType === 'ceiling');
-        const dir = isCeil ? -1 : isWall ? -1 : 1; // 천장/외벽은 반대 방향으로 벌림
-        layerMeshes.forEach((mesh, i) => {
-          const offset = (i - (layerMeshes.length - 1) / 2) * explodeGap * explodeProgress * dir;
-          if (isWall) {
-            mesh.position.x = layerOriginalY[i] + offset;
-          } else {
-            mesh.position.y = layerOriginalY[i] + offset;
+        const dir = isCeil ? -1 : isWall ? -1 : 1;
+        // 스터드+단열재 쌍은 같은 offset 사용 (같은 위치에 있으면 그룹)
+        const groups = []; // [{indices: [i, ...], center: ...}]
+        const used = new Set();
+        for (let i = 0; i < layerMeshes.length; i++) {
+          if (used.has(i)) continue;
+          const posI = layerOriginalY[i];
+          const group = [i];
+          // 같은 위치(±0.001)에 있는 다른 메시 찾기
+          for (let j = i + 1; j < layerMeshes.length; j++) {
+            if (Math.abs(layerOriginalY[j] - posI) < 0.001) {
+              group.push(j);
+              used.add(j);
+            }
           }
+          used.add(i);
+          groups.push(group);
+        }
+        groups.forEach((group, gi) => {
+          const offset = (gi - (groups.length - 1) / 2) * explodeGap * explodeProgress * dir;
+          group.forEach(i => {
+            if (isWall) {
+              layerMeshes[i].position.x = layerOriginalY[i] + offset;
+            } else {
+              layerMeshes[i].position.y = layerOriginalY[i] + offset;
+            }
+          });
         });
       }
 
@@ -2533,14 +2548,25 @@
       // 외벽: 우→좌 적층 (외부마감 +X, 내부 -X) — 총 두께를 먼저 계산
       let wallTotalThickness = 0;
       if (isWall) {
-        selectedLayers.forEach(l => {
+        let prevIsStud = false;
+        selectedLayers.forEach((l, li) => {
           const mn = (l.material.name || '').toLowerCase();
+          const men = (l.material.nameEn || '').toLowerCase();
           if (mn.includes('철근')) return;
           if (mn.includes('철재') && mn.includes('하지틀') || mn === '목재틀') {
             const isSt = mn.includes('철재');
             wallTotalThickness += (isSt ? 0.04 : 0.035) + (isSt ? 0.05 : 0.04);
+            prevIsStud = false;
+          } else if (mn.includes('스틸스터드') || mn.includes('목재스터드') || men === 'steel_stud' || men === 'wood_stud') {
+            // 스터드 두께는 다음 단열재 두께로 결정되므로 여기서는 추가하지 않음 (studfill에서 통합)
+            prevIsStud = true;
+          } else if (prevIsStud) {
+            // 직전이 스터드 → 단열재 두께 = 스터드+단열재 통합 두께
+            wallTotalThickness += l.thickness / 1000;
+            prevIsStud = false;
           } else {
             wallTotalThickness += l.thickness / 1000;
+            prevIsStud = false;
           }
         });
       }
@@ -3226,7 +3252,7 @@
             });
           }
           // ALC블록 — 매트한 아이보리
-          if (n.includes('alc') || nameEn.includes('alc')) {
+          if (n.includes('alc') || nameEn === 'alc_internal') {
             return new THREE.MeshStandardMaterial({ color: 0xf0e8d4, roughness: 0.9, metalness: 0.0 });
           }
           // 석회미장 — 매트한 아이보리
@@ -3337,6 +3363,171 @@
           // 점토타일
           if (n.includes('점토타일') || n.includes('점토') || nameEn.includes('clay_tile')) {
             return new THREE.MeshStandardMaterial({ color: 0xc4703c, roughness: 0.92, metalness: 0.0 });
+          }
+
+          // ===== 내벽 전용 자재 =====
+          // 벽지 — 연한 아이보리 매트
+          if (n.includes('벽지') || nameEn === 'wallpaper') {
+            return new THREE.MeshStandardMaterial({ color: 0xfaf8f2, roughness: 0.85, metalness: 0.0 });
+          }
+          // 석고보드 — 연한 베이지 매트
+          if (n.includes('석고보드') || nameEn === 'gypsum_board') {
+            return new THREE.MeshStandardMaterial({ color: 0xf0ece4, roughness: 0.85, metalness: 0.0 });
+          }
+          // 석고미장 — 흰색 매트 (EC3 Aygips)
+          if (n.includes('석고미장') || nameEn === 'gypsum_plaster') {
+            return new THREE.MeshStandardMaterial({ color: 0xf5f2ec, roughness: 0.9, metalness: 0.0 });
+          }
+          // 규산칼슘보드 — 연한 회색 + 타공 패턴 (alphaMap으로 실제 구멍)
+          if (n.includes('규산칼슘') || nameEn.includes('calcium_silicate') || nameEn === 'calcium_silicate_board') {
+            const alphaTex = makeCanvasTex('calsilboard_alpha3', 64, (ctx, s) => {
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, s, s);
+              const sp = 8;
+              for (let y = sp/2; y < s; y += sp) {
+                for (let x = sp/2; x < s; x += sp) {
+                  ctx.fillStyle = '#000000';
+                  ctx.beginPath();
+                  ctx.arc(x, y, 2, 0, Math.PI * 2);
+                  ctx.fill();
+                }
+              }
+            });
+            alphaTex.repeat.set(8, 8);
+            return new THREE.MeshStandardMaterial({
+              color: 0xe0dcd8, roughness: 0.8, metalness: 0.0,
+              alphaMap: alphaTex, transparent: true, side: THREE.DoubleSide
+            });
+          }
+          // 파티클보드 — 목재 칩 텍스처
+          if (n.includes('파티클보드') || nameEn === 'particle_board') {
+            const tex = makeCanvasTex('particle_board', 512, (ctx, s) => {
+              ctx.fillStyle = '#c8a878';
+              ctx.fillRect(0, 0, s, s);
+              // 거친 나무 칩 조각
+              for (let i = 0; i < 800; i++) {
+                const x = Math.random() * s, y = Math.random() * s;
+                const w = 2 + Math.random() * 8, h = 1 + Math.random() * 4;
+                ctx.fillStyle = `rgba(${150+Math.random()*60},${120+Math.random()*50},${70+Math.random()*40},${0.3+Math.random()*0.4})`;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(Math.random() * Math.PI);
+                ctx.fillRect(-w/2, -h/2, w, h);
+                ctx.restore();
+              }
+              // 미세 입자
+              for (let i = 0; i < 1500; i++) {
+                ctx.fillStyle = `rgba(${130+Math.random()*70},${100+Math.random()*50},${60+Math.random()*40},${0.15+Math.random()*0.2})`;
+                const sz = 0.5 + Math.random() * 2;
+                ctx.fillRect(Math.random()*s, Math.random()*s, sz, sz);
+              }
+            });
+            tex.repeat.set(2, 2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.75, metalness: 0.0 });
+          }
+          // 흡음패널 — 나무색 세로 슬릿 텍스처
+          if (n.includes('흡음패널') || nameEn === 'acoustic_panel') {
+            const tex = makeCanvasTex('acoustic_slat', 256, (ctx, s) => {
+              ctx.fillStyle = '#8a7050';
+              ctx.fillRect(0, 0, s, s);
+              // 세로 슬릿 (촘촘한 간격)
+              const slitW = 2;
+              const slitGap = 8;
+              for (let x = 0; x < s; x += slitGap) {
+                ctx.fillStyle = `rgba(30,25,18,${0.5+Math.random()*0.3})`;
+                ctx.fillRect(x, 0, slitW, s);
+              }
+              // 나뭇결 (가로)
+              for (let i = 0; i < 30; i++) {
+                const y = Math.random() * s;
+                ctx.strokeStyle = `rgba(${100+Math.random()*40},${75+Math.random()*30},${45+Math.random()*25},${0.1+Math.random()*0.1})`;
+                ctx.lineWidth = 0.5;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                for (let x = 0; x < s; x += 10) ctx.lineTo(x, y + (Math.random()-0.5)*2);
+                ctx.stroke();
+              }
+            });
+            tex.repeat.set(4, 2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.7, metalness: 0.05 });
+          }
+          // 점토미장 — 황토색 매트
+          if (n.includes('점토미장') || nameEn === 'clay_plaster') {
+            return new THREE.MeshStandardMaterial({ color: 0xc4a070, roughness: 0.92, metalness: 0.0 });
+          }
+          // 폴리우레탄흡음재 — 짙은 회색 스펀지
+          if (n.includes('폴리우레탄흡음') || nameEn === 'polyurethane_acoustic') {
+            return new THREE.MeshStandardMaterial({ color: 0x404040, roughness: 0.95, metalness: 0.0 });
+          }
+          // 목모보드 — 천장과 동일 텍스처
+          if (n.includes('목모') || nameEn === 'wood_wool_board') {
+            const tex = makeTexture('wood_wool');
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95, metalness: 0.0 });
+          }
+          // MDF — 균일한 탄색
+          if (n.toUpperCase().includes('MDF') || nameEn === 'mdf') {
+            return new THREE.MeshStandardMaterial({ color: 0xb09060, roughness: 0.6, metalness: 0.0 });
+          }
+          // 대나무보드 — 세로 나뭇결 + 마디
+          if (n.includes('대나무보드') || nameEn === 'bamboo_board') {
+            const tex = bambooTex(); tex.repeat.set(2,2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+          }
+          // 대나무구조재 — 세로 나뭇결 + 마디
+          if (n.includes('대나무구조') || nameEn === 'bamboo_structural') {
+            const tex = makeCanvasTex('bamboo_struct', 512, (ctx, s) => {
+              ctx.fillStyle = '#c8a050';
+              ctx.fillRect(0, 0, s, s);
+              // 세로 대나무 스트립 라인
+              const stripW = 12;
+              for (let x = 0; x < s; x += stripW) {
+                ctx.strokeStyle = `rgba(${150+Math.random()*30},${120+Math.random()*20},${50+Math.random()*20},${0.2+Math.random()*0.15})`;
+                ctx.lineWidth = 0.5 + Math.random();
+                ctx.beginPath();
+                ctx.moveTo(x, 0); ctx.lineTo(x, s);
+                ctx.stroke();
+              }
+              // 세로 나뭇결
+              for (let i = 0; i < 80; i++) {
+                const x = Math.random() * s;
+                ctx.strokeStyle = `rgba(${130+Math.random()*40},${100+Math.random()*30},${40+Math.random()*20},${0.1+Math.random()*0.12})`;
+                ctx.lineWidth = 0.5;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                for (let y = 0; y < s; y += 15) ctx.lineTo(x + (Math.random()-0.5)*3, y);
+                ctx.stroke();
+              }
+              // 마디 (가로 짧은 선)
+              for (let i = 0; i < 25; i++) {
+                const y = Math.random() * s;
+                const x = Math.random() * s;
+                const w = 8 + Math.random() * 15;
+                ctx.strokeStyle = `rgba(${110+Math.random()*30},${85+Math.random()*25},${35+Math.random()*20},${0.25+Math.random()*0.2})`;
+                ctx.lineWidth = 1 + Math.random();
+                ctx.beginPath();
+                ctx.moveTo(x - w/2, y);
+                ctx.lineTo(x + w/2, y);
+                ctx.stroke();
+              }
+            });
+            tex.repeat.set(2, 2);
+            return new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55, metalness: 0.0 });
+          }
+          // 목재스터드 — 밝은 나무색
+          if (n.includes('목재스터드') || nameEn === 'wood_stud') {
+            return new THREE.MeshStandardMaterial({ color: 0xc8a468, roughness: 0.75, metalness: 0.0 });
+          }
+          // 스틸스터드 — 아연도금 은색
+          if (n.includes('스틸스터드') || nameEn === 'steel_stud') {
+            return new THREE.MeshStandardMaterial({ color: 0xc0c4c8, roughness: 0.35, metalness: 0.7 });
+          }
+          // SGP칸막이(샌드위치패널) — 아이보리 매트 금속
+          if (n.includes('sgp') || (n.includes('칸막이') && n.includes('샌드위치')) || nameEn === 'sandwich_panel') {
+            return new THREE.MeshStandardMaterial({ color: 0xf0ead8, roughness: 0.65, metalness: 0.35 });
+          }
+          // 볏짚단열패널 — 황금색 짚
+          if (n.includes('볏짚') || nameEn.includes('straw')) {
+            return new THREE.MeshStandardMaterial({ color: 0xd8c070, roughness: 0.9, metalness: 0.0 });
           }
 
           // 콘크리트 계열
@@ -3504,15 +3695,21 @@
           const n = matName;
           const ne = nameEn;
 
-          // 외벽 자재 패턴 분류
+          // 벽체 자재 패턴 분류
           function getWallPattern() {
+            // 스틸스터드 / 목재스터드 — 전용 프레임
+            if (n.includes('스틸스터드') || n.includes('목재스터드') || ne === 'steel_stud' || ne === 'wood_stud')
+              return 'studframe';
             // 유리블록 — 정사각 타일 (블록보다 먼저 체크)
             if (n.includes('유리블록'))
               return 'tile';
             // 벽돌/블록형
             if (n.includes('벽돌') || n.includes('블록') || n.includes('alc') || n.includes('대마콘크리트') ||
-                ne.includes('brick') || ne.includes('block') || ne.includes('alc') || ne.includes('hempcrete') || ne.includes('adobe'))
+                ne.includes('brick') || ne.includes('block') || ne === 'alc_internal' || ne.includes('hempcrete') || ne.includes('adobe'))
               return 'brick';
+            // 포세린타일 — 석재형 큰 매지
+            if (n.includes('포세린') || nameEn.includes('porcelain'))
+              return 'stone';
             // 타일형
             if (n.includes('세라믹타일') || n.includes('점토타일') || n.includes('유리타일') || n.includes('모자이크'))
               return 'tile';
@@ -3526,6 +3723,46 @@
             // 미네랄울샌드위치패널 — 전용 패턴
             if (n.includes('미네랄울샌드위치') || ne === 'sandwich_panel')
               return 'sandwich';
+            // 석고보드 — 한 판 (매지 없음)
+            if (n.includes('석고보드') || ne === 'gypsum_board')
+              return 'solid';
+            // 코르크패널 — 패널형 매지
+            if (n.includes('코르크패널') || (n.includes('코르크') && !n.includes('단열')))
+              return 'panel';
+            // 규산칼슘보드 — 한 판 (매지 없음)
+            if (n.includes('규산칼슘') || ne.includes('calcium_silicate'))
+              return 'solid';
+            // 파티클보드 — 한 판 (매지 없음)
+            if (n.includes('파티클보드') || ne === 'particle_board')
+              return 'solid';
+            // 흡음패널 — 한 판 (매지 없음)
+            if (n.includes('흡음패널') || ne === 'acoustic_panel')
+              return 'solid';
+            // 폴리우레탄흡음재 — 한 판 (매지 없음)
+            if (n.includes('폴리우레탄흡음') || ne === 'polyurethane_acoustic')
+              return 'solid';
+            // 대나무보드 — 한 판 (매지 없음)
+            if (n.includes('대나무보드') || ne === 'bamboo_board')
+              return 'solid';
+            // 목모보드 — 한 판 (매지 없음)
+            if (n.includes('목모') || ne === 'wood_wool_board')
+              return 'solid';
+            // 단열재 — 직전이 스터드면 studfill, 아니면 solid
+            if (n.includes('그라스울') || n.includes('암면') || n.includes('양모') || n.includes('셀룰로오스') ||
+                n.includes('헴프') || n.includes('목섬유') || n.includes('볏짚') || n.includes('코르크단열') ||
+                n.includes('폴리우레탄흡음') ||
+                ne.includes('glass_wool') || ne.includes('rock_wool') || ne.includes('wool_insulation') ||
+                ne.includes('cellulose') || ne.includes('hemp') || ne.includes('wood_fiber') ||
+                ne.includes('straw') || ne.includes('cork_insulation') || ne === 'polyurethane_acoustic') {
+              // 앞뒤 레이어가 스터드인지 확인
+              const prevL = index > 0 ? selectedLayers[index - 1] : null;
+              const nextL = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+              const prevN = prevL ? (prevL.material.name || '').toLowerCase() : '';
+              const nextN = nextL ? (nextL.material.name || '').toLowerCase() : '';
+              if (prevN.includes('스틸스터드') || prevN.includes('목재스터드') ||
+                  nextN.includes('스틸스터드') || nextN.includes('목재스터드')) return 'studfill';
+              return 'solid';
+            }
             // 단열재 (PF보드, 경질우레탄 등) — solid (면별 재질)
             if (n.includes('pf보드') || n.includes('경질우레탄') || n.includes('단열') || n.includes('보온판') || n.includes('볏짚') ||
                 ne.includes('phenolic') || ne.includes('rigid_urethane') || ne.includes('insulation') || ne === 'xps' || ne === 'eps' ||
@@ -3836,6 +4073,203 @@
             pos -= thickness;
             group3D.add(sandGroup);
             layerMeshes.push(sandGroup);
+          } else if (wp === 'studframe') {
+            // 스틸스터드/목재스터드 — C채널 수직 프레임
+            // 다음 레이어(단열재)의 두께에 따라 스터드 깊이 결정
+            const studGroup = new THREE.Group();
+            const isSteel = n.includes('스틸') || ne === 'steel_stud';
+            const studMat = floorMat;
+            const studW = isSteel ? 0.04 : 0.038;   // 스터드 폭 (플랜지)
+            // 다음 레이어 단열재 두께 찾기
+            let nextInsulThick = 0;
+            for (let ni = index + 1; ni < selectedLayers.length; ni++) {
+              const nm = (selectedLayers[ni].material.name || '').toLowerCase();
+              const nen = (selectedLayers[ni].material.nameEn || '').toLowerCase();
+              if (nm.includes('단열') || nm.includes('그라스울') || nm.includes('암면') || nm.includes('볏짚') ||
+                  nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('양모') || nm.includes('목섬유') ||
+                  nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                  nen.includes('insulation') || nen.includes('glass_wool') || nen.includes('rock_wool') ||
+                  nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                  nen.includes('wool') || nen.includes('wood_fiber') || nen.includes('polyurethane_acoustic')) {
+                nextInsulThick = selectedLayers[ni].thickness / 1000;
+                break;
+              }
+            }
+            // 앞뒤 레이어에서 단열재 두께 찾기 (순서 무관)
+            if (nextInsulThick === 0) {
+              for (let ni = index - 1; ni >= 0; ni--) {
+                const nm = (selectedLayers[ni].material.name || '').toLowerCase();
+                const nen = (selectedLayers[ni].material.nameEn || '').toLowerCase();
+                if (nm.includes('단열') || nm.includes('그라스울') || nm.includes('암면') || nm.includes('볏짚') ||
+                    nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('양모') || nm.includes('목섬유') ||
+                    nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                    nen.includes('insulation') || nen.includes('glass_wool') || nen.includes('rock_wool') ||
+                    nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                    nen.includes('wool') || nen.includes('wood_fiber') || nen.includes('polyurethane_acoustic')) {
+                  nextInsulThick = selectedLayers[ni].thickness / 1000;
+                  break;
+                }
+                break; // 직전만 체크
+              }
+            }
+            const studD = nextInsulThick > 0 ? nextInsulThick : (isSteel ? 0.075 : 0.089);
+            const studT = isSteel ? 0.001 : studW;  // 두께 (강재 얇음 / 목재=폭과 동일)
+            const runnerH = isSteel ? 0.03 : 0.038; // 러너 높이
+            const braceH = isSteel ? 0.025 : 0.03;  // 보강채널 높이
+            const studSpacing = 0.4; // 400mm 간격
+            const studCount = Math.max(2, Math.round(wallW / studSpacing) + 1);
+            const actualSpacing = wallW / (studCount - 1);
+            // 직전이 studfill이면 그 위치에 맞추기 (단열재가 먼저 온 경우)
+            const prevIsInsul = index > 0 && (() => {
+              const pm = (selectedLayers[index-1].material.name||'').toLowerCase();
+              const pe = (selectedLayers[index-1].material.nameEn||'').toLowerCase();
+              return pm.includes('그라스울') || pm.includes('암면') || pm.includes('양모') ||
+                pm.includes('셀룰로오스') || pm.includes('헴프') || pm.includes('목섬유') ||
+                pm.includes('볏짚') || pm.includes('코르크단열') || pm.includes('폴리우레탄흡음') ||
+                pe.includes('glass_wool') || pe.includes('rock_wool') || pe.includes('insulation') ||
+                pe.includes('straw') || pe.includes('cellulose') || pe.includes('hemp') ||
+                pe.includes('wool') || pe.includes('wood_fiber') || pe === 'polyurethane_acoustic';
+            })();
+            const cx = prevIsInsul ? pos + studD / 2 : pos - studD / 2;
+
+            // 수직 스터드 (C채널 또는 각재)
+            for (let i = 0; i < studCount; i++) {
+              const z = -wallW / 2 + i * actualSpacing;
+              if (isSteel) {
+                // C채널: 웹(뒷판) + 플랜지 2개
+                // 웹
+                const web = new THREE.Mesh(
+                  new THREE.BoxGeometry(studT, wallH - runnerH * 2, studW), studMat
+                );
+                web.position.set(cx - studD/2 + studT/2, 0, z);
+                web.castShadow = true;
+                studGroup.add(web);
+                // 앞 플랜지
+                const f1 = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studT), studMat
+                );
+                f1.position.set(cx, 0, z + studW/2 - studT/2);
+                f1.castShadow = true;
+                studGroup.add(f1);
+                // 뒤 플랜지
+                const f2 = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studT), studMat
+                );
+                f2.position.set(cx, 0, z - studW/2 + studT/2);
+                f2.castShadow = true;
+                studGroup.add(f2);
+              } else {
+                // 목재: 단순 각재
+                const stud = new THREE.Mesh(
+                  new THREE.BoxGeometry(studD, wallH - runnerH * 2, studW), studMat
+                );
+                stud.position.set(cx, 0, z);
+                stud.castShadow = true;
+                studGroup.add(stud);
+              }
+            }
+
+            // 상부 러너 (U채널 또는 깔도리)
+            const topRunner = new THREE.Mesh(
+              new THREE.BoxGeometry(studD, runnerH, wallW), studMat
+            );
+            topRunner.position.set(cx, wallH/2 - runnerH/2, 0);
+            topRunner.castShadow = true;
+            studGroup.add(topRunner);
+
+            // 하부 러너
+            const botRunner = new THREE.Mesh(
+              new THREE.BoxGeometry(studD, runnerH, wallW), studMat
+            );
+            botRunner.position.set(cx, -wallH/2 + runnerH/2, 0);
+            botRunner.castShadow = true;
+            studGroup.add(botRunner);
+
+            // 중간 보강채널
+            const brace = new THREE.Mesh(
+              new THREE.BoxGeometry(studD * 0.6, braceH, wallW), studMat
+            );
+            brace.position.set(cx, 0, 0);
+            brace.castShadow = true;
+            studGroup.add(brace);
+
+            // 인접 단열재가 있으면 pos를 여기서 빼지 않음 (studfill에서 통합)
+            const prevL2 = index > 0 ? selectedLayers[index - 1] : null;
+            const nextL = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+            const prevN2 = prevL2 ? (prevL2.material.name || '').toLowerCase() : '';
+            const nextN = nextL ? (nextL.material.name || '').toLowerCase() : '';
+            const nextNe = nextL ? (nextL.material.nameEn || '').toLowerCase() : '';
+            const prevNe2 = prevL2 ? (prevL2.material.nameEn || '').toLowerCase() : '';
+            function isInsul(nm, nen) {
+              return nm.includes('그라스울') || nm.includes('암면') || nm.includes('양모') ||
+                nm.includes('셀룰로오스') || nm.includes('헴프') || nm.includes('목섬유') ||
+                nm.includes('볏짚') || nm.includes('코르크단열') || nm.includes('폴리우레탄흡음') ||
+                nen.includes('glass_wool') || nen.includes('rock_wool') || nen.includes('insulation') ||
+                nen.includes('straw') || nen.includes('cellulose') || nen.includes('hemp') ||
+                nen.includes('wool') || nen.includes('wood_fiber') || nen === 'polyurethane_acoustic';
+            }
+            const hasNextInsul = isInsul(nextN, nextNe);
+            const hasPrevInsul = isInsul(prevN2, prevNe2);
+            if (!hasNextInsul && !hasPrevInsul) pos -= studD;
+            // 직전이 단열재면 이미 pos가 빠져있으므로 추가로 빼지 않음
+            group3D.add(studGroup);
+            layerMeshes.push(studGroup);
+          } else if (wp === 'studfill') {
+            // 단열재 — 인접 스터드 프레임 사이 충진 (앞뒤 모두 체크)
+            const fillGroup = new THREE.Group();
+            const prevLayer = index > 0 ? selectedLayers[index - 1] : null;
+            const nextLayer = index + 1 < selectedLayers.length ? selectedLayers[index + 1] : null;
+            const prevName = prevLayer ? (prevLayer.material.name || '').toLowerCase() : '';
+            const nextName = nextLayer ? (nextLayer.material.name || '').toLowerCase() : '';
+            const isStudPrev = prevName.includes('스틸스터드') || prevName.includes('목재스터드');
+            const isStudNext = nextName.includes('스틸스터드') || nextName.includes('목재스터드');
+            const hasStud = isStudPrev || isStudNext;
+            const studName = isStudPrev ? prevName : nextName;
+            const isSteel = studName.includes('스틸');
+            const fStudD = thickness; // 단열재 두께 = 스터드 깊이
+            const fStudW = hasStud ? (isSteel ? 0.04 : 0.038) : 0;
+            const fRunnerH = hasStud ? (isSteel ? 0.03 : 0.038) : 0;
+            const fStudSpacing = 0.4;
+            const fStudCount = hasStud ? Math.max(2, Math.round(wallW / fStudSpacing) + 1) : 0;
+            const fActualSpacing = hasStud ? wallW / (fStudCount - 1) : wallW;
+
+            if (hasStud && fStudCount > 1) {
+              // 스터드 사이사이에 단열재 블록 배치 (보강채널로 상하 분리)
+              const fBraceH = isSteel ? 0.025 : 0.03;
+              const fillHTotal = wallH - fRunnerH * 2;
+              const fillHUpper = (fillHTotal - fBraceH) / 2;
+              const fillHLower = (fillHTotal - fBraceH) / 2;
+              const fillX = pos - fStudD / 2;
+              for (let i = 0; i < fStudCount - 1; i++) {
+                const z1 = -wallW / 2 + i * fActualSpacing + fStudW / 2;
+                const z2 = -wallW / 2 + (i + 1) * fActualSpacing - fStudW / 2;
+                const fillW = z2 - z1;
+                if (fillW < 0.01) continue;
+                // 상부 블록
+                const geoUp = new THREE.BoxGeometry(fStudD * 0.95, fillHUpper, fillW);
+                const fillUp = new THREE.Mesh(geoUp, floorMat);
+                fillUp.position.set(fillX, fBraceH / 2 + fillHUpper / 2, (z1 + z2) / 2);
+                fillUp.castShadow = true;
+                fillGroup.add(fillUp);
+                // 하부 블록
+                const geoDown = new THREE.BoxGeometry(fStudD * 0.95, fillHLower, fillW);
+                const fillDown = new THREE.Mesh(geoDown, floorMat);
+                fillDown.position.set(fillX, -fBraceH / 2 - fillHLower / 2, (z1 + z2) / 2);
+                fillDown.castShadow = true;
+                fillGroup.add(fillDown);
+              }
+              pos -= thickness;
+            } else {
+              // 스터드 없으면 일반 한 판
+              geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
+              const fill = new THREE.Mesh(geometry, floorMat);
+              fill.position.x = pos - thickness / 2;
+              fill.castShadow = true;
+              fillGroup.add(fill);
+              pos -= thickness;
+            }
+            group3D.add(fillGroup);
+            layerMeshes.push(fillGroup);
           } else if (wp === 'metalsheet') {
             // 금속 시트 — 한 판 + 에지
             geometry = new THREE.BoxGeometry(thickness, wallH, wallW);
@@ -3847,6 +4281,35 @@
             pos -= thickness;
             group3D.add(mesh);
             layerMeshes.push(mesh);
+          } else if (n.includes('폴리우레탄흡음') || ne === 'polyurethane_acoustic') {
+            // 폴리우레탄흡음재 — 에그크레이트 울퉁불퉁 표면
+            const foamGroup = new THREE.Group();
+            // 베이스 판
+            const baseT = thickness * 0.4;
+            const baseGeo = new THREE.BoxGeometry(baseT, wallH, wallW);
+            const baseMesh = new THREE.Mesh(baseGeo, floorMat);
+            baseMesh.position.set(pos - thickness + baseT/2, 0, 0);
+            baseMesh.castShadow = true;
+            foamGroup.add(baseMesh);
+            // 반구 돌기 (앞면에 에그크레이트 패턴)
+            const bumpR = 0.04;
+            const bumpSpacing = bumpR * 2.2;
+            const bumpX = pos - thickness + baseT;
+            for (let y = -wallH/2 + bumpSpacing; y < wallH/2; y += bumpSpacing) {
+              for (let z = -wallW/2 + bumpSpacing; z < wallW/2; z += bumpSpacing) {
+                const sphere = new THREE.Mesh(
+                  new THREE.SphereGeometry(bumpR, 8, 6, 0, Math.PI),
+                  floorMat
+                );
+                sphere.rotation.y = Math.PI / 2;
+                sphere.rotation.x = Math.PI;
+                sphere.position.set(bumpX + bumpR * 0.3, y, z);
+                foamGroup.add(sphere);
+              }
+            }
+            pos -= thickness;
+            group3D.add(foamGroup);
+            layerMeshes.push(foamGroup);
           } else {
             // solid, coat, insulation 등 — 한 판 + 에지
             const isPFOrUrethane = n.includes('pf보드') || n.includes('경질우레탄') ||
@@ -4206,7 +4669,9 @@
       const showEmptyMessage = filtered.length === 0;
 
       // 행 슬롯 구성: 외벽은 13행, 나머지는 11행
-      const rowSlotCounts = [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];   // 11행 (외벽/내벽 공통)
+      const rowSlotCounts = structureType === 'floor'
+        ? [1, 2, 3, 5, 7, 8, 10, 11, 13, 14, 16]          // 11행
+        : [1, 2, 3, 4, 6, 7, 8, 10, 12, 14, 16];          // 11행 (외벽/내벽)
 
       // m² 단위 여부 (천장, 창호)
       const isM2Unit = (structureType === 'ceiling' || structureType === 'window');
@@ -4280,17 +4745,25 @@
         // === 바닥/외벽/내벽: GWP 레벨별로 분리 후 각 레벨 내 내림차순 배치 ===
 
         // 레벨별 GWP 경계 (외벽: 13행, 나머지: 11행)
-        const levelBounds = [
+        const levelBounds = structureType === 'floor' ? [
+          { level: 1, min: 10000, rows: [1, 2] },          // Row 1-2: 3슬롯
+          { level: 2, min: 1000,  rows: [3, 4] },          // Row 3-4: 8슬롯
+          { level: 3, min: 100,   rows: [5, 6, 7] },      // Row 5-7: 25슬롯
+          { level: 4, min: 0,     rows: [8, 9] },         // Row 8-9: 24슬롯
+          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 34슬롯
+        ] : [
           { level: 1, min: 10000, rows: [1, 2, 3] },       // Row 1-3: 6슬롯
           { level: 2, min: 1000,  rows: [4, 5] },          // Row 4-5: 10슬롯
           { level: 3, min: 100,   rows: [6, 7, 8] },      // Row 6-8: 25슬롯
           { level: 4, min: 0,     rows: [9] },            // Row 9: 12슬롯
-          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 32슬롯
+          { level: 5, min: -Infinity, rows: [10, 11] },   // Row 10-11: 30슬롯
         ];
 
         // 레벨 경계 행 (그룹 구분선 표시용)
-        const groupBoundaryRows = [3, 5, 8, 9];
-        const carbonLabels = { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' };
+        const groupBoundaryRows = structureType === 'floor' ? [2, 4, 7, 9] : [3, 5, 8, 9];
+        const carbonLabels = structureType === 'floor'
+          ? { 2: '10,000 kgCO₂e/m³', 4: '1,000 kgCO₂e/m³', 7: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³' }
+          : { 3: '10,000 kgCO₂e/m³', 5: '1,000 kgCO₂e/m³', 8: '100 kgCO₂e/m³', 9: '0 kgCO₂e/m³'};
 
         // 전체 자재를 레벨별로 분류 (필터 무관하게 슬롯 유지)
         const filteredSet = new Set(filtered.map(m => m.id));
@@ -4310,7 +4783,9 @@
         for (let rowIndex = 0; rowIndex < rowSlotCounts.length; rowIndex++) {
           const rowNumber = rowIndex + 1;
           const slotCount = rowSlotCounts[rowIndex];
-          const level = rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5;
+          const level = structureType === 'floor'
+            ? (rowNumber <= 2 ? 1 : rowNumber <= 4 ? 2 : rowNumber <= 7 ? 3 : rowNumber <= 9 ? 4 : 5)  // 11행
+            : (rowNumber <= 3 ? 1 : rowNumber <= 5 ? 2 : rowNumber <= 8 ? 3 : rowNumber <= 9 ? 4 : 5); // 11행
 
           const tiles = [];
           let hasContent = false;
