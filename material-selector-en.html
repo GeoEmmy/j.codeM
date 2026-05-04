@@ -66,7 +66,8 @@
       flex: 1;
       justify-content: center;
       max-width: none;
-      margin-right: 230px; /* Offset by sidebar width */
+      margin-right: 200px; /* Offset by sidebar width */
+      margin-left: 30px; /* Shift right for EN layout */
     }
 
     .nav-btn {
@@ -1254,11 +1255,15 @@
   <!-- Main navigation -->
   <nav class="main-nav">
     <!-- Left: Logo -->
-    <div class="nav-brand">
+    <div class="nav-brand" style="display:flex; align-items:center; gap:10px;">
       <a href="index-en.html" class="brand-link">
         <span class="logo-text">J.codE</span>
         <span class="logo-accent">M</span>
       </a>
+      <div style="display:flex; gap:3px; background:rgba(0,0,0,0.06); border-radius:16px; padding:3px;">
+        <a href="#" onclick="event.preventDefault(); window.location.href='material-selector.html'+window.location.search;" style="padding:4px 10px; border-radius:13px; font-size:11px; font-weight:600; text-decoration:none; color:#2d3436;">KR</a>
+        <a href="#" onclick="event.preventDefault();" style="padding:4px 10px; border-radius:13px; font-size:11px; font-weight:600; text-decoration:none; background:#00b894; color:#fff;">EN</a>
+      </div>
     </div>
 
     <!-- Center: Component menu -->
@@ -1289,10 +1294,6 @@
       <a href="index-en.html" class="action-btn home-btn">
         Home
       </a>
-      <div style="display:flex; gap:2px; background:rgba(255,255,255,0.15); border-radius:14px; padding:2px;">
-        <a href="#" onclick="event.preventDefault(); window.location.href='material-selector.html'+window.location.search;" style="padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; text-decoration:none; color:rgba(255,255,255,0.7);">KR</a>
-        <a href="#" onclick="event.preventDefault();" style="padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; text-decoration:none; background:#00b894; color:#fff;">EN</a>
-      </div>
     </div>
   </nav>
 

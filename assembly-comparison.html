@@ -760,14 +760,18 @@
   <!-- 메인 네비게이션 -->
   <nav class="main-nav">
     <!-- 좌측: 로고 -->
-    <div class="nav-brand">
+    <div class="nav-brand" style="display:flex; align-items:center; gap:10px;">
       <a href="index.html" class="brand-link">
         <span class="logo-text">J.codE</span>
         <span class="logo-accent">M</span>
       </a>
+      <div style="display:flex; gap:3px; background:rgba(0,0,0,0.06); border-radius:16px; padding:3px;">
+        <a href="#" onclick="event.preventDefault();" style="padding:4px 10px; border-radius:13px; font-size:11px; font-weight:600; text-decoration:none; background:#00b894; color:#fff;">KR</a>
+        <a href="assembly-comparison-en.html" style="padding:4px 10px; border-radius:13px; font-size:11px; font-weight:600; text-decoration:none; color:#2d3436;">EN</a>
+      </div>
     </div>
 
-    <!-- 중앙: 빈 공간 (material-selector와 레이아웃 동일하게) -->
+    <!-- 중앙: 빈 공간 -->
     <div class="nav-menu"></div>
 
     <!-- 우측: 액션 버튼 -->
@@ -779,10 +783,6 @@
       <a href="material-selector.html" class="action-btn home-btn">
         자재 선택
       </a>
-      <div style="display:flex; gap:2px; background:rgba(255,255,255,0.15); border-radius:14px; padding:2px;">
-        <a href="#" onclick="event.preventDefault();" style="padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; text-decoration:none; background:#00b894; color:#fff;">KR</a>
-        <a href="assembly-comparison-en.html" style="padding:3px 8px; border-radius:12px; font-size:11px; font-weight:600; text-decoration:none; color:rgba(255,255,255,0.7);">EN</a>
-      </div>
     </div>
   </nav>
 
