@@ -1308,68 +1308,132 @@
       directionalLight3.position.set(0, -5, 5);
       scene.add(directionalLight3);
 
-      // 자재별 속성 함수
+      // 저장된 3D JSON 복원 시도
+      const stored3D = JSON.parse(localStorage.getItem('assemblies3D') || '{}');
+      const sceneJson = stored3D[assembly.id];
+
+      if (sceneJson) {
+        // 저장된 3D 모델 복원
+        const loader = new THREE.ObjectLoader();
+        const group = loader.parse(sceneJson);
+        group.rotation.set(0, 0, 0); // 회전 리셋
+        scene.add(group);
+
+        const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
+        const isWindow = (assembly.structureType === 'window');
+        const isCeiling = (assembly.structureType === 'ceiling');
+
+        // 기본 카메라 위치
+        let radius = isWall || isWindow ? 4 : 3.5;
+        const camY = isWall || isWindow ? 1 : (isCeiling ? 2 : 2.5);
+        camera.position.set(0, camY, radius);
+        camera.lookAt(0, 0, 0);
+
+        // 레이어 메시 수집 (explode용)
+        const layerMeshes = [];
+        group.children.forEach(child => layerMeshes.push(child));
+        const layerOriginalPos = layerMeshes.map(m => isWall ? m.position.x : m.position.y);
+
+        // 드래그 회전
+        let isDragging = false, prevX = 0, prevY = 0;
+        let rotY = 0, rotX = 0;
+        const canvas = renderer.domElement;
+
+        canvas.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+        canvas.addEventListener('mousemove', e => {
+          if (!isDragging) return;
+          rotY -= (e.clientX - prevX) * 0.01;
+          rotX += (e.clientY - prevY) * 0.01;
+          rotX = Math.max(-1, Math.min(1, rotX));
+          prevX = e.clientX; prevY = e.clientY;
+        });
+        canvas.addEventListener('mouseup', () => { isDragging = false; });
+        canvas.addEventListener('mouseleave', () => { isDragging = false; });
+
+        // 마우스 휠 줌
+        canvas.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          radius += e.deltaY * 0.01;
+          radius = Math.max(1, Math.min(10, radius));
+        }, { passive: false });
+
+        // 호버 explode
+        let exploded = false, explodeProgress = 0;
+        canvas.addEventListener('mouseenter', () => { exploded = true; });
+        canvas.addEventListener('mouseleave', () => { exploded = false; });
+
+        function animate() {
+          const animId = requestAnimationFrame(animate);
+
+          // 드래그 안 할 때 자동 회전
+          if (!isDragging) rotY += 0.005;
+
+          camera.position.x = Math.sin(rotY) * radius * Math.cos(rotX);
+          camera.position.z = Math.cos(rotY) * radius * Math.cos(rotX);
+          camera.position.y = camY + Math.sin(rotX) * radius;
+          camera.lookAt(0, 0, 0);
+
+          // explode 애니메이션
+          const speed = 0.08;
+          if (exploded && explodeProgress < 1) explodeProgress = Math.min(1, explodeProgress + speed);
+          if (!exploded && explodeProgress > 0) explodeProgress = Math.max(0, explodeProgress - speed);
+
+          if (layerMeshes.length > 1) {
+            const explodeGap = 0.1;
+            const dir = isCeiling ? -1 : isWall ? -1 : 1;
+            // 같은 위치 그룹핑
+            const groups = [];
+            const used = new Set();
+            for (let i = 0; i < layerMeshes.length; i++) {
+              if (used.has(i)) continue;
+              const g = [i];
+              for (let j = i + 1; j < layerMeshes.length; j++) {
+                if (Math.abs(layerOriginalPos[j] - layerOriginalPos[i]) < 0.001) { g.push(j); used.add(j); }
+              }
+              used.add(i);
+              groups.push(g);
+            }
+            groups.forEach((grp, gi) => {
+              const offset = (gi - (groups.length - 1) / 2) * explodeGap * explodeProgress * dir;
+              grp.forEach(i => {
+                if (isWall) layerMeshes[i].position.x = layerOriginalPos[i] + offset;
+                else layerMeshes[i].position.y = layerOriginalPos[i] + offset;
+              });
+            });
+          }
+
+          renderer.render(scene, camera);
+          threeResources.push({ animId });
+        }
+        animate();
+        threeResources.push({ renderer, scene });
+        return;
+      }
+
+      // === 폴백: 저장된 3D가 없을 때 기존 간소화 렌더링 ===
       function getMaterialProps(material) {
-        const name = material.name.toLowerCase();
-        
-        if (name.includes('콘크리트')) {
-          return { color: 0x8b8d8f, roughness: 0.9, metalness: 0 };
-        }
-        if (name.includes('단열') || name.includes('xps') || name.includes('eps') || 
-            name.includes('유리면') || name.includes('암면')) {
-          return { color: 0xffd93d, roughness: 0.95, metalness: 0, emissive: 0xffd93d, emissiveIntensity: 0.05 };
-        }
-        if (name.includes('석고')) {
-          return { color: 0xf5f5f5, roughness: 0.7, metalness: 0 };
-        }
-        if (name.includes('마루') || name.includes('목재') || name.includes('스터드') || name.includes('원목')) {
+        const name = (material.name || '').toLowerCase();
+        if (name.includes('콘크리트')) return { color: 0x8b8d8f, roughness: 0.9, metalness: 0 };
+        if (name.includes('단열') || name.includes('xps') || name.includes('eps') || name.includes('유리면') || name.includes('암면'))
+          return { color: 0xffd93d, roughness: 0.95, metalness: 0 };
+        if (name.includes('석고')) return { color: 0xf5f5f5, roughness: 0.7, metalness: 0 };
+        if (name.includes('마루') || name.includes('목재') || name.includes('스터드') || name.includes('원목'))
           return { color: 0x8b6f47, roughness: 0.8, metalness: 0 };
-        }
-        if (name.includes('벽돌') || name.includes('적벽')) {
-          return { color: 0xa0522d, roughness: 0.95, metalness: 0 };
-        }
-        if (name.includes('타일') || name.includes('세라믹')) {
-          return { color: 0xe8e8e8, roughness: 0.1, metalness: 0.3, emissive: 0xffffff, emissiveIntensity: 0.05 };
-        }
-        if (name.includes('모르타르') || name.includes('몰탈') || name.includes('미장')) {
-          return { color: 0xb8b8b8, roughness: 0.85, metalness: 0 };
-        }
-        if (name.includes('방수') || name.includes('아스팔트')) {
-          return { color: 0x1a1a1a, roughness: 0.3, metalness: 0.2 };
-        }
-        if (name.includes('금속') || name.includes('알루미늄') || name.includes('강판')) {
-          return { color: 0xc0c0c0, roughness: 0.2, metalness: 0.9, emissive: 0x444444, emissiveIntensity: 0.1 };
-        }
-        if (name.includes('페인트')) {
-          return { color: 0xffffff, roughness: 0.4, metalness: 0, emissive: 0xffffff, emissiveIntensity: 0.05 };
-        }
-        // 알루미늄 프레임
-        if (name.includes('알루미늄') && name.includes('프레임')) {
-          return { color: 0x8a8a8a, roughness: 0.2, metalness: 0.95, emissive: 0x333333, emissiveIntensity: 0.1 };
-        }
-        // PVC 프레임
-        if (name.includes('pvc') || name.includes('PVC')) {
-          return { color: 0xf5f5f5, roughness: 0.4, metalness: 0, emissive: 0xffffff, emissiveIntensity: 0.02 };
-        }
-        // 목재 프레임
-        if (name.includes('목재') && name.includes('프레임')) {
-          return { color: 0x8b6f47, roughness: 0.75, metalness: 0 };
-        }
-        // 유리
-        if (name.includes('유리')) {
-          return { color: 0x87CEEB, roughness: 0.05, metalness: 0.1, emissive: 0x87CEEB, emissiveIntensity: 0.05, transparent: true, opacity: 0.4 };
-        }
+        if (name.includes('벽돌')) return { color: 0xa0522d, roughness: 0.95, metalness: 0 };
+        if (name.includes('타일') || name.includes('세라믹')) return { color: 0xe8e8e8, roughness: 0.1, metalness: 0.3 };
+        if (name.includes('모르타르') || name.includes('미장')) return { color: 0xb8b8b8, roughness: 0.85, metalness: 0 };
+        if (name.includes('방수')) return { color: 0x1a1a1a, roughness: 0.3, metalness: 0.2 };
+        if (name.includes('알루미늄') || name.includes('강판')) return { color: 0xc0c0c0, roughness: 0.2, metalness: 0.9 };
+        if (name.includes('페인트')) return { color: 0xffffff, roughness: 0.4, metalness: 0 };
+        if (name.includes('유리')) return { color: 0x87CEEB, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.4 };
         return { color: 0x00b894, roughness: 0.7, metalness: 0 };
       }
 
-      // 레이어 생성
       const isWindow = (assembly.structureType === 'window');
       const isWall = (assembly.structureType === 'external' || assembly.structureType === 'internal');
       const isCeiling = (assembly.structureType === 'ceiling');
       let pos = 0;
       const meshes = [];
-
-      // 모든 레이어를 담을 그룹 생성
       const group = new THREE.Group();
 
       // 천장일 경우 전용 렌더링
@@ -1774,8 +1838,13 @@
     function deleteAssembly(assemblyId) {
       if (confirm('이 어셈블리를 삭제하시겠습니까?')) {
         calculator.removeAssembly(assemblyId);
+        // 3D JSON도 삭제
+        try {
+          const stored = JSON.parse(localStorage.getItem('assemblies3D') || '{}');
+          delete stored[assemblyId];
+          localStorage.setItem('assemblies3D', JSON.stringify(stored));
+        } catch(e) {}
         init();
-
       }
     }
 
@@ -1783,6 +1852,7 @@
     function clearAllAssemblies() {
       if (confirm('모든 어셈블리를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
         calculator.clearAll();
+        localStorage.removeItem('assemblies3D');
         init();
       }
     }
